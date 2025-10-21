@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "dev": "concurrently -n api,web -c blue,green \"pnpm -C packages/api dev\" \"pnpm -C apps/web dev\""
-  },
-  "devDependencies": {
-    "concurrently": "^9.0.0",
-    "tsx": "^4.7.0"
-  }
-}

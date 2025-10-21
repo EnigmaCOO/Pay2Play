@@ -8,56 +8,55 @@ The system combines a mobile-first web application for players with a comprehens
 
 ## How to Run the Application
 
-### **IMPORTANT: .replit File Issue**
+### 🚨 **IMPORTANT: .replit File Needs Fixing**
 
-⚠️ **The `.replit` file has incorrect configuration (pnpm/Prisma/monorepo)** which doesn't match this project's structure (npm/Drizzle/single-package).
+Your `.replit` file has **wrong configuration** for a different project (pnpm/Prisma/monorepo). 
+This is why clicking "Run" shows "Your app crashed".
 
-**To run your app, open the Shell and manually start it:**
+**📖 SEE `REPLIT_FIX.md` FOR COMPLETE FIX INSTRUCTIONS**
 
-```bash
-./start.sh
-```
+### **Quick Start (Until You Fix .replit):**
 
-Or alternatively:
-
+Open the Shell and run:
 ```bash
 npm run dev
 ```
 
-### **What Happens When You Start:**
-- Express server starts on port 5000
-- Vite development server for React frontend 
-- Backend API available at `/api/*` endpoints
-- Auto-cancel scheduler starts after 10-second delay (checks underfilled games every 5 minutes)
+You'll see:
+```
+11:XX:XX AM [express] serving on port 5000
+🕐 Starting auto-cancel scheduler (runs every 5 minutes, first run in 10 seconds)
+```
+
+Then **refresh the webview** and your app loads!
+
+### **What Runs:**
+- ✅ Express server on port 5000 (binds to 0.0.0.0)
+- ✅ Vite dev server for React frontend (integrated into Express)
+- ✅ All API routes at `/api/*`
+- ✅ Auto-cancel scheduler (checks underfilled games every 5 minutes)
+- ✅ Health endpoint at `/api/health`
 
 ### **Verify It's Working:**
 
-Open another Shell tab and run:
 ```bash
 curl http://localhost:5000/api/health
+# Returns: {"status":"ok","timestamp":"..."}
 ```
 
-Should return: `{"status":"ok","timestamp":"..."}`
+### **After Fixing .replit (see REPLIT_FIX.md):**
 
-Then **refresh the Replit webview** to see your frontend!
+Once you update `.replit` and `replit.nix` files:
+1. Click the green **"Run"** button
+2. Server starts automatically
+3. Webview shows your app!
 
-### **Troubleshooting:**
-
-**If you see "Your app crashed":**
-1. The Replit "Run" button uses the wrong `.replit` configuration
-2. Manually run `./start.sh` or `npm run dev` in the Shell instead
-3. Refresh the webview after the server starts
-
-**Server Not Running:**
-- Background processes don't persist in Replit shells
-- You must keep the Shell tab open while the server runs
-- Or run in a persistent Replit workflow (but .replit needs fixing first)
-
-### **Project Structure:**
-- `server/` - Express backend with Drizzle ORM
-- `client/` - Vite + React frontend  
-- Single `package.json` with npm (not pnpm)
-- PostgreSQL database with Drizzle migrations (not Prisma)
+### **Project Architecture:**
+- **Unified Server**: Single Express process serves both API and frontend
+- **Backend**: `server/` - Express + Drizzle ORM + PostgreSQL
+- **Frontend**: `client/` - Vite + React (served by Express)
+- **Package Manager**: npm (single package.json at root)
+- **Database**: Drizzle ORM with `npm run db:push` (not Prisma)
 
 ## User Preferences
 
