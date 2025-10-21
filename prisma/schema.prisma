@@ -1,0 +1,9 @@
+// Dummy schema - actual schema is in shared/schema.ts using Drizzle ORM
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
