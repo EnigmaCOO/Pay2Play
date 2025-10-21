@@ -1,0 +1,82 @@
+{
+  "id": "d2c4a9a1-6d7e-49a6-9b01-44b57d77a001",
+  "name": "P2P \u2013 Local Dev",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "enabled": true
+    },
+    {
+      "key": "id_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "venue_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "field_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "slot_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "booking_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "game_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "season_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "sport",
+      "value": "futsal",
+      "enabled": true
+    },
+    {
+      "key": "from",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "to",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "iso_start",
+      "value": "2025-01-01T20:00:00.000Z",
+      "enabled": true
+    },
+    {
+      "key": "iso_end",
+      "value": "2025-01-01T21:00:00.000Z",
+      "enabled": true
+    },
+    {
+      "key": "expo_push_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "webhook_secret",
+      "value": "dev_secret_for_hmac",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

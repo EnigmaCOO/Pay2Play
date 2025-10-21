@@ -1,0 +1,99 @@
+You are my DevOps + Full-Stack operator. Do the following **exactly in order**.
+
+ASSUMPTIONS
+- Repo already imported (Node/PNPM monorepo).
+- I will upload these bundles into the project root before you unzip:
+  1) p2p_prod_otp_booking.zip
+  2) p2p_full_payments_dashboard.zip
+  3) p2p_full_matchmaking_leagues.zip
+  4) p2p_pro_games_payments_notifications.zip
+  5) P2P_Postman_Collection.json
+  6) P2P_Postman_Env.json
+  7) README_Dev_Walkthrough.md
+
+SECRETS (create in Replit → Tools → Secrets **before running**)
+- DATABASE_URL=postgresql://USER:PASS@HOST:5432/p2p
+- FIREBASE_PROJECT_ID=...
+- FIREBASE_CLIENT_EMAIL=...@...gserviceaccount.com
+- FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+- PROVIDER_WEBHOOK_SECRET=dev_secret_for_hmac
+# Optional SMS:
+- TWILIO_ACCOUNT_SID=...
+- TWILIO_AUTH_TOKEN=...
+- TWILIO_FROM=+1...
+
+SETUP (Shell commands)
+1) Install CLIs
+   npm i -g pnpm prisma ts-node
+
+2) Unpack app bundles (I will have uploaded the zips first)
+   unzip -o p2p_prod_otp_booking.zip -d .
+   unzip -o p2p_full_payments_dashboard.zip -d .
+   unzip -o p2p_full_matchmaking_leagues.zip -d .
+   unzip -o p2p_pro_games_payments_notifications.zip -d .
+
+3) Install deps
+   pnpm i
+
+4) Generate Prisma client and run all migrations
+   pnpm prisma generate
+   pnpm prisma migrate dev -n "init_full_stack"
+
+5) Seed demo data (venues/fields/slots)
+   pnpm ts-node scripts/seed.ts
+
+6) Wire API routes in packages/api/src/index.ts (edit the file)
+   - Ensure these imports exist:
+       import { bookings } from './bookings';
+       import { slots } from './slots';
+       import { venues } from './venues';
+       import { payments } from './payments';
+       import { payouts } from './payouts';
+       import { games } from './games';
+       import { leagues } from './leagues';
+       import { gamePayments } from './gamePayments';
+       import { users } from './users';
+   - Ensure these middlewares are mounted:
+       app.use('/bookings', bookings);
+       app.use('/slots', slots);
+       app.use('/venues', venues);
+       app.use('/payments', payments);
+       app.use('/payouts', payouts);
+       app.use('/games', games);
+       app.use('/leagues', leagues);
+       app.use('/game-pay', gamePayments);
+       app.use('/users', users);
+   - Add an auto-cancel loop to protect players for underfilled games:
+       import { runAutoCancel } from './autoCancel';
+       setInterval(() => runAutoCancel(30).catch(()=>{}), 5 * 60 * 1000); // every 5 mins
+
+7) Start all apps
+   pnpm dev
+   # Expect:
+   # API on :3001, Web on :3000, Expo dev server prints QR (if mobile app present).
+
+POST-SETUP CHECKS
+8) Open the web app and hit:
+   - /dashboard  (venue dashboard)
+   - /games      (create & list pickup games)
+   - /leagues    (seasons, teams, fixtures, standings)
+   - /debug/push-token (save Expo Push token; requires localStorage.idToken)
+
+9) Create a game, then request a game payment intent:
+   - POST /game-pay/:gameId/intent (Authorization: Bearer <Firebase ID token>)
+   - Response returns { paymentId, idempotencyKey, redirectUrl }
+
+10) Simulate provider webhook success to finalize the join:
+    - POST /game-pay/webhook-game/mock
+    - Headers: x-p2p-signature = sha256-HMAC(JSON body, PROVIDER_WEBHOOK_SECRET)
+    - Body: {"gamePaymentId":"<paymentId>","status":"succeeded","providerRef":"txn_game_123"}
+    - Expect: GamePlayer record created, game status may become "filled", push notification sent.
+
+11) Import Postman files (client side task)
+    - Import P2P_Postman_Collection.json and P2P_Postman_Env.json
+    - Set base_url to your Replit API URL and id_token to a real Firebase ID token.
+
+12) Report success:
+    - Print health status for /health, a sample venue from /venues,
+      and counts for /games/search and any /bookings/me (if token used).
+    - Confirm autoCancel timer is active in logs.
