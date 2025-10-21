@@ -8,41 +8,56 @@ The system combines a mobile-first web application for players with a comprehens
 
 ## How to Run the Application
 
-**Option 1 - Process Supervisor (Recommended):**
+### **IMPORTANT: .replit File Issue**
+
+⚠️ **The `.replit` file has incorrect configuration (pnpm/Prisma/monorepo)** which doesn't match this project's structure (npm/Drizzle/single-package).
+
+**To run your app, open the Shell and manually start it:**
+
 ```bash
-node run-server.js
+./start.sh
 ```
 
-This runs a process supervisor that automatically restarts the server if it crashes.
+Or alternatively:
 
-**Option 2 - Direct Server:**
 ```bash
 npm run dev
 ```
 
-This starts the Express server directly.
-
-**What Happens When You Run:**
+### **What Happens When You Start:**
 - Express server starts on port 5000
 - Vite development server for React frontend 
 - Backend API available at `/api/*` endpoints
 - Auto-cancel scheduler starts after 10-second delay (checks underfilled games every 5 minutes)
 
-**Verify It's Working:**
+### **Verify It's Working:**
+
+Open another Shell tab and run:
 ```bash
 curl http://localhost:5000/api/health
-# Should return: {"status":"ok","timestamp":"..."}
 ```
 
-**Important Notes:**
-- The `.replit` file contains outdated commands. Use the commands above instead.
-- If background processes stop, simply re-run `node run-server.js`
-- Server logs are in `/tmp/p2p-server.log`
+Should return: `{"status":"ok","timestamp":"..."}`
 
-**Recent Fixes:**
-- ✅ Fixed auto-cancel scheduler to delay initial run by 10 seconds (prevents blocking server startup)
-- ✅ Created run-server.js process supervisor for automatic restarts
-- ✅ Updated to ES module syntax throughout
+Then **refresh the Replit webview** to see your frontend!
+
+### **Troubleshooting:**
+
+**If you see "Your app crashed":**
+1. The Replit "Run" button uses the wrong `.replit` configuration
+2. Manually run `./start.sh` or `npm run dev` in the Shell instead
+3. Refresh the webview after the server starts
+
+**Server Not Running:**
+- Background processes don't persist in Replit shells
+- You must keep the Shell tab open while the server runs
+- Or run in a persistent Replit workflow (but .replit needs fixing first)
+
+### **Project Structure:**
+- `server/` - Express backend with Drizzle ORM
+- `client/` - Vite + React frontend  
+- Single `package.json` with npm (not pnpm)
+- PostgreSQL database with Drizzle migrations (not Prisma)
 
 ## User Preferences
 
