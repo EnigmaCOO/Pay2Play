@@ -129,6 +129,18 @@ export const gamePayments = pgTable("game_payments", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Refunds table
+export const refunds = pgTable("refunds", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  paymentId: varchar("payment_id").references(() => payments.id),
+  gamePaymentId: varchar("game_payment_id").references(() => gamePayments.id),
+  amountPkr: integer("amount_pkr").notNull(),
+  reason: text("reason").notNull(),
+  status: paymentStatusEnum("status").notNull().default("pending"),
+  providerRef: text("provider_ref"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Leagues/Seasons table
 export const seasons = pgTable("seasons", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -256,6 +268,7 @@ export const insertPaymentSchema = createInsertSchema(payments).omit({ id: true,
 export const insertGameSchema = createInsertSchema(games).omit({ id: true, createdAt: true, currentPlayers: true });
 export const insertGamePlayerSchema = createInsertSchema(gamePlayers).omit({ id: true, joinedAt: true });
 export const insertGamePaymentSchema = createInsertSchema(gamePayments).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertRefundSchema = createInsertSchema(refunds).omit({ id: true, createdAt: true });
 export const insertSeasonSchema = createInsertSchema(seasons).omit({ id: true, createdAt: true });
 export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true, played: true, won: true, drawn: true, lost: true, points: true });
 export const insertFixtureSchema = createInsertSchema(fixtures).omit({ id: true, createdAt: true });
@@ -279,6 +292,8 @@ export type GamePlayer = typeof gamePlayers.$inferSelect;
 export type InsertGamePlayer = z.infer<typeof insertGamePlayerSchema>;
 export type GamePayment = typeof gamePayments.$inferSelect;
 export type InsertGamePayment = z.infer<typeof insertGamePaymentSchema>;
+export type Refund = typeof refunds.$inferSelect;
+export type InsertRefund = z.infer<typeof insertRefundSchema>;
 export type Season = typeof seasons.$inferSelect;
 export type InsertSeason = z.infer<typeof insertSeasonSchema>;
 export type Team = typeof teams.$inferSelect;

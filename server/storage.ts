@@ -10,6 +10,7 @@ import type {
   Game, InsertGame, GameWithDetails,
   GamePlayer, InsertGamePlayer,
   GamePayment, InsertGamePayment,
+  Refund, InsertRefund,
   Season, InsertSeason,
   Team, InsertTeam, TeamStanding,
   Fixture, InsertFixture,
@@ -57,6 +58,7 @@ export interface IStorage {
   updateGameStatus(id: string, status: string): Promise<void>;
   incrementGamePlayers(id: string): Promise<void>;
   getGamesNeedingCancellation(minutesBeforeStart: number): Promise<Game[]>;
+  getUpcomingGames(beforeTime: Date): Promise<GameWithDetails[]>;
 
   // Game Players
   addGamePlayer(gamePlayer: InsertGamePlayer): Promise<GamePlayer>;
@@ -66,6 +68,7 @@ export interface IStorage {
   createGamePayment(payment: InsertGamePayment): Promise<GamePayment>;
   getGamePayment(id: string): Promise<GamePayment | undefined>;
   getGamePaymentByIdempotencyKey(key: string): Promise<GamePayment | undefined>;
+  getGamePaymentByUserAndGame(userId: string, gameId: string): Promise<GamePayment | undefined>;
   updateGamePaymentStatus(id: string, status: string, providerRef?: string): Promise<void>;
 
   // Seasons/Leagues
@@ -84,6 +87,10 @@ export interface IStorage {
 
   // Standings
   getStandings(seasonId: string): Promise<TeamStanding[]>;
+  
+  // Refunds
+  createRefund(refund: InsertRefund): Promise<Refund>;
+  getUserById(userId: string): Promise<User | undefined>;
 }
 
 export class DbStorage implements IStorage {
@@ -352,6 +359,43 @@ export class DbStorage implements IStorage {
       ...team,
       goalDifference: 0 // Calculate based on fixtures if needed
     }));
+  }
+  
+  // Refunds
+  async createRefund(refund: InsertRefund): Promise<Refund> {
+    const [created] = await db.insert(schema.refunds).values(refund).returning();
+    return created;
+  }
+  
+  async getUserById(userId: string): Promise<User | undefined> {
+    return this.getUser(userId);
+  }
+  
+  async getUpcomingGames(beforeTime: Date): Promise<GameWithDetails[]> {
+    const now = new Date();
+    return db.query.games.findMany({
+      where: and(
+        gte(schema.games.startTime, now),
+        lte(schema.games.startTime, beforeTime),
+        // Only process games that are still open or confirmed (not already cancelled/filled)
+        sql`${schema.games.status} IN ('open', 'confirmed')`
+      ),
+      with: {
+        field: { with: { venue: true } },
+        host: true,
+        players: { with: { user: true } },
+      },
+    });
+  }
+  
+  async getGamePaymentByUserAndGame(userId: string, gameId: string): Promise<GamePayment | undefined> {
+    const [payment] = await db.select()
+      .from(schema.gamePayments)
+      .where(and(
+        eq(schema.gamePayments.userId, userId),
+        eq(schema.gamePayments.gameId, gameId)
+      ));
+    return payment;
   }
 }
 

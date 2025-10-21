@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertVenueSchema, insertFieldSchema, insertSlotSchema, insertBookingSchema, insertPaymentSchema, insertGameSchema, insertGamePaymentSchema, insertSeasonSchema, insertTeamSchema, insertFixtureSchema } from "@shared/schema";
 import crypto from "crypto";
+import { notificationService, notifications } from "./notifications";
 
 // Helper to verify HMAC webhook signatures
 function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
@@ -343,13 +344,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Check if game is now confirmed or filled
           const game = await storage.getGame(payment.gameId);
           if (game) {
-            if (game.currentPlayers >= game.maxPlayers) {
+            const wasFilled = game.currentPlayers >= game.maxPlayers;
+            
+            if (wasFilled) {
               await storage.updateGameStatus(game.id, 'filled');
+              // Notify all players game is full
+              const gamePlayers = await storage.getGamePlayers(game.id);
+              const playerIds = gamePlayers.map(p => p.userId);
+              await notificationService.sendToMultipleUsers(
+                playerIds,
+                notifications.gameFull(game.sport)
+              );
             } else if (game.currentPlayers >= game.minPlayers && game.status === 'open') {
               await storage.updateGameStatus(game.id, 'confirmed');
             }
             
-            // TODO: Send push notification to user
+            // Notify the joining player
+            await notificationService.sendToUser(
+              payment.userId,
+              notifications.paymentSuccess(payment.amountPkr)
+            );
+            
+            // Notify host about new player
+            if (!wasFilled) {
+              await notificationService.sendToUser(
+                game.hostId,
+                notifications.gameJoined(game.sport, game.currentPlayers, game.maxPlayers)
+              );
+            }
           }
         }
       }
