@@ -6,6 +6,27 @@ P2P (Pay 2 Play) is a unified sports booking and matchmaking platform for Lahore
 
 The system combines a mobile-first web application for players with a comprehensive venue dashboard for facility management. Core features include OTP-based authentication via Firebase, real-time slot booking, integrated payment processing, pickup game matchmaking with automatic refunds, league fixture generation, and push notifications for game updates.
 
+## How to Run the Application
+
+**Quick Start:**
+```bash
+npm run dev
+```
+
+This will start the Express server on port 5000, which serves both the API and the Vite development server for the frontend.
+
+**Note:** The `.replit` file contains outdated commands (pnpm/prisma). If using the Replit "Run" button fails, manually execute `npm run dev` in the shell.
+
+**Testing the Server:**
+```bash
+curl http://localhost:5000/api/health
+```
+
+The application will be available at `http://localhost:5000` with:
+- Frontend React app served by Vite
+- Backend API at `/api/*` endpoints
+- Auto-cancel scheduler running every 5 minutes
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
