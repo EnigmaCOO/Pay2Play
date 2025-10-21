@@ -1,0 +1,1 @@
+run = "bash -lc 'set -e; if ! command -v pnpm >/dev/null 2>&1; then npm i -g pnpm; fi; pnpm i; pnpm prisma migrate dev -n replit_boot || true; pnpm prisma generate || true; pnpm ts-node scripts/seed.ts || true; pnpm dev'"\nlanguage = "nodejs"\nhidden = [".config"]\n

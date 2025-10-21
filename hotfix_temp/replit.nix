@@ -1,0 +1,1 @@
+{ pkgs }:\n{\n  deps = [ pkgs.nodejs_20 pkgs.nodePackages.pnpm pkgs.openssl pkgs.git ];\n}\n

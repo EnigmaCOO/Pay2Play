@@ -1,0 +1,2 @@
+type Ctx = { prisma: any; runAutoCancel: (thresholdMinutes?: number) => Promise<any>; firstDelayMs?: number; intervalMs?: number; };
+export async function afterBoot({ prisma, runAutoCancel, firstDelayMs = 10000, intervalMs = 300000 }: Ctx) { try { await prisma.$queryRaw`SELECT 1`; setTimeout(() => runAutoCancel(30).catch(console.error), firstDelayMs); setInterval(() => runAutoCancel(30).catch(console.error), intervalMs); console.log('[scheduler] auto-cancel armed'); } catch (e) { console.error('[scheduler] DB not reachable; scheduler not armed', e); } }

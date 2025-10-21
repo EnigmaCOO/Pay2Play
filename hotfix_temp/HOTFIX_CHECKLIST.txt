@@ -1,0 +1,1 @@
+HOTFIX CHECKLIST\n- overwrite .replit\n- add afterBoot.ts + health.ts\n- bind API to HOST=0.0.0.0 and PORT=process.env.PORT||3001\n- merge package.json scripts\n- create apps/web/.env.local\n- run prisma migrate/generate + seed\n
