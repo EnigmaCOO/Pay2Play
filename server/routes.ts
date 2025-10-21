@@ -206,13 +206,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/payments/webhook/:provider", async (req, res) => {
     try {
       const { provider } = req.params;
-      const signature = req.headers['x-webhook-signature'] as string;
-      const webhookSecret = process.env.PROVIDER_WEBHOOK_SECRET || "test-secret";
       
-      // Verify HMAC signature
-      const payload = JSON.stringify(req.body);
-      if (!signature || !verifyWebhookSignature(payload, signature, webhookSecret)) {
-        return res.status(401).json({ error: "Invalid signature" });
+      // For mock provider in development, skip HMAC verification
+      if (provider !== "mock") {
+        const signature = req.headers['x-webhook-signature'] as string;
+        const webhookSecret = process.env.PROVIDER_WEBHOOK_SECRET || "test-secret";
+        
+        // Verify HMAC signature for real providers
+        const payload = JSON.stringify(req.body);
+        if (!signature || !verifyWebhookSignature(payload, signature, webhookSecret)) {
+          return res.status(401).json({ error: "Invalid signature" });
+        }
       }
       
       const { paymentId, status, providerRef } = req.body;
@@ -303,16 +307,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/game-pay/webhook-game/:provider", async (req, res) => {
+  app.post("/api/game-pay/webhook/:provider", async (req, res) => {
     try {
       const { provider } = req.params;
-      const signature = req.headers['x-webhook-signature'] as string;
-      const webhookSecret = process.env.PROVIDER_WEBHOOK_SECRET || "test-secret";
       
-      // Verify HMAC signature
-      const payload = JSON.stringify(req.body);
-      if (!signature || !verifyWebhookSignature(payload, signature, webhookSecret)) {
-        return res.status(401).json({ error: "Invalid signature" });
+      // For mock provider in development, skip HMAC verification
+      if (provider !== "mock") {
+        const signature = req.headers['x-webhook-signature'] as string;
+        const webhookSecret = process.env.PROVIDER_WEBHOOK_SECRET || "test-secret";
+        
+        // Verify HMAC signature for real providers
+        const payload = JSON.stringify(req.body);
+        if (!signature || !verifyWebhookSignature(payload, signature, webhookSecret)) {
+          return res.status(401).json({ error: "Invalid signature" });
+        }
       }
       
       const { paymentId, status, providerRef } = req.body;

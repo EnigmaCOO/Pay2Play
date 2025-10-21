@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import Landing from "@/pages/landing";
 import Games from "@/pages/games";
+import CreateGame from "@/pages/create-game";
+import GameDetail from "@/pages/game-detail";
 import Venues from "@/pages/venues";
 import Leagues from "@/pages/leagues";
 import Dashboard from "@/pages/dashboard";
@@ -17,6 +19,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/games" component={Games} />
+      <Route path="/games/create" component={CreateGame} />
+      <Route path="/games/:id" component={GameDetail} />
       <Route path="/venues" component={Venues} />
       <Route path="/leagues" component={Leagues} />
       <Route path="/dashboard" component={Dashboard} />
