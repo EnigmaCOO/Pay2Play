@@ -490,6 +490,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ========== DASHBOARD ==========
+  app.get("/api/dashboard/venues/:partnerId", async (req, res) => {
+    try {
+      const venues = await storage.getVenuesByPartner(req.params.partnerId);
+      res.json(venues);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/dashboard/bookings/:venueId", async (req, res) => {
+    try {
+      const bookings = await storage.getBookingsByVenue(req.params.venueId);
+      res.json(bookings);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/dashboard/payouts/:venueId", async (req, res) => {
+    try {
+      const payouts = await storage.getPayoutsByVenue(req.params.venueId);
+      res.json(payouts);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

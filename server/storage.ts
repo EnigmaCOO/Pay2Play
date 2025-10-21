@@ -91,6 +91,11 @@ export interface IStorage {
   // Refunds
   createRefund(refund: InsertRefund): Promise<Refund>;
   getUserById(userId: string): Promise<User | undefined>;
+  
+  // Dashboard
+  getVenuesByPartner(partnerId: string): Promise<Venue[]>;
+  getBookingsByVenue(venueId: string): Promise<Booking[]>;
+  getPayoutsByVenue(venueId: string): Promise<any[]>;
 }
 
 export class DbStorage implements IStorage {
@@ -396,6 +401,33 @@ export class DbStorage implements IStorage {
         eq(schema.gamePayments.gameId, gameId)
       ));
     return payment;
+  }
+  
+  // Dashboard
+  async getVenuesByPartner(partnerId: string): Promise<Venue[]> {
+    return db.select().from(schema.venues).where(eq(schema.venues.partnerId, partnerId));
+  }
+  
+  async getBookingsByVenue(venueId: string): Promise<Booking[]> {
+    return db.query.bookings.findMany({
+      where: (bookings, { eq, and }) => {
+        return sql`EXISTS (
+          SELECT 1 FROM ${schema.slots} s
+          JOIN ${schema.fields} f ON s.field_id = f.id
+          WHERE s.id = ${bookings.slotId}
+          AND f.venue_id = ${venueId}
+        )`;
+      },
+      with: {
+        user: true,
+        slot: { with: { field: true } },
+      },
+      orderBy: [desc(schema.bookings.createdAt)],
+    });
+  }
+  
+  async getPayoutsByVenue(venueId: string): Promise<any[]> {
+    return db.select().from(schema.payouts).where(eq(schema.payouts.venueId, venueId));
   }
 }
 
