@@ -79,12 +79,14 @@ export async function checkAndCancelUnderfilledGames() {
 // Run every 5 minutes
 export function startAutoCancelScheduler() {
   const FIVE_MINUTES = 5 * 60 * 1000;
+  const STARTUP_DELAY = 10 * 1000; // 10 seconds
   
-  console.log("🕐 Starting auto-cancel scheduler (runs every 5 minutes)");
+  console.log("🕐 Starting auto-cancel scheduler (runs every 5 minutes, first run in 10 seconds)");
   
-  // Run immediately on startup
-  checkAndCancelUnderfilledGames();
-  
-  // Then run every 5 minutes
-  setInterval(checkAndCancelUnderfilledGames, FIVE_MINUTES);
+  // Delay initial run to allow server to fully start
+  setTimeout(() => {
+    checkAndCancelUnderfilledGames();
+    // Then run every 5 minutes
+    setInterval(checkAndCancelUnderfilledGames, FIVE_MINUTES);
+  }, STARTUP_DELAY);
 }

@@ -8,24 +8,41 @@ The system combines a mobile-first web application for players with a comprehens
 
 ## How to Run the Application
 
-**Quick Start:**
+**Option 1 - Process Supervisor (Recommended):**
+```bash
+node run-server.js
+```
+
+This runs a process supervisor that automatically restarts the server if it crashes.
+
+**Option 2 - Direct Server:**
 ```bash
 npm run dev
 ```
 
-This will start the Express server on port 5000, which serves both the API and the Vite development server for the frontend.
+This starts the Express server directly.
 
-**Note:** The `.replit` file contains outdated commands (pnpm/prisma). If using the Replit "Run" button fails, manually execute `npm run dev` in the shell.
+**What Happens When You Run:**
+- Express server starts on port 5000
+- Vite development server for React frontend 
+- Backend API available at `/api/*` endpoints
+- Auto-cancel scheduler starts after 10-second delay (checks underfilled games every 5 minutes)
 
-**Testing the Server:**
+**Verify It's Working:**
 ```bash
 curl http://localhost:5000/api/health
+# Should return: {"status":"ok","timestamp":"..."}
 ```
 
-The application will be available at `http://localhost:5000` with:
-- Frontend React app served by Vite
-- Backend API at `/api/*` endpoints
-- Auto-cancel scheduler running every 5 minutes
+**Important Notes:**
+- The `.replit` file contains outdated commands. Use the commands above instead.
+- If background processes stop, simply re-run `node run-server.js`
+- Server logs are in `/tmp/p2p-server.log`
+
+**Recent Fixes:**
+- ✅ Fixed auto-cancel scheduler to delay initial run by 10 seconds (prevents blocking server startup)
+- ✅ Created run-server.js process supervisor for automatic restarts
+- ✅ Updated to ES module syntax throughout
 
 ## User Preferences
 
