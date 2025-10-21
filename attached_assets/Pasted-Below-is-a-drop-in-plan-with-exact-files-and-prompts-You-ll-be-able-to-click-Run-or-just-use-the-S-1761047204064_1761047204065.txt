@@ -1,0 +1,161 @@
+Below is a drop-in plan with exact files and prompts. You’ll be able to click Run (or just use the Shell) and get the same behavior as ./start.sh.
+
+⸻
+
+✅ Goal
+
+Fix the .replit config so the Run button launches your single-repo Express + Vite + Drizzle app properly (no pnpm/Prisma/monorepo assumptions).
+
+⸻
+
+1) Replace .replit with a minimal, correct launcher
+
+.replit
+
+run = "bash -lc 'chmod +x start.sh && ./start.sh'"
+language = "nodejs"
+env = { PORT = "5000" }
+
+Why: This makes the big green Run button do exactly what you already do in the Shell. No Prisma, no pnpm—just your startup script.
+
+(Optional) replit.nix – keep tools predictable
+
+{ pkgs }:
+{
+  deps = [
+    pkgs.nodejs_20
+    pkgs.git
+    pkgs.openssl
+  ];
+}
+
+
+⸻
+
+2) Use this robust start.sh (drop-in, idempotent)
+
+If you already have a start.sh that works, you can keep it.
+If you want a bulletproof version that detects Drizzle vs “db:push” (your project’s script), use this:
+
+start.sh
+
+#!/usr/bin/env bash
+set -euo pipefail
+
+# --- CONFIG (adjust paths if yours differ) ---
+CLIENT_DIR="client"     # Vite React app
+SERVER_DIR="server"     # Express API
+PUBLIC_PORT="${PORT:-5000}"     # Replit public port for Vite
+API_PORT="${API_PORT:-3001}"    # Internal API port
+HOST="0.0.0.0"
+
+echo "🔧 Installing dependencies..."
+[ -f "$CLIENT_DIR/package.json" ] && (cd "$CLIENT_DIR" && npm install)
+[ -f "$SERVER_DIR/package.json" ] && (cd "$SERVER_DIR" && npm install)
+
+# --- DB migrations: prefer Drizzle; fall back to `npm run db:push` if provided ---
+echo "🗃️  Applying database migrations..."
+if npx --yes drizzle-kit --version >/dev/null 2>&1; then
+  (cd "$SERVER_DIR" && npx drizzle-kit generate || true && npx drizzle-kit migrate || true)
+elif npm run | grep -q "db:push"; then
+  # If your project actually defines an npm script named db:push, use that.
+  (cd "$SERVER_DIR" && npm run db:push || true)
+else
+  echo "ℹ️ No migration tool detected (drizzle-kit or db:push). Skipping."
+fi
+
+echo "🌐 Starting Express + Vite server..."
+echo "   - Binding to: ${HOST}:${PUBLIC_PORT}"
+echo "   - Frontend: Vite React app"
+echo "   - Backend:  Express API at /api/*"
+echo "✨ Server is starting..."
+echo "   Refresh the Replit webview to see your app!"
+
+# Start API (Express) on API_PORT; ensure your server respects HOST/PORT env
+( cd "$SERVER_DIR" && HOST="$HOST" PORT="$API_PORT" node index.js ) &
+API_PID=$!
+
+# Start Vite dev server on PUBLIC_PORT and proxy /api to API_PORT (vite.config should proxy /api)
+( cd "$CLIENT_DIR" && HOST="$HOST" PORT="$PUBLIC_PORT" npm run dev ) &
+VITE_PID=$!
+
+trap "kill $API_PID $VITE_PID 2>/dev/null || true" INT TERM
+wait -n $API_PID $VITE_PID
+
+This script:
+	•	installs client/ & server/ deps,
+	•	runs Drizzle migrations if available, otherwise tries npm run db:push if your project defines it,
+	•	starts the API on 3001 and Vite on $PORT (5000) bound to 0.0.0.0.
+
+⸻
+
+3) Verify your API binds correctly
+
+In server/index.js (or your server entry), make sure:
+
+const HOST = process.env.HOST || '0.0.0.0';
+const PORT = Number(process.env.PORT || 3001);
+
+app.listen(PORT, HOST, () => {
+  console.log(`[api] listening on http://${HOST}:${PORT}`);
+});
+
+
+⸻
+
+4) Confirm Vite is using the public port and proxying /api
+
+vite.config.ts (or .js) — ensure the dev server exposes the port and proxies to API:
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: Number(process.env.PORT) || 5000,
+    proxy: {
+      '/api': 'http://localhost:3001'
+    }
+  }
+})
+
+
+⸻
+
+5) Run it (two options)
+
+A) With the Run button (after updating .replit)
+
+Just click Run.
+Replit executes: bash -lc 'chmod +x start.sh && ./start.sh'.
+
+B) Using the Shell
+
+chmod +x start.sh
+./start.sh
+
+When you see “serving on port 5000…”, refresh the webview.
+
+⸻
+
+6) (Optional) Single-process “prod” mode
+
+If you later want one process to serve static /dist + /api:
+	•	Build React: cd client && npm run build → outputs client/dist
+	•	In server/, add a tiny static-serving entry (e.g., server/prod.js) that:
+	•	app.use('/api', apiRouter)
+	•	app.use(express.static(path.resolve(__dirname, '../client/dist')))
+	•	app.get('*', (_, res) => res.sendFile(path.resolve(__dirname, '../client/dist/index.html')))
+	•	Start with node server/prod.js on $PORT.
+
+I can write that prod.js for you if you want it pre-wired.
+
+⸻
+
+7) Quick Troubleshooting
+	•	Web opens, API fails → Check the proxy block in Vite; confirm API is on 3001 and bound to 0.0.0.0.
+	•	“Address in use” → pkill node || true then run again.
+	•	DB errors → Confirm DATABASE_URL in Replit Secrets and schema paths for Drizzle.
+

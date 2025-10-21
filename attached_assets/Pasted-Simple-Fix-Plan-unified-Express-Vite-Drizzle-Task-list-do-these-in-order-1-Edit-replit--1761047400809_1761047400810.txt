@@ -1,0 +1,78 @@
+Simple Fix Plan (unified Express + Vite + Drizzle)
+
+Task list (do these in order)
+	1.	Edit .replit (root of your repo)
+Replace its contents with this minimal, correct config:
+
+run = "bash -lc 'npm i && npm run dev'"
+language = "nodejs"
+env = { PORT = "5000" }
+
+	•	This removes pnpm/Prisma/monorepo assumptions.
+	•	It runs the same command you’re using manually: npm run dev.
+
+	2.	(Optional) replit.nix
+If your repl uses Nix, keep tools consistent:
+
+{ pkgs }:
+{
+  deps = [
+    pkgs.nodejs_20
+    pkgs.git
+    pkgs.openssl
+  ];
+}
+
+
+	3.	Keep your unified server
+You already have one process that starts both the API and the client (via Vite). No need for separate processes or wrapper scripts.
+Make sure the server binds correctly (you likely already have this):
+
+// server/index.js (or your entry)
+const HOST = process.env.HOST || '0.0.0.0';
+const PORT = Number(process.env.PORT || 5000); // unified server on public port
+app.listen(PORT, HOST, () => {
+  console.log(`[server] listening on http://${HOST}:${PORT}`);
+});
+
+If your Express serves /api/* and proxies/static-serves the client, this matches your “unified server” architecture perfectly.
+
+	4.	(Optional) simplify/remove start.sh
+Since .replit now calls npm run dev, you can keep start.sh for local shell starts, or remove it to avoid confusion.
+	5.	Verify
+	•	Click Run (big green button).
+	•	Watch logs for:
+
+🌐 Starting Express + Vite server...
+[server] listening on http://0.0.0.0:5000
+
+
+	•	Open the preview → your app should load.
+	•	Health check (if you expose one):
+
+curl -s http://localhost:5000/api/health
+
+
+
+⸻
+
+Expected package.json scripts (for clarity)
+
+These are typical for a unified server. If you already have them and they work, no change needed:
+
+{
+  "scripts": {
+    "dev": "node server/index.js",           // your unified dev entry
+    "start": "node server/index.js",         // same entry for prod if needed
+    "db:push": "drizzle-kit migrate"         // if you use it; optional
+  }
+}
+
+If you’re using Vite’s dev middleware inside Express, great. If instead your server spawns Vite internally, that’s fine too—npm run dev remains the single entry.
+
+⸻
+
+Why this fixes it
+	•	Your old .replit ran pnpm + Prisma + monorepo commands (not your stack).
+	•	This new .replit runs npm run dev—the same flow you confirmed works (./start.sh wasn’t needed anymore).
+	•	Binding to 0.0.0.0 on PORT=5000 ensures Replit exposes your app.
