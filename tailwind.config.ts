@@ -81,11 +81,17 @@ export default {
           busy: "rgb(239 68 68)",
           offline: "rgb(156 163 175)",
         },
+        cricket: "hsl(32 95% 55% / <alpha-value>)",
+        football: "hsl(220 90% 56% / <alpha-value>)",
+        padel: "hsl(280 65% 60% / <alpha-value>)",
+        success: "hsl(142 71% 45% / <alpha-value>)",
+        warning: "hsl(38 92% 50% / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
+        sans: ["Inter", "var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
+        display: ["Outfit", "Inter", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
