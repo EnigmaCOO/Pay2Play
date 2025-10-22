@@ -4,6 +4,8 @@ import { Calendar, Users, Trophy, MapPin, Shield, Zap } from "lucide-react";
 import logoImage from "@assets/image_1761127248488.png";
 import footballImage from "@assets/generated_images/Football_futsal_action_b2dab30e.png";
 import partnershipImage from "@assets/image_1761129612907.png";
+import appStoreImage from "../attached_assets/Screenshot 2025-10-22 at 4.22.53 PM_1761132506195.png";
+import googlePlayImage from "../attached_assets/Screenshot 2025-10-22 at 4.24.42 PM_1761132506197.png";
 
 export default function App() {
   return (
@@ -63,13 +65,23 @@ export default function App() {
               LOG IN
             </Button>
           </div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border mb-8">
             <MapPin className="w-4 h-4 text-primary" />
             <select className="bg-transparent border-none outline-none text-foreground cursor-pointer">
               <option>Lahore</option>
               <option>Karachi</option>
               <option>Islamabad</option>
             </select>
+          </div>
+          
+          {/* App Store Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
+            <a href="#" className="transition-transform hover:scale-105" data-testid="link-app-store">
+              <img src={appStoreImage} alt="Download on App Store" className="h-12 w-auto" />
+            </a>
+            <a href="#" className="transition-transform hover:scale-105" data-testid="link-google-play">
+              <img src={googlePlayImage} alt="Get it on Google Play" className="h-12 w-auto" />
+            </a>
           </div>
         </div>
       </section>
@@ -317,10 +329,9 @@ export default function App() {
 
           {/* Tagline */}
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-display font-bold mb-6">
+            <p className="text-3xl md:text-4xl font-display font-bold">
               Play. Connect. Compete. Belong.
             </p>
-            <img src={logoImage} alt="Pay 2 Play" className="h-20 w-auto mx-auto opacity-90" />
           </div>
         </div>
       </section>
@@ -421,23 +432,39 @@ export default function App() {
       {/* Footer */}
       <footer id="contact" className="py-12 px-6 border-t border-border">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
             <div className="text-center md:text-left">
               <img src={logoImage} alt="Pay 2 Play" className="h-16 w-auto mb-3 mx-auto md:mx-0" />
               <p className="text-sm text-muted-foreground">
                 Lahore's Premier Sports Booking Platform
               </p>
             </div>
-            <div className="flex gap-8 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Contact Us
-              </a>
+            
+            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+              <div className="flex flex-col gap-3 text-sm">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Privacy Policy
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Terms of Service
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Contact Us
+                </a>
+              </div>
+              
+              {/* Get the App */}
+              <div className="flex flex-col gap-3">
+                <h3 className="text-sm font-semibold text-foreground">Get the App</h3>
+                <div className="flex flex-col gap-2">
+                  <a href="#" className="transition-transform hover:scale-105" data-testid="footer-app-store">
+                    <img src={appStoreImage} alt="Download on App Store" className="h-10 w-auto" />
+                  </a>
+                  <a href="#" className="transition-transform hover:scale-105" data-testid="footer-google-play">
+                    <img src={googlePlayImage} alt="Get it on Google Play" className="h-10 w-auto" />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
           <div className="text-center text-sm text-muted-foreground border-t border-border pt-8">
