@@ -4,8 +4,8 @@ import { Calendar, Users, Trophy, MapPin, Shield, Zap } from "lucide-react";
 import logoImage from "@assets/image_1761127248488.png";
 import footballImage from "@assets/generated_images/Football_futsal_action_b2dab30e.png";
 import partnershipImage from "@assets/image_1761129612907.png";
-import appStoreImage from "../attached_assets/Screenshot 2025-10-22 at 4.22.53 PM_1761132506195.png";
-import googlePlayImage from "../attached_assets/Screenshot 2025-10-22 at 4.24.42 PM_1761132506197.png";
+import appStoreImage from "@assets/app-store-badge.png";
+import googlePlayImage from "@assets/google-play-badge.png";
 
 export default function App() {
   return (
