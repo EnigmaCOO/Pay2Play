@@ -77,10 +77,10 @@ export default function App() {
           {/* App Store Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
             <a href="#" className="transition-transform hover:scale-105" data-testid="link-app-store">
-              <img src={appStoreImage} alt="Download on App Store" className="h-12 w-auto" />
+              <img src={appStoreImage} alt="Download on App Store" className="h-14 w-48 object-contain" />
             </a>
             <a href="#" className="transition-transform hover:scale-105" data-testid="link-google-play">
-              <img src={googlePlayImage} alt="Get it on Google Play" className="h-12 w-auto" />
+              <img src={googlePlayImage} alt="Get it on Google Play" className="h-14 w-48 object-contain" />
             </a>
           </div>
         </div>
@@ -458,10 +458,10 @@ export default function App() {
                 <h3 className="text-sm font-semibold text-foreground">Get the App</h3>
                 <div className="flex flex-col gap-2">
                   <a href="#" className="transition-transform hover:scale-105" data-testid="footer-app-store">
-                    <img src={appStoreImage} alt="Download on App Store" className="h-10 w-auto" />
+                    <img src={appStoreImage} alt="Download on App Store" className="h-12 w-40 object-contain" />
                   </a>
                   <a href="#" className="transition-transform hover:scale-105" data-testid="footer-google-play">
-                    <img src={googlePlayImage} alt="Get it on Google Play" className="h-10 w-auto" />
+                    <img src={googlePlayImage} alt="Get it on Google Play" className="h-12 w-40 object-contain" />
                   </a>
                 </div>
               </div>
