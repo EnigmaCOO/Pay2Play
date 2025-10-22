@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Users, Trophy, MapPin, Shield, Zap } from "lucide-react";
 import logoImage from "@assets/image_1761127248488.png";
 import footballImage from "@assets/generated_images/Football_futsal_action_b2dab30e.png";
-import partnershipImage from "@assets/image_1761129012442.png";
+import partnershipImage from "@assets/image_1761129612907.png";
 
 export default function App() {
   return (
