@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Users, Trophy, MapPin, Shield, Zap } from "lucide-react";
 import logoImage from "@assets/image_1761127248488.png";
 import footballImage from "@assets/generated_images/Football_futsal_action_b2dab30e.png";
+import partnershipImage from "@assets/image_1761129012442.png";
 
 export default function App() {
   return (
@@ -320,6 +321,69 @@ export default function App() {
               Play. Connect. Compete. Belong.
             </p>
             <img src={logoImage} alt="Pay 2 Play" className="h-20 w-auto mx-auto opacity-90" />
+          </div>
+        </div>
+      </section>
+
+      {/* Partnership Section */}
+      <section className="relative py-32 px-6 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ 
+            backgroundImage: `url(${partnershipImage})`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background/90" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-5xl md:text-6xl font-display font-bold mb-8 leading-tight">
+              Let's Build the Future<br />
+              of Sports Together
+            </h2>
+          </div>
+
+          {/* Content */}
+          <div className="space-y-6 text-center text-lg md:text-xl leading-relaxed text-foreground/90 max-w-4xl mx-auto mb-12">
+            <p>
+              <span className="font-semibold text-foreground">Partner with P2P to power the next era of play.</span>
+              <br />
+              Whether you're a sports facility, a brand, or a community organization, join us in making sports accessible, inclusive, and unforgettable.
+            </p>
+            
+            <p>
+              We're connecting players, venues, and partners through a single, intelligent platform — uniting Cricket, Football, and Padel under one experience.
+            </p>
+            
+            <p>
+              Together, we can turn every city into a playground, every field into an opportunity, and every match into a story worth sharing.
+            </p>
+            
+            <p className="text-xl md:text-2xl font-semibold text-foreground pt-4">
+              Let's build the future of sports — together.
+            </p>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-10 h-14 font-semibold"
+              data-testid="button-become-partner"
+            >
+              Become a Partner
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-2 text-lg px-10 h-14 font-semibold"
+              data-testid="button-learn-more"
+            >
+              Learn More
+            </Button>
           </div>
         </div>
       </section>
