@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Users, Trophy, MapPin, Shield, Zap } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import logoImage from "@assets/image_1761127248488.png";
 import footballImage from "@assets/generated_images/Football_futsal_action_b2dab30e.png";
 import partnershipImage from "@assets/image_1761129612907.png";
@@ -435,9 +436,45 @@ export default function App() {
           <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
             <div className="text-center md:text-left">
               <img src={logoImage} alt="Pay 2 Play" className="h-16 w-auto mb-3 mx-auto md:mx-0" />
-              <p className="text-sm text-muted-foreground">
-                Lahore's Premier Sports Booking Platform
+              <p className="text-sm text-muted-foreground mb-4">
+                Pakistan's Premier Sports Booking Platform
               </p>
+              
+              {/* Social Media Icons */}
+              <div className="flex gap-4 justify-center md:justify-start">
+                <a 
+                  href="#" 
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-facebook"
+                  aria-label="Facebook"
+                >
+                  <FaFacebook className="w-6 h-6" />
+                </a>
+                <a 
+                  href="#" 
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-instagram"
+                  aria-label="Instagram"
+                >
+                  <FaInstagram className="w-6 h-6" />
+                </a>
+                <a 
+                  href="#" 
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-tiktok"
+                  aria-label="TikTok"
+                >
+                  <FaTiktok className="w-6 h-6" />
+                </a>
+                <a 
+                  href="#" 
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-youtube"
+                  aria-label="YouTube"
+                >
+                  <FaYoutube className="w-6 h-6" />
+                </a>
+              </div>
             </div>
             
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
