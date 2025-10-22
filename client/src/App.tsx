@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Users, Trophy, MapPin, Shield, Zap } from "lucide-react";
 import logoImage from "@assets/image_1761127248488.png";
+import footballImage from "@assets/generated_images/Football_futsal_action_b2dab30e.png";
 
 export default function App() {
   return (
@@ -217,6 +218,108 @@ export default function App() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Story Section */}
+      <section className="relative py-32 px-6 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ 
+            backgroundImage: `url(${footballImage})`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/85 to-background/95" />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <p className="text-primary text-sm font-semibold tracking-wider uppercase mb-4">Our Story</p>
+            <h2 className="text-5xl md:text-7xl font-display font-bold mb-8 leading-tight">
+              One Game.<br />
+              One Community.<br />
+              <span className="text-primary">Infinite Play.</span>
+            </h2>
+          </div>
+
+          {/* Story Content */}
+          <div className="space-y-6 text-center text-lg md:text-xl leading-relaxed text-foreground/90 max-w-4xl mx-auto mb-16">
+            <p>
+              P2P was born from a simple idea — that sports should belong to everyone.
+              From dusty cricket pitches and late-night football turf wars to padel courts glowing under floodlights, we saw one truth:
+              <span className="font-semibold text-foreground"> the love of the game unites us all.</span>
+            </p>
+            
+            <p>
+              But in a world where play was fading behind screens, we wanted to bring it back — raw, real, and alive.
+              So, we built Pay 2 Play, not just as an app, but as a movement — a bridge between passion and possibility.
+            </p>
+            
+            <p>
+              A single tap connects you to your next match, your next rival, your next family of players.
+              <span className="font-semibold text-foreground"> Find your field. Book your slot. Join a league. Build your legacy.</span>
+            </p>
+            
+            <p>
+              Because every booking is more than a transaction — it's a heartbeat in the rhythm of a growing sports revolution.
+            </p>
+            
+            <p>
+              From Lahore to the world, P2P empowers players, venues, and communities to thrive together —
+              turning empty fields into electric moments, and strangers into teammates.
+            </p>
+            
+            <p className="text-xl md:text-2xl font-semibold text-foreground pt-4">
+              We're not just reimagining sports technology — we're rewriting the culture of play.
+            </p>
+            
+            <p className="text-primary font-bold text-xl">
+              Accessible. Elegant. Unstoppable.
+            </p>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
+            <Button 
+              size="lg" 
+              className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-10 h-14 font-semibold"
+            >
+              Join the Movement
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-2 text-lg px-10 h-14 font-semibold"
+            >
+              Watch the Story
+            </Button>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-8 text-center max-w-4xl mx-auto mb-12">
+            <div>
+              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">12+</div>
+              <div className="text-sm text-muted-foreground">Venues Partnered</div>
+            </div>
+            <div>
+              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">5,000+</div>
+              <div className="text-sm text-muted-foreground">Players Connected</div>
+            </div>
+            <div>
+              <div className="text-5xl md:text-6xl font-bold text-primary mb-2">3</div>
+              <div className="text-sm text-muted-foreground">Sports, 1 Platform</div>
+            </div>
+          </div>
+
+          {/* Tagline */}
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-display font-bold mb-6">
+              Play. Connect. Compete. Belong.
+            </p>
+            <img src={logoImage} alt="Pay 2 Play" className="h-20 w-auto mx-auto opacity-90" />
           </div>
         </div>
       </section>
