@@ -1,7 +1,7 @@
 import { storage } from "./storage";
 import { notificationService, notifications } from "./notifications";
 import { db } from "./db";
-import { games, bookings, paymentEvents } from "@db/schema";
+import { games, bookings, paymentEvents } from "@shared/schema";
 import { eq, and, lt } from "drizzle-orm";
 import { sendPushNotification } from "./notifications";
 

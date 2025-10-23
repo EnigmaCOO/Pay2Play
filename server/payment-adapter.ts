@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import type { Request, Response } from "express";
 import { db } from "./db";
-import { paymentEvents } from "@db/schema";
+import { paymentEvents } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
 
