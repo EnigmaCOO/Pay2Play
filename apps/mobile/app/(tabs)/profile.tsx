@@ -1,7 +1,31 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ProfileScreen() {
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await signOut();
+            } catch (error) {
+              Alert.alert('Error', 'Failed to sign out');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-navy-800">
       <View className="flex-1">
@@ -17,13 +41,15 @@ export default function ProfileScreen() {
         <ScrollView className="flex-1 px-6 py-6">
           <View className="items-center mb-6">
             <View className="w-24 h-24 rounded-full bg-gradient-to-br from-teal to-gold items-center justify-center mb-4">
-              <Text className="text-white font-bold text-3xl">JD</Text>
+              <Text className="text-white font-bold text-3xl">
+                {user?.displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+              </Text>
             </View>
             <Text className="text-white text-2xl font-bold mb-1">
-              John Doe
+              {user?.displayName || 'User'}
             </Text>
             <Text className="text-navy-300">
-              john.doe@example.com
+              {user?.email || user?.phoneNumber || 'No email'}
             </Text>
             <View className="flex-row mt-3">
               <View className="bg-navy-700 px-4 py-2 rounded-full mr-2">
@@ -76,11 +102,15 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <View className="bg-navy-700 rounded-xl p-4 mb-3">
+          <TouchableOpacity
+            className="bg-navy-700 rounded-xl p-4 mb-3"
+            onPress={handleSignOut}
+            data-testid="button-sign-out"
+          >
             <Text className="text-red-400 font-semibold text-center">
               Sign Out
             </Text>
-          </View>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     </SafeAreaView>
