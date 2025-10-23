@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '@/lib/api';
 import { GameCard } from '@/components/GameCard';
+import { FilterSheet, type FilterState } from '@/components/FilterSheet';
 
 type Sport = 'all' | 'football' | 'cricket' | 'padel';
 
@@ -43,6 +44,14 @@ const SPORTS: { value: Sport; label: string; icon: string }[] = [
 ];
 
 const FILTER_STORAGE_KEY = '@p2p_discover_filters';
+const ADVANCED_FILTER_STORAGE_KEY = '@p2p_discover_advanced_filters';
+
+const DEFAULT_FILTERS: FilterState = {
+  timeSlot: 'any',
+  distance: 100,
+  difficulties: [],
+  sortBy: 'distance',
+};
 
 export default function DiscoverScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -50,6 +59,7 @@ export default function DiscoverScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [dates, setDates] = useState<Date[]>([]);
+  const [advancedFilters, setAdvancedFilters] = useState<FilterState>(DEFAULT_FILTERS);
 
   // Load saved filters from AsyncStorage
   useEffect(() => {
@@ -62,6 +72,11 @@ export default function DiscoverScreen() {
     saveFilters();
   }, [selectedSport, searchQuery]);
 
+  // Save advanced filters to AsyncStorage whenever they change
+  useEffect(() => {
+    saveAdvancedFilters();
+  }, [advancedFilters]);
+
   const loadSavedFilters = async () => {
     try {
       const saved = await AsyncStorage.getItem(FILTER_STORAGE_KEY);
@@ -69,6 +84,12 @@ export default function DiscoverScreen() {
         const filters = JSON.parse(saved);
         if (filters.sport) setSelectedSport(filters.sport);
         if (filters.searchQuery) setSearchQuery(filters.searchQuery);
+      }
+
+      const savedAdvanced = await AsyncStorage.getItem(ADVANCED_FILTER_STORAGE_KEY);
+      if (savedAdvanced) {
+        const filters = JSON.parse(savedAdvanced);
+        setAdvancedFilters(filters);
       }
     } catch (error) {
       console.error('Failed to load filters:', error);
@@ -86,6 +107,26 @@ export default function DiscoverScreen() {
     }
   };
 
+  const saveAdvancedFilters = async () => {
+    try {
+      await AsyncStorage.setItem(
+        ADVANCED_FILTER_STORAGE_KEY,
+        JSON.stringify(advancedFilters)
+      );
+    } catch (error) {
+      console.error('Failed to save advanced filters:', error);
+    }
+  };
+
+  const handleApplyFilters = () => {
+    setShowFilters(false);
+    refetch();
+  };
+
+  const handleResetFilters = () => {
+    setAdvancedFilters(DEFAULT_FILTERS);
+  };
+
   const generateDates = () => {
     const dateArray: Date[] = [];
     for (let i = 0; i < 7; i++) {
@@ -97,14 +138,27 @@ export default function DiscoverScreen() {
   };
 
   const { data: games = [], isLoading, refetch, isFetching } = useQuery<GameWithDetails[]>({
-    queryKey: ['/api/games/search', selectedSport, selectedDate.toDateString()],
+    queryKey: [
+      '/api/games/search', 
+      selectedSport, 
+      selectedDate.toDateString(),
+      advancedFilters.timeSlot,
+      advancedFilters.distance,
+      advancedFilters.difficulties,
+      advancedFilters.sortBy,
+    ],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (selectedSport !== 'all') {
         params.append('sport', selectedSport);
       }
       // Note: Backend currently only supports sport filter
-      // Future: Add date, location, and other filter params here
+      // Future: Add these filter params when backend supports them:
+      // if (advancedFilters.timeSlot !== 'any') params.append('timeSlot', advancedFilters.timeSlot);
+      // if (advancedFilters.distance < 100) params.append('distance', advancedFilters.distance.toString());
+      // if (advancedFilters.difficulties.length) params.append('difficulties', advancedFilters.difficulties.join(','));
+      // params.append('sortBy', advancedFilters.sortBy);
+      
       const response = await apiClient.get(`/api/games/search?${params.toString()}`);
       return response.data;
     },
@@ -308,6 +362,16 @@ export default function DiscoverScreen() {
           )}
         </ScrollView>
       </View>
+
+      {/* Filter Bottom Sheet */}
+      <FilterSheet
+        visible={showFilters}
+        onClose={() => setShowFilters(false)}
+        filters={advancedFilters}
+        onFiltersChange={setAdvancedFilters}
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
+      />
     </SafeAreaView>
   );
 }

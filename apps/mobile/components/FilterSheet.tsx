@@ -1,6 +1,5 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider';
 import { BottomSheet } from './BottomSheet';
 
 export type TimeSlot = '7-12' | '12-5' | '5-10' | '10-2' | 'any';
@@ -105,28 +104,33 @@ export function FilterSheet({
             </View>
           </View>
 
-          {/* Distance Slider */}
+          {/* Distance Selector */}
           <View className="mb-6">
-            <View className="flex-row items-center justify-between mb-2">
+            <View className="flex-row items-center justify-between mb-3">
               <Text className="text-white font-semibold text-lg">Distance</Text>
               <Text className="text-teal font-bold text-lg">
                 {filters.distance === 100 ? '100+ km' : `${filters.distance} km`}
               </Text>
             </View>
-            <Slider
-              minimumValue={0}
-              maximumValue={100}
-              step={5}
-              value={filters.distance}
-              onValueChange={(value: number) => onFiltersChange({ ...filters, distance: value })}
-              minimumTrackTintColor="#14b8a6"
-              maximumTrackTintColor="#1e3a5f"
-              thumbTintColor="#14b8a6"
-              data-testid="slider-distance"
-            />
-            <View className="flex-row justify-between mt-1">
-              <Text className="text-navy-400 text-xs">0 km</Text>
-              <Text className="text-navy-400 text-xs">100+ km</Text>
+            <View className="flex-row flex-wrap gap-2">
+              {[5, 10, 20, 30, 50, 100].map((distance) => (
+                <TouchableOpacity
+                  key={distance}
+                  className={`px-4 py-2 rounded-full ${
+                    filters.distance === distance ? 'bg-teal' : 'bg-navy-600'
+                  }`}
+                  onPress={() => onFiltersChange({ ...filters, distance })}
+                  data-testid={`button-distance-${distance}`}
+                >
+                  <Text
+                    className={`font-medium ${
+                      filters.distance === distance ? 'text-white' : 'text-navy-300'
+                    }`}
+                  >
+                    {distance === 100 ? '100+ km' : `${distance} km`}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 
