@@ -1,4 +1,3 @@
-
 import crypto from 'crypto';
 
 export interface PaymentIntent {
@@ -64,7 +63,7 @@ export class PaymobAdapter implements PaymentAdapter {
     // TODO: Implement Paymob API integration
     // For now, return mock structure
     console.log('[Paymob] Creating payment intent:', { amount, metadata });
-    
+
     return {
       id: `paymob_${Date.now()}`,
       amount: amount * 100, // Paymob uses cents
@@ -93,7 +92,7 @@ export class PaymobAdapter implements PaymentAdapter {
 // Factory function
 export function createPaymentAdapter(): PaymentAdapter {
   const provider = process.env.PAYMENT_PROVIDER || 'mock';
-  
+
   switch (provider) {
     case 'paymob':
       return new PaymobAdapter();

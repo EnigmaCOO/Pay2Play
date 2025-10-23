@@ -214,34 +214,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/payments/webhook/:provider", async (req, res) => {
+  // Payment webhook
+  app.post('/api/payments/webhook', async (req, res) => {
     try {
-      const { provider } = req.params;
-
-      // Use the adapter for webhook verification
-      const paymentAdapter = createPaymentAdapter(provider); // Pass provider to adapter if it needs to configure itself
-      const signature = req.headers['x-webhook-signature'] as string;
+      const signature = req.headers['x-payment-signature'] as string || req.query.hmac as string || '';
       const payload = JSON.stringify(req.body);
 
-      if (!paymentAdapter.verifyWebhook(signature, payload)) {
-        return res.status(401).json({ error: "Invalid signature" });
+      const isValid = paymentAdapter.verifyWebhookSignature(payload, signature);
+      if (!isValid) {
+        console.error('❌ Invalid webhook signature');
+        return res.status(400).json({ error: 'Invalid signature' });
       }
 
-      const { paymentId, status, providerRef } = req.body; // Assuming webhook body contains these
+      // Handle webhook via adapter
+      const event = await paymentAdapter.handleWebhook(req.body);
+      console.log('✅ Payment webhook received:', event.type, event.eventId);
 
-      await storage.updatePaymentStatus(paymentId, status, providerRef);
+      // Store payment event (idempotency check will be added in Stage 7)
+      // For now, just log it
 
-      // Update booking status if payment succeeded
-      if (status === 'succeeded') {
-        const payment = await storage.getPayment(paymentId);
-        if (payment?.bookingId) {
-          await storage.updateBookingStatus(payment.bookingId, 'confirmed');
-        }
-      }
-
-      res.json({ received: true });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.json({ received: true, eventId: event.eventId });
+    } catch (error) {
+      console.error('❌ Webhook processing error:', error);
+      res.status(500).json({ error: 'Webhook processing failed' });
     }
   });
 
@@ -538,6 +533,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(payouts);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create payment intent
+  app.post('/api/payments/create-intent', async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { amount, currency, metadata } = req.body;
+    if (!amount || !currency) {
+      return res.status(400).json({ error: 'Missing amount or currency' });
+    }
+
+    try {
+      const intent = await paymentAdapter.createPaymentIntent(amount, currency, {
+        ...metadata,
+        userId: req.user.id,
+        email: req.user.email,
+      });
+      res.json(intent);
+    } catch (error) {
+      console.error('Payment intent creation failed:', error);
+      res.status(500).json({ error: 'Failed to create payment intent' });
     }
   });
 
