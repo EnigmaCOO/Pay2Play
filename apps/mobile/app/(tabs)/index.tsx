@@ -118,13 +118,14 @@ export default function DiscoverScreen() {
     }
   };
 
-  const handleApplyFilters = () => {
+  const handleApplyFilters = (newFilters: FilterState) => {
+    setAdvancedFilters(newFilters);
     setShowFilters(false);
-    refetch();
   };
 
   const handleResetFilters = () => {
-    setAdvancedFilters(DEFAULT_FILTERS);
+    // Reset is handled within the sheet, but we can provide the default here
+    return DEFAULT_FILTERS;
   };
 
   const generateDates = () => {
@@ -367,10 +368,9 @@ export default function DiscoverScreen() {
       <FilterSheet
         visible={showFilters}
         onClose={() => setShowFilters(false)}
-        filters={advancedFilters}
-        onFiltersChange={setAdvancedFilters}
+        initialFilters={advancedFilters}
         onApply={handleApplyFilters}
-        onReset={handleResetFilters}
+        defaultFilters={DEFAULT_FILTERS}
       />
     </SafeAreaView>
   );

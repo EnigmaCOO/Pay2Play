@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheet } from './BottomSheet';
@@ -16,10 +17,9 @@ export interface FilterState {
 interface FilterSheetProps {
   visible: boolean;
   onClose: () => void;
-  filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
-  onApply: () => void;
-  onReset: () => void;
+  initialFilters: FilterState;
+  onApply: (filters: FilterState) => void;
+  defaultFilters: FilterState;
 }
 
 const TIME_SLOTS: { value: TimeSlot; label: string }[] = [
@@ -46,34 +46,72 @@ const SORT_OPTIONS: { value: SortBy; label: string; icon: string }[] = [
 export function FilterSheet({
   visible,
   onClose,
-  filters,
-  onFiltersChange,
+  initialFilters,
   onApply,
-  onReset,
+  defaultFilters,
 }: FilterSheetProps) {
+  const [draftFilters, setDraftFilters] = useState<FilterState>({ ...initialFilters });
+
+  // Reset draft to initial filters when sheet opens or closes
+  useEffect(() => {
+    if (visible) {
+      // Clone the initial filters when opening to avoid reference issues
+      setDraftFilters({ 
+        ...initialFilters, 
+        difficulties: [...initialFilters.difficulties] 
+      });
+    } else {
+      // Reset to initial filters when closing to ensure no draft state leaks
+      setDraftFilters({ 
+        ...initialFilters, 
+        difficulties: [...initialFilters.difficulties] 
+      });
+    }
+  }, [visible, initialFilters]);
+
   const toggleDifficulty = (difficulty: Difficulty) => {
-    const newDifficulties = filters.difficulties.includes(difficulty)
-      ? filters.difficulties.filter((d) => d !== difficulty)
-      : [...filters.difficulties, difficulty];
-    onFiltersChange({ ...filters, difficulties: newDifficulties });
+    const newDifficulties = draftFilters.difficulties.includes(difficulty)
+      ? draftFilters.difficulties.filter((d) => d !== difficulty)
+      : [...draftFilters.difficulties, difficulty];
+    setDraftFilters({ ...draftFilters, difficulties: newDifficulties });
   };
 
   const hasActiveFilters = () => {
     return (
-      filters.timeSlot !== 'any' ||
-      filters.distance < 100 ||
-      filters.difficulties.length > 0 ||
-      filters.sortBy !== 'distance'
+      draftFilters.timeSlot !== 'any' ||
+      draftFilters.distance < 100 ||
+      draftFilters.difficulties.length > 0 ||
+      draftFilters.sortBy !== 'distance'
     );
   };
 
+  const handleApply = () => {
+    // Clone the filters before applying to avoid reference issues
+    onApply({
+      ...draftFilters,
+      difficulties: [...draftFilters.difficulties]
+    });
+  };
+
+  const handleReset = () => {
+    setDraftFilters({
+      ...defaultFilters,
+      difficulties: [...defaultFilters.difficulties]
+    });
+  };
+
+  const handleClose = () => {
+    // Just close - the useEffect will handle resetting
+    onClose();
+  };
+
   return (
-    <BottomSheet visible={visible} onClose={onClose} height={600}>
+    <BottomSheet visible={visible} onClose={handleClose} height={600}>
       <View className="flex-1 px-6">
         {/* Header */}
         <View className="flex-row items-center justify-between mb-4">
           <Text className="text-2xl font-bold text-white">Filters</Text>
-          <TouchableOpacity onPress={onClose} data-testid="button-close-filters">
+          <TouchableOpacity onPress={handleClose} data-testid="button-close-filters">
             <Ionicons name="close" size={24} color="#8dabc9" />
           </TouchableOpacity>
         </View>
@@ -87,14 +125,14 @@ export function FilterSheet({
                 <TouchableOpacity
                   key={slot.value}
                   className={`px-4 py-2 rounded-full ${
-                    filters.timeSlot === slot.value ? 'bg-teal' : 'bg-navy-600'
+                    draftFilters.timeSlot === slot.value ? 'bg-teal' : 'bg-navy-600'
                   }`}
-                  onPress={() => onFiltersChange({ ...filters, timeSlot: slot.value })}
+                  onPress={() => setDraftFilters({ ...draftFilters, timeSlot: slot.value })}
                   data-testid={`button-timeslot-${slot.value}`}
                 >
                   <Text
                     className={`font-medium ${
-                      filters.timeSlot === slot.value ? 'text-white' : 'text-navy-300'
+                      draftFilters.timeSlot === slot.value ? 'text-white' : 'text-navy-300'
                     }`}
                   >
                     {slot.label}
@@ -109,7 +147,7 @@ export function FilterSheet({
             <View className="flex-row items-center justify-between mb-3">
               <Text className="text-white font-semibold text-lg">Distance</Text>
               <Text className="text-teal font-bold text-lg">
-                {filters.distance === 100 ? '100+ km' : `${filters.distance} km`}
+                {draftFilters.distance === 100 ? '100+ km' : `${draftFilters.distance} km`}
               </Text>
             </View>
             <View className="flex-row flex-wrap gap-2">
@@ -117,14 +155,14 @@ export function FilterSheet({
                 <TouchableOpacity
                   key={distance}
                   className={`px-4 py-2 rounded-full ${
-                    filters.distance === distance ? 'bg-teal' : 'bg-navy-600'
+                    draftFilters.distance === distance ? 'bg-teal' : 'bg-navy-600'
                   }`}
-                  onPress={() => onFiltersChange({ ...filters, distance })}
+                  onPress={() => setDraftFilters({ ...draftFilters, distance })}
                   data-testid={`button-distance-${distance}`}
                 >
                   <Text
                     className={`font-medium ${
-                      filters.distance === distance ? 'text-white' : 'text-navy-300'
+                      draftFilters.distance === distance ? 'text-white' : 'text-navy-300'
                     }`}
                   >
                     {distance === 100 ? '100+ km' : `${distance} km`}
@@ -142,14 +180,14 @@ export function FilterSheet({
                 <TouchableOpacity
                   key={diff.value}
                   className={`px-4 py-2 rounded-full ${
-                    filters.difficulties.includes(diff.value) ? 'bg-teal' : 'bg-navy-600'
+                    draftFilters.difficulties.includes(diff.value) ? 'bg-teal' : 'bg-navy-600'
                   }`}
                   onPress={() => toggleDifficulty(diff.value)}
                   data-testid={`button-difficulty-${diff.value}`}
                 >
                   <Text
                     className={`font-medium ${
-                      filters.difficulties.includes(diff.value) ? 'text-white' : 'text-navy-300'
+                      draftFilters.difficulties.includes(diff.value) ? 'text-white' : 'text-navy-300'
                     }`}
                   >
                     {diff.label}
@@ -167,19 +205,19 @@ export function FilterSheet({
                 <TouchableOpacity
                   key={option.value}
                   className={`flex-1 flex-row items-center justify-center px-4 py-3 rounded-xl ${
-                    filters.sortBy === option.value ? 'bg-teal' : 'bg-navy-600'
+                    draftFilters.sortBy === option.value ? 'bg-teal' : 'bg-navy-600'
                   }`}
-                  onPress={() => onFiltersChange({ ...filters, sortBy: option.value })}
+                  onPress={() => setDraftFilters({ ...draftFilters, sortBy: option.value })}
                   data-testid={`button-sort-${option.value}`}
                 >
                   <Ionicons
                     name={option.icon as any}
                     size={18}
-                    color={filters.sortBy === option.value ? '#fff' : '#8dabc9'}
+                    color={draftFilters.sortBy === option.value ? '#fff' : '#8dabc9'}
                   />
                   <Text
                     className={`ml-2 font-semibold ${
-                      filters.sortBy === option.value ? 'text-white' : 'text-navy-300'
+                      draftFilters.sortBy === option.value ? 'text-white' : 'text-navy-300'
                     }`}
                   >
                     {option.label}
@@ -195,7 +233,7 @@ export function FilterSheet({
           {hasActiveFilters() && (
             <TouchableOpacity
               className="flex-1 py-4 rounded-xl bg-navy-600"
-              onPress={onReset}
+              onPress={handleReset}
               data-testid="button-reset-filters"
             >
               <Text className="text-white font-semibold text-center">Reset</Text>
@@ -203,7 +241,7 @@ export function FilterSheet({
           )}
           <TouchableOpacity
             className={`py-4 rounded-xl bg-teal ${hasActiveFilters() ? 'flex-1' : 'flex-1'}`}
-            onPress={onApply}
+            onPress={handleApply}
             data-testid="button-apply-filters"
           >
             <Text className="text-white font-bold text-center">Apply Filters</Text>
