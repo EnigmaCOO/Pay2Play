@@ -181,6 +181,15 @@ export const fixtures = pgTable("fixtures", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Payment Events table (for idempotency)
+export const paymentEvents = pgTable("payment_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type").notNull(), // e.g., 'payment.succeeded', 'payment.failed'
+  payload: text("payload").notNull(), // JSON string of the event payload
+  receivedAt: timestamp("received_at").defaultNow().notNull(),
+  processedAt: timestamp("processed_at"), // Null if not yet processed
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   bookings: many(bookings),
@@ -272,6 +281,7 @@ export const insertRefundSchema = createInsertSchema(refunds).omit({ id: true, c
 export const insertSeasonSchema = createInsertSchema(seasons).omit({ id: true, createdAt: true });
 export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true, played: true, won: true, drawn: true, lost: true, points: true });
 export const insertFixtureSchema = createInsertSchema(fixtures).omit({ id: true, createdAt: true });
+export const insertPaymentEventSchema = createInsertSchema(paymentEvents).omit({ id: true, receivedAt: true, processedAt: true });
 
 // TypeScript types
 export type User = typeof users.$inferSelect;
@@ -300,6 +310,8 @@ export type Team = typeof teams.$inferSelect;
 export type InsertTeam = z.infer<typeof insertTeamSchema>;
 export type Fixture = typeof fixtures.$inferSelect;
 export type InsertFixture = z.infer<typeof insertFixtureSchema>;
+export type PaymentEvent = typeof paymentEvents.$inferSelect;
+export type InsertPaymentEvent = z.infer<typeof insertPaymentEventSchema>;
 
 // Extended types with relations
 export type GameWithDetails = Game & {

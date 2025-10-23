@@ -214,29 +214,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Payment webhook
-  app.post('/api/payments/webhook', async (req, res) => {
+  // Payment webhook (with signature verification & idempotency)
+  app.post("/api/webhooks/payment", async (req, res) => {
     try {
-      const signature = req.headers['x-payment-signature'] as string || req.query.hmac as string || '';
-      const payload = JSON.stringify(req.body);
-
-      const isValid = paymentAdapter.verifyWebhookSignature(payload, signature);
-      if (!isValid) {
-        console.error('❌ Invalid webhook signature');
-        return res.status(400).json({ error: 'Invalid signature' });
-      }
-
-      // Handle webhook via adapter
-      const event = await paymentAdapter.handleWebhook(req.body);
-      console.log('✅ Payment webhook received:', event.type, event.eventId);
-
-      // Store payment event (idempotency check will be added in Stage 7)
-      // For now, just log it
-
-      res.json({ received: true, eventId: event.eventId });
+      await paymentAdapter.handleWebhook(req, res);
     } catch (error) {
-      console.error('❌ Webhook processing error:', error);
-      res.status(500).json({ error: 'Webhook processing failed' });
+      console.error("❌ Webhook processing error:", error);
+      res.status(500).json({ error: "Webhook processing failed" });
     }
   });
 
