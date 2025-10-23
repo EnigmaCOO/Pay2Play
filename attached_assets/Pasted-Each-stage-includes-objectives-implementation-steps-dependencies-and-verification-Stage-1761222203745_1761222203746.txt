@@ -1,0 +1,137 @@
+Each stage includes objectives, implementation steps, dependencies, and verification.
+
+---
+
+## Stage 1 – Core Stabilization
+**Objective:** Fix navigation and standardize database workflow.
+1. Remove nested <a>/<Link> tags.
+2. Use centralized <NavLink> from react-router/shadcn-ui.
+3. Delete Prisma references; use Drizzle only.
+4. Add DB readiness check before Express binds to port 5000.
+**Commit:** `fix: navigation cleanup + drizzle workflow`
+**Verify:** `/api/health` returns OK.
+
+---
+
+## Stage 2 – Scheduler Hardening
+**Objective:** Transactional refund and event deduplication.
+1. Wrap auto-cancel scheduler in DB transactions.
+2. Create `game_events` outbox table for idempotency.
+3. Cleanup processed events after 14 days.
+**Commit:** `feat: transactional scheduler + refund idempotency`
+**Verify:** Log shows “✅ refund issued (idempotent)”.
+
+---
+
+## Stage 3 – Persistent User Data
+**Objective:** Store player preferences and trust signals.
+1. Add tables: user_preferences, favorites, trust_signals.
+2. Add endpoints: GET/PUT /users/profile, /favorites.
+3. Secure with Firebase token middleware.
+**Commit:** `feat: persistent user profiles + trust`
+**Verify:** Updated profile persists in DB.
+
+---
+
+## Stage 4 – Mobile App (Expo)
+**Objective:** Build mobile companion app.
+1. Initialize `apps/mobile` via Expo TS template.
+2. Add Firebase OTP login.
+3. Screens: Home, Games, Venues, Bookings, Profile.
+4. Register push tokens via /users/push-token.
+**Commit:** `feat: expo app init`
+**Verify:** Expo app builds successfully.
+
+---
+
+## Stage 5 – Offline Caching
+**Objective:** Enable caching for slow networks.
+1. Add React Query + AsyncStorage.
+2. Cache game and venue data.
+3. Add pull-to-refresh & optimistic updates.
+**Commit:** `feat: mobile offline caching`
+**Verify:** Cached data visible offline.
+
+---
+
+## Stage 6 – Payment Adapter
+**Objective:** Replace mock provider with modular adapter.
+1. Create PaymentAdapter interface.
+2. Implement Paymob sandbox adapter.
+3. Add PAYMENT_PROVIDER env toggle.
+**Commit:** `feat: modular payment adapters`
+**Verify:** Payment intent succeeds via Paymob sandbox.
+
+---
+
+## Stage 7 – Webhooks & Idempotency
+**Objective:** Secure webhook handling.
+1. Add payment_events table.
+2. Verify HMAC signatures.
+3. Skip duplicate events safely.
+**Commit:** `feat: idempotent payment webhooks`
+**Verify:** Duplicates ignored correctly.
+
+---
+
+## Stage 8 – Geolocation Search
+**Objective:** Add location-based venue discovery.
+1. Enable PostGIS.
+2. Add geom field & spatial index to venues.
+3. Extend /venues/search with lat/lng/radius_km filters.
+**Commit:** `feat: geolocation venue search`
+**Verify:** `/venues/search?lat=31.5&lng=74.3&radius=5` works.
+
+---
+
+## Stage 9 – Skill Matchmaking
+**Objective:** Smart player balance by rating.
+1. Add avg_skill & sport_type to games.
+2. Build MMR rating (+15 win / -15 loss).
+3. Suggest balanced teams per game.
+**Commit:** `feat: skill matchmaking`
+**Verify:** Team recommendations visible.
+
+---
+
+## Stage 10 – Venue Dashboard V2
+**Objective:** Empower partner venues.
+1. Add calendar slot editor + drag interface.
+2. Pricing rule manager + promo codes.
+3. Utilization metrics + payout exports.
+**Commit:** `feat: partner dashboard v2`
+**Verify:** Dashboard analytics visible.
+
+---
+
+## Stage 11 – Reviews & Trust
+**Objective:** Build reliability via feedback.
+1. Add reviews table.
+2. Post-game review prompt.
+3. Track no-shows, assign badges.
+**Commit:** `feat: reviews + trust system`
+**Verify:** Ratings show under venues.
+
+---
+
+## Stage 12 – Observability
+**Objective:** Track performance & issues.
+1. Integrate PostHog + Sentry.
+2. Add rate limiting & DB backups.
+3. Add feature flags: ENABLE_PADEL, PAYMENT_PROVIDER.
+**Commit:** `chore: observability + rate limiting`
+**Verify:** Sentry/PostHog dashboards receive data.
+
+---
+
+## Stage 13 – Store Launch Prep
+**Objective:** Publish mobile apps.
+1. Configure EAS builds (iOS/Android).
+2. Add icons, splash, and metadata.
+3. Test via TestFlight and Google Internal.
+**Commit:** `release: mobile store prep`
+**Verify:** EAS build succeeds on devices.
+
+---
+
+## ⚙️ DEPENDENCIES
