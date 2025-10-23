@@ -66,6 +66,8 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend Architecture
 
+#### Web Application (`client/`)
+
 **Technology Stack:**
 - React with TypeScript for component-based UI
 - Vite as the build tool and development server
@@ -86,6 +88,62 @@ Preferred communication style: Simple, everyday language.
 - Path aliases: `@/` for client source, `@shared/` for shared types
 - Main pages: Landing, Games (list/detail), Create Game, Venues, Leagues, Dashboard
 - Debug utility for push token registration
+
+#### Mobile Application (`apps/mobile/`)
+
+**Technology Stack:**
+- Expo (React Native) with TypeScript
+- Expo Router with file-based routing and bottom tabs navigation
+- TanStack Query for API data fetching and caching
+- NativeWind (Tailwind CSS for React Native)
+- AsyncStorage for local data persistence
+- Firebase Authentication for OTP login
+- Expo Push Notifications
+
+**Design System:**
+- Dark theme: Navy-800 background with Teal accent (#14b8a6)
+- Sport-specific icons and color coding
+- Custom bottom tab navigation (Discover, Bookings, Friends, Messages, Profile)
+- Responsive mobile-first UI components
+
+**Key Features:**
+1. **Discover Screen**
+   - Horizontal date selector with 7-day range
+   - Sport filter chips (All, Football, Cricket, Padel)
+   - Search bar with real-time filtering
+   - Advanced filter bottom sheet with:
+     - Time slot selector (7-12, 12-5, 5-10, 10-2 AM, Any Time)
+     - Distance buttons (5, 10, 20, 30, 50, 100+ km)
+     - Difficulty level multi-select chips (Beginner, Friendly, Intermediate, High-Level, Masters)
+     - Sort by options (Distance, Time)
+   - Staged-apply filter UX (changes only persist after "Apply" button)
+   - AsyncStorage persistence for filter preferences
+   - Pull-to-refresh for game list
+
+2. **Authentication**
+   - Firebase phone/email OTP authentication
+   - Secure token management with AuthContext
+   - Protected routes requiring authentication
+
+3. **Custom Components**
+   - BottomSheet: Reusable animated modal-based sheet (avoids third-party dependency issues)
+   - FilterSheet: Comprehensive filter UI with draft state management
+   - GameCard: Display game details with venue, time, players, and pricing
+
+**Application Structure:**
+- `app/(tabs)/`: Bottom tab screens (index, bookings, friends, messages, profile)
+- `app/(auth)/`: Authentication screens (login, verify)
+- `components/`: Reusable UI components
+- `contexts/`: React contexts (Auth)
+- `lib/`: Utilities (api client, firebase config)
+- Path aliases: `@/` for mobile source root
+
+**Filter Architecture:**
+- Draft state pattern: User changes stored in local component state
+- Apply/Reset actions: Only "Apply" commits changes to query and AsyncStorage
+- State cloning: Deep cloning prevents reference sharing and unintended mutations
+- Query integration: Filter values included in React Query cache keys for proper invalidation
+- Backend ready: API params prepared (commented) for when backend supports advanced filters
 
 ### Backend Architecture
 
