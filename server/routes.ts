@@ -1,9 +1,10 @@
-import type { Express, Request, Response } from "express";
-import { createServer, type Server } from "http";
+import type { Express, Request, Response, Server } from "express";
+import { createServer } from "http";
 import { storage } from "./storage";
 import { insertVenueSchema, insertFieldSchema, insertSlotSchema, insertBookingSchema, insertPaymentSchema, insertGameSchema, insertGamePaymentSchema, insertSeasonSchema, insertTeamSchema, insertFixtureSchema } from "@shared/schema";
 import crypto from "crypto";
 import { notificationService, notifications } from "./notifications";
+import { createPaymentAdapter } from './payment-adapter';
 
 // Helper to verify HMAC webhook signatures
 function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
@@ -17,21 +18,21 @@ function verifyWebhookSignature(payload: string, signature: string, secret: stri
 function generateRoundRobinFixtures(teamIds: string[], seasonId: string, startDate: Date): any[] {
   const fixtures: any[] = [];
   const n = teamIds.length;
-  
+
   if (n < 2) return fixtures;
-  
+
   // Ensure even number of teams
   const teams = n % 2 === 0 ? [...teamIds] : [...teamIds, null];
   const rounds = teams.length - 1;
   const matchesPerRound = teams.length / 2;
-  
+
   let currentDate = new Date(startDate);
-  
+
   for (let round = 0; round < rounds; round++) {
     for (let match = 0; match < matchesPerRound; match++) {
       const home = teams[match];
       const away = teams[teams.length - 1 - match];
-      
+
       if (home && away) {
         fixtures.push({
           seasonId,
@@ -42,17 +43,17 @@ function generateRoundRobinFixtures(teamIds: string[], seasonId: string, startDa
         });
       }
     }
-    
+
     // Rotate teams (keep first team fixed)
     const last = teams.pop();
     if (last !== undefined) {
       teams.splice(1, 0, last);
     }
-    
+
     // Move to next week
     currentDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
   }
-  
+
   return fixtures;
 }
 
@@ -67,7 +68,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { verified, sport } = req.query;
       let venues = await storage.getVenues(verified === 'true');
-      
+
       if (sport && typeof sport === 'string') {
         // Filter venues that have fields of the requested sport
         const venuesWithFields = await Promise.all(
@@ -79,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
         venues = venuesWithFields.filter(v => v !== null) as any[];
       }
-      
+
       res.json(venues);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -100,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const venue = await storage.getVenue(req.params.id);
       if (!venue) return res.status(404).json({ error: "Venue not found" });
-      
+
       const fields = await storage.getFieldsByVenue(venue.id);
       res.json({ ...venue, fields });
     } catch (error: any) {
@@ -123,17 +124,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/slots/search", async (req, res) => {
     try {
       const { fieldId, startTime, endTime } = req.query;
-      
+
       if (!fieldId || !startTime || !endTime) {
         return res.status(400).json({ error: "Missing required parameters" });
       }
-      
+
       const slots = await storage.searchAvailableSlots(
         fieldId as string,
         new Date(startTime as string),
         new Date(endTime as string)
       );
-      
+
       res.json(slots);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -165,7 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { userId } = req.query;
       if (!userId) return res.status(400).json({ error: "userId required" });
-      
+
       const bookings = await storage.getUserBookings(userId as string);
       res.json(bookings);
     } catch (error: any) {
@@ -177,53 +178,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/payments/intent", async (req, res) => {
     try {
       const { bookingId, userId, amountPkr, provider = "mock", idempotencyKey } = req.body;
-      
+
       if (!idempotencyKey) {
         return res.status(400).json({ error: "idempotencyKey is required" });
       }
-      
+
       // Check for existing payment with this idempotency key
       const existing = await storage.getPaymentByIdempotencyKey(idempotencyKey);
       if (existing) {
         return res.json(existing);
       }
-      
+
+      const paymentAdapter = createPaymentAdapter();
+      const paymentIntent = await paymentAdapter.createIntent(amountPkr, {
+        bookingId,
+        userId,
+        // Add other relevant details to the intent creation as needed by the adapter
+      });
+
+      // Save payment details with pending status and the provider's intent ID
       const payment = await storage.createPayment({
         bookingId,
         userId,
         amountPkr,
-        provider,
+        provider: paymentIntent.provider, // Store the actual provider used
         idempotencyKey,
         status: "pending",
-        redirectUrl: `${req.protocol}://${req.get('host')}/bookings/${bookingId}/confirm`
+        providerIntentId: paymentIntent.id, // Store the ID from the payment provider
+        redirectUrl: paymentIntent.redirectUrl || `${req.protocol}://${req.get('host')}/bookings/${bookingId}/confirm` // Use adapter's redirect URL if available
       });
-      
+
       res.json(payment);
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   });
 
   app.post("/api/payments/webhook/:provider", async (req, res) => {
     try {
       const { provider } = req.params;
-      
-      // For mock provider in development, skip HMAC verification
-      if (provider !== "mock") {
-        const signature = req.headers['x-webhook-signature'] as string;
-        const webhookSecret = process.env.PROVIDER_WEBHOOK_SECRET || "test-secret";
-        
-        // Verify HMAC signature for real providers
-        const payload = JSON.stringify(req.body);
-        if (!signature || !verifyWebhookSignature(payload, signature, webhookSecret)) {
-          return res.status(401).json({ error: "Invalid signature" });
-        }
+
+      // Use the adapter for webhook verification
+      const paymentAdapter = createPaymentAdapter(provider); // Pass provider to adapter if it needs to configure itself
+      const signature = req.headers['x-webhook-signature'] as string;
+      const payload = JSON.stringify(req.body);
+
+      if (!paymentAdapter.verifyWebhook(signature, payload)) {
+        return res.status(401).json({ error: "Invalid signature" });
       }
-      
-      const { paymentId, status, providerRef } = req.body;
-      
+
+      const { paymentId, status, providerRef } = req.body; // Assuming webhook body contains these
+
       await storage.updatePaymentStatus(paymentId, status, providerRef);
-      
+
       // Update booking status if payment succeeded
       if (status === 'succeeded') {
         const payment = await storage.getPayment(paymentId);
@@ -231,7 +238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           await storage.updateBookingStatus(payment.bookingId, 'confirmed');
         }
       }
-      
+
       res.json({ received: true });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -274,60 +281,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { gameId } = req.params;
       const { userId, provider = "mock", idempotencyKey } = req.body;
-      
+
       if (!idempotencyKey) {
         return res.status(400).json({ error: "idempotencyKey is required" });
       }
-      
+
       // Check for existing payment
       const existing = await storage.getGamePaymentByIdempotencyKey(idempotencyKey);
       if (existing) {
         return res.json(existing);
       }
-      
+
       const game = await storage.getGame(gameId);
       if (!game) return res.status(404).json({ error: "Game not found" });
-      
+
       if (game.currentPlayers >= game.maxPlayers) {
         return res.status(400).json({ error: "Game is full" });
       }
-      
+
+      const paymentAdapter = createPaymentAdapter();
+      const paymentIntent = await paymentAdapter.createIntent(game.pricePerPlayerPkr, {
+        gameId,
+        userId: userId, // Use provided userId
+      });
+
       const payment = await storage.createGamePayment({
         gameId,
         userId,
         amountPkr: game.pricePerPlayerPkr,
-        provider,
+        provider: paymentIntent.provider, // Store the actual provider used
         idempotencyKey,
         status: "pending",
-        redirectUrl: `${req.protocol}://${req.get('host')}/games/${gameId}/confirm`
+        providerIntentId: paymentIntent.id, // Store the ID from the payment provider
+        redirectUrl: paymentIntent.redirectUrl || `${req.protocol}://${req.get('host')}/games/${gameId}/confirm` // Use adapter's redirect URL if available
       });
-      
+
       res.json(payment);
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   });
 
   app.post("/api/game-pay/webhook/:provider", async (req, res) => {
     try {
       const { provider } = req.params;
-      
-      // For mock provider in development, skip HMAC verification
-      if (provider !== "mock") {
-        const signature = req.headers['x-webhook-signature'] as string;
-        const webhookSecret = process.env.PROVIDER_WEBHOOK_SECRET || "test-secret";
-        
-        // Verify HMAC signature for real providers
-        const payload = JSON.stringify(req.body);
-        if (!signature || !verifyWebhookSignature(payload, signature, webhookSecret)) {
-          return res.status(401).json({ error: "Invalid signature" });
-        }
+
+      const paymentAdapter = createPaymentAdapter(provider); // Pass provider to adapter
+      const signature = req.headers['x-webhook-signature'] as string;
+      const body = JSON.stringify(req.body);
+
+      // Verify webhook signature
+      if (!paymentAdapter.verifyWebhook(signature, body)) {
+        return res.status(401).json({ error: 'Invalid signature' });
       }
-      
-      const { paymentId, status, providerRef } = req.body;
-      
+
+      // Check for duplicate events (idempotency)
+      const eventId = req.body.id || req.body.eventId || `${req.body.paymentIntentId}_${Date.now()}`; // Derive a unique event ID
+      const isDuplicate = await storage.getPaymentEvent(eventId);
+
+      if (isDuplicate) {
+        console.log(`⚠️ Duplicate webhook event ignored: ${eventId}`);
+        return res.json({ received: true, duplicate: true });
+      }
+
+      // Save event to prevent duplicates
+      await storage.savePaymentEvent(eventId, req.body);
+
+      const { paymentId, status, providerRef } = req.body; // Assuming webhook body contains these
+
       await storage.updateGamePaymentStatus(paymentId, status, providerRef);
-      
+
       if (status === 'succeeded') {
         const payment = await storage.getGamePayment(paymentId);
         if (payment) {
@@ -337,15 +360,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             userId: payment.userId,
             isHost: false
           });
-          
+
           // Increment player count
           await storage.incrementGamePlayers(payment.gameId);
-          
+
           // Check if game is now confirmed or filled
           const game = await storage.getGame(payment.gameId);
           if (game) {
             const wasFilled = game.currentPlayers >= game.maxPlayers;
-            
+
             if (wasFilled) {
               await storage.updateGameStatus(game.id, 'filled');
               // Notify all players game is full
@@ -358,13 +381,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             } else if (game.currentPlayers >= game.minPlayers && game.status === 'open') {
               await storage.updateGameStatus(game.id, 'confirmed');
             }
-            
+
             // Notify the joining player
             await notificationService.sendToUser(
               payment.userId,
               notifications.paymentSuccess(payment.amountPkr)
             );
-            
+
             // Notify host about new player
             if (!wasFilled) {
               await notificationService.sendToUser(
@@ -375,7 +398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
-      
+
       res.json({ received: true });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -386,11 +409,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/users/push-token", async (req, res) => {
     try {
       const { userId, expoPushToken } = req.body;
-      
+
       if (!userId || !expoPushToken) {
         return res.status(400).json({ error: "userId and expoPushToken required" });
       }
-      
+
       await storage.updateUserPushToken(userId, expoPushToken);
       res.json({ success: true });
     } catch (error: any) {
@@ -455,15 +478,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const seasonId = req.params.id;
       const season = await storage.getSeason(seasonId);
       if (!season) return res.status(404).json({ error: "Season not found" });
-      
+
       const teams = await storage.getTeamsBySeason(seasonId);
       if (teams.length < 2) {
         return res.status(400).json({ error: "Need at least 2 teams to generate fixtures" });
       }
-      
+
       const teamIds = teams.map(t => t.id);
       const fixtureData = generateRoundRobinFixtures(teamIds, seasonId, season.startDate);
-      
+
       const fixtures = await storage.createFixtures(fixtureData);
       res.json(fixtures);
     } catch (error: any) {

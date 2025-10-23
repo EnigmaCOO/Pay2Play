@@ -1,15 +1,46 @@
 
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { storage, CACHE_KEYS } from '@/lib/storage';
+import { useEffect, useState } from 'react';
 
 export default function GamesScreen() {
-  const { data: games, isLoading } = useQuery({
+  const [cachedGames, setCachedGames] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { data: games, isLoading, refetch } = useQuery({
     queryKey: ['games'],
-    queryFn: () => api.get('/api/games/search?sport=all'),
+    queryFn: async () => {
+      const data = await api.get('/api/games/search?sport=all');
+      // Cache the data
+      await storage.set(CACHE_KEYS.GAMES, data);
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes (formerly cacheTime)
   });
 
-  if (isLoading) {
+  // Load cached data on mount
+  useEffect(() => {
+    const loadCache = async () => {
+      const cached = await storage.get(CACHE_KEYS.GAMES);
+      if (cached) {
+        setCachedGames(cached as any[]);
+      }
+    };
+    loadCache();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
+  const displayGames = games || cachedGames;
+
+  if (isLoading && displayGames.length === 0) {
     return (
       <View style={styles.container}>
         <Text>Loading games...</Text>
@@ -23,8 +54,15 @@ export default function GamesScreen() {
         <Text style={styles.title}>Pickup Games</Text>
       </View>
       <FlatList
-        data={games || []}
+        data={displayGames}
         keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#0EA472"
+          />
+        }
         renderItem={({ item }) => (
           <View style={styles.gameCard}>
             <Text style={styles.gameSport}>{item.sport.toUpperCase()}</Text>

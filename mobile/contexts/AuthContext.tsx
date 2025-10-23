@@ -33,17 +33,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithOTP = async (phoneNumber: string) => {
-    // For mobile, use Firebase Phone Auth directly
-    // This is a simplified implementation - in production, use Firebase Phone Auth properly
-    console.log('Sending OTP to:', phoneNumber);
-    // Store verificationId for later verification
-    setVerificationId('mock-verification-id');
+    try {
+      // Note: For React Native, you'll need @react-native-firebase/auth
+      // This implementation assumes Firebase Auth is configured
+      // For now, we'll use the web SDK which works in Expo
+      const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+      
+      // In production, implement reCAPTCHA for web or use @react-native-firebase/auth
+      console.log('Sending OTP to:', formattedNumber);
+      
+      // Store for verification - in production, Firebase returns this
+      setVerificationId('pending-verification');
+      
+      // TODO: Replace with actual Firebase phone auth when deploying
+      // const confirmation = await signInWithPhoneNumber(auth, formattedNumber);
+      // setVerificationId(confirmation.verificationId);
+    } catch (error: any) {
+      console.error('Error sending OTP:', error);
+      throw new Error(error.message || 'Failed to send OTP');
+    }
   };
 
   const verifyOTP = async (phoneNumber: string, code: string) => {
-    // Mock verification for now
-    console.log('Verifying OTP:', code);
-    // In production, use: signInWithCredential(auth, credential)
+    try {
+      if (!verificationId) {
+        throw new Error('No verification ID found');
+      }
+      
+      // TODO: Replace with actual verification when deploying
+      // const credential = PhoneAuthProvider.credential(verificationId, code);
+      // await signInWithCredential(auth, credential);
+      
+      // Mock success for development
+      console.log('OTP verified:', code);
+    } catch (error: any) {
+      console.error('Error verifying OTP:', error);
+      throw new Error(error.message || 'Invalid OTP');
+    }
   };
 
   const logout = async () => {

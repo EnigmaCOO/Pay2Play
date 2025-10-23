@@ -87,11 +87,11 @@ export interface IStorage {
 
   // Standings
   getStandings(seasonId: string): Promise<TeamStanding[]>;
-  
+
   // Refunds
   createRefund(refund: InsertRefund): Promise<Refund>;
   getUserById(userId: string): Promise<User | undefined>;
-  
+
   // Dashboard
   getVenuesByPartner(partnerId: string): Promise<Venue[]>;
   getBookingsByVenue(venueId: string): Promise<Booking[]>;
@@ -237,7 +237,7 @@ export class DbStorage implements IStorage {
       },
       orderBy: [desc(schema.games.createdAt)]
     });
-    
+
     return query as Promise<GameWithDetails[]>;
   }
 
@@ -254,7 +254,7 @@ export class DbStorage implements IStorage {
         }
       }
     });
-    
+
     return game as GameWithDetails | undefined;
   }
 
@@ -263,8 +263,8 @@ export class DbStorage implements IStorage {
   }
 
   async incrementGamePlayers(id: string): Promise<void> {
-    await db.update(schema.games).set({ 
-      currentPlayers: sql`${schema.games.currentPlayers} + 1` 
+    await db.update(schema.games).set({
+      currentPlayers: sql`${schema.games.currentPlayers} + 1`
     }).where(eq(schema.games.id, id));
   }
 
@@ -365,17 +365,17 @@ export class DbStorage implements IStorage {
       goalDifference: 0 // Calculate based on fixtures if needed
     }));
   }
-  
+
   // Refunds
   async createRefund(refund: InsertRefund): Promise<Refund> {
     const [created] = await db.insert(schema.refunds).values(refund).returning();
     return created;
   }
-  
+
   async getUserById(userId: string): Promise<User | undefined> {
     return this.getUser(userId);
   }
-  
+
   async getUpcomingGames(beforeTime: Date): Promise<GameWithDetails[]> {
     const now = new Date();
     return db.query.games.findMany({
@@ -392,7 +392,7 @@ export class DbStorage implements IStorage {
       },
     });
   }
-  
+
   async getGamePaymentByUserAndGame(userId: string, gameId: string): Promise<GamePayment | undefined> {
     const [payment] = await db.select()
       .from(schema.gamePayments)
@@ -402,12 +402,12 @@ export class DbStorage implements IStorage {
       ));
     return payment;
   }
-  
+
   // Dashboard
   async getVenuesByPartner(partnerId: string): Promise<Venue[]> {
     return db.select().from(schema.venues).where(eq(schema.venues.partnerId, partnerId));
   }
-  
+
   async getBookingsByVenue(venueId: string): Promise<Booking[]> {
     return db.query.bookings.findMany({
       where: (bookings, { eq, and }) => {
@@ -425,7 +425,7 @@ export class DbStorage implements IStorage {
       orderBy: [desc(schema.bookings.createdAt)],
     });
   }
-  
+
   async getPayoutsByVenue(venueId: string): Promise<any[]> {
     return db.select().from(schema.payouts).where(eq(schema.payouts.venueId, venueId));
   }
