@@ -77,7 +77,7 @@ export default function Home() {
               <option>Islamabad</option>
             </select>
           </div>
-          
+
           {/* App Store Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
             <a href="#" className="transition-transform hover:scale-105" data-testid="link-app-store">
@@ -269,30 +269,30 @@ export default function Home() {
               From dusty cricket pitches and late-night football turf wars to padel courts glowing under floodlights, we saw one truth:
               <span className="font-semibold text-foreground"> the love of the game unites us all.</span>
             </p>
-            
+
             <p>
               But in a world where play was fading behind screens, we wanted to bring it back — raw, real, and alive.
               So, we built Pay 2 Play, not just as an app, but as a movement — a bridge between passion and possibility.
             </p>
-            
+
             <p>
               A single tap connects you to your next match, your next rival, your next family of players.
               <span className="font-semibold text-foreground"> Find your field. Book your slot. Join a league. Build your legacy.</span>
             </p>
-            
+
             <p>
               Because every booking is more than a transaction — it's a heartbeat in the rhythm of a growing sports revolution.
             </p>
-            
+
             <p>
               From Lahore to the world, P2P empowers players, venues, and communities to thrive together —
               turning empty fields into electric moments, and strangers into teammates.
             </p>
-            
+
             <p className="text-xl md:text-2xl font-semibold text-foreground pt-4">
               We're not just reimagining sports technology — we're rewriting the culture of play.
             </p>
-            
+
             <p className="text-primary font-bold text-xl">
               Accessible. Elegant. Unstoppable.
             </p>
@@ -368,15 +368,15 @@ export default function Home() {
               <br />
               Whether you're a sports facility, a brand, or a community organization, join us in making sports accessible, inclusive, and unforgettable.
             </p>
-            
+
             <p>
               We're connecting players, venues, and partners through a single, intelligent platform — uniting Cricket, Football, and Padel under one experience.
             </p>
-            
+
             <p>
               Together, we can turn every city into a playground, every field into an opportunity, and every match into a story worth sharing.
             </p>
-            
+
             <p className="text-xl md:text-2xl font-semibold text-foreground pt-4">
               Let's build the future of sports — together.
             </p>
@@ -442,7 +442,7 @@ export default function Home() {
               <p className="text-sm text-muted-foreground mb-4">
                 Pakistan's Premier Sports Booking Platform
               </p>
-              
+
               {/* Social Media Icons */}
               <div className="flex gap-4 justify-center md:justify-start">
                 <a 
@@ -479,7 +479,7 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            
+
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
               <div className="flex flex-col gap-3 text-sm">
                 <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -494,7 +494,7 @@ export default function Home() {
                   </a>
                 </Link>
               </div>
-              
+
               {/* Get the App */}
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-foreground">Get the App</h3>
