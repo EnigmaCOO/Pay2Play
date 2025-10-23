@@ -28,7 +28,7 @@
     "expo-notifications": "~0.29.0",
     "expo-device": "~7.0.0",
     "expo-application": "~6.0.0",
-    "expo-firebase-recaptcha": "~3.1.0",
+    "expo-firebase-recaptcha": "~2.3.1",
     "axios": "^1.6.2"
   },
   "devDependencies": {
