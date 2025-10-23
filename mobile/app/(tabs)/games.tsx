@@ -1,4 +1,3 @@
-
 import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -9,7 +8,7 @@ export default function GamesScreen() {
   const [cachedGames, setCachedGames] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data: games, isLoading, refetch } = useQuery({
+  const { data: games, isLoading, refetch, isFetching, isError } = useQuery({
     queryKey: ['games'],
     queryFn: async () => {
       const data = await api.get('/api/games/search?sport=all');
@@ -52,14 +51,15 @@ export default function GamesScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Pickup Games</Text>
+        {isError && <Text style={styles.offline}>📡 Offline - Showing cached data</Text>}
       </View>
       <FlatList
         data={displayGames}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
+            refreshing={isFetching}
+            onRefresh={refetch}
             tintColor="#0EA472"
           />
         }
@@ -91,6 +91,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  offline: {
+    color: '#fff',
+    fontSize: 12,
+    marginTop: 5,
   },
   gameCard: {
     padding: 16,
