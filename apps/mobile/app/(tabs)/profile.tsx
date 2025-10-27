@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import apiClient from '@/lib/api';
+import { ProfileStatsSkeleton, SkeletonBox } from '@/components/SkeletonLoader';
 
 type UserProfile = {
   id: string;
@@ -130,8 +131,28 @@ export default function ProfileScreen() {
   if (isLoading || !profile) {
     return (
       <SafeAreaView className="flex-1 bg-navy-800">
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-navy-400">Loading profile...</Text>
+        <View className="flex-1">
+          <View className="px-6 py-4 border-b border-navy-700">
+            <Text className="text-3xl font-bold text-white">
+              Profile
+            </Text>
+            <Text className="text-navy-300 mt-1">
+              Manage your account
+            </Text>
+          </View>
+          <ScrollView className="flex-1 px-6 py-6">
+            <View className="items-center mb-6">
+              <SkeletonBox width={96} height={96} className="rounded-full mb-4" />
+              <SkeletonBox width={150} height={28} className="mb-2" />
+              <SkeletonBox width={100} height={16} className="mb-4" />
+              <SkeletonBox width="80%" height={20} />
+            </View>
+            <ProfileStatsSkeleton />
+            <View className="mt-6 space-y-4">
+              <SkeletonBox width="100%" height={120} />
+              <SkeletonBox width="100%" height={120} />
+            </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
     );

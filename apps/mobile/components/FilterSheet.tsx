@@ -30,12 +30,12 @@ const TIME_SLOTS: { value: TimeSlot; label: string }[] = [
   { value: '10-2', label: '10 PM - 2 AM' },
 ];
 
-const DIFFICULTIES: { value: Difficulty; label: string }[] = [
-  { value: 'beginner', label: 'Beginner' },
-  { value: 'friendly', label: 'Friendly' },
-  { value: 'intermediate', label: 'Intermediate' },
-  { value: 'high-level', label: 'High-Level' },
-  { value: 'masters', label: 'Masters' },
+const DIFFICULTIES: { value: Difficulty; label: string; color: string; bgColor: string }[] = [
+  { value: 'beginner', label: 'Beginner', color: '#22c55e', bgColor: '#22c55e20' },
+  { value: 'friendly', label: 'Friendly', color: '#84cc16', bgColor: '#84cc1620' },
+  { value: 'intermediate', label: 'Intermediate', color: '#eab308', bgColor: '#eab30820' },
+  { value: 'high-level', label: 'High-Level', color: '#f97316', bgColor: '#f9731620' },
+  { value: 'masters', label: 'Masters', color: '#ef4444', bgColor: '#ef444420' },
 ];
 
 const SORT_OPTIONS: { value: SortBy; label: string; icon: string }[] = [
@@ -176,24 +176,31 @@ export function FilterSheet({
           <View className="mb-6">
             <Text className="text-white font-semibold text-lg mb-3">Difficulty Level</Text>
             <View className="flex-row flex-wrap gap-2">
-              {DIFFICULTIES.map((diff) => (
-                <TouchableOpacity
-                  key={diff.value}
-                  className={`px-4 py-2 rounded-full ${
-                    draftFilters.difficulties.includes(diff.value) ? 'bg-teal' : 'bg-navy-600'
-                  }`}
-                  onPress={() => toggleDifficulty(diff.value)}
-                  data-testid={`button-difficulty-${diff.value}`}
-                >
-                  <Text
-                    className={`font-medium ${
-                      draftFilters.difficulties.includes(diff.value) ? 'text-white' : 'text-navy-300'
-                    }`}
+              {DIFFICULTIES.map((diff) => {
+                const isSelected = draftFilters.difficulties.includes(diff.value);
+                return (
+                  <TouchableOpacity
+                    key={diff.value}
+                    className="px-4 py-2.5 rounded-full"
+                    style={{
+                      backgroundColor: isSelected ? diff.color : diff.bgColor,
+                      borderWidth: 2,
+                      borderColor: isSelected ? diff.color : 'transparent',
+                    }}
+                    onPress={() => toggleDifficulty(diff.value)}
+                    data-testid={`button-difficulty-${diff.value}`}
                   >
-                    {diff.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      className="font-bold"
+                      style={{
+                        color: isSelected ? '#fff' : diff.color,
+                      }}
+                    >
+                      {diff.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
 

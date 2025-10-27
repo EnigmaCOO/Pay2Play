@@ -62,6 +62,46 @@ Once you update `.replit` and `replit.nix` files:
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (October 27, 2025)
+
+### AsyncStorage Cache Persistence
+- Implemented React Query AsyncStorage persistence with 24-hour garbage collection time
+- Cache persists across app restarts using `@tanstack/query-async-storage-persister`
+- Persister configured with 1-second throttle time and custom key `P2P_REACT_QUERY_CACHE`
+- Wrapped app in `PersistQueryClientProvider` in `apps/mobile/app/_layout.tsx`
+
+### Skeleton Loaders
+- Created reusable skeleton loader components in `apps/mobile/components/SkeletonLoader.tsx`
+  - `SkeletonBox`: Animated pulsing box with 800ms animation duration
+  - `GameCardSkeleton`: Matches GameCard component structure
+  - `BookingCardSkeleton`: Matches BookingCard component structure
+  - `ProfileStatsSkeleton`: Three-column stats layout skeleton
+- Integrated skeleton loaders across all main screens:
+  - Discover screen: Shows 4 game card skeletons while loading
+  - Bookings screen: Shows 3 booking card skeletons with header
+  - Profile screen: Shows avatar, name, stats, and content skeletons
+  - GameDetails screen: Shows header, image, tabs, and player list skeletons
+- Uses React Native Animated API for smooth opacity transitions
+
+### Nintendo-Style Design Polish
+- **Rounded Cards**: Updated all card components to use rounded-2xl/3xl for softer, friendlier appearance
+- **Shadow & Glow Effects**: 
+  - GameCard components now have sport-specific colored shadows
+  - Selected date pills have teal glow effect with elevated borders
+  - Empty state and buttons feature subtle shadow depth
+- **Color-Coded Difficulty Chips**: Gradient system from beginner to masters
+  - Beginner: Green (#22c55e)
+  - Friendly: Lime (#84cc16)
+  - Intermediate: Yellow (#eab308)
+  - High-Level: Orange (#f97316)
+  - Masters: Red (#ef4444)
+- **Enhanced Interactive Elements**:
+  - Sport selector with bold text and borders when selected
+  - Search bar with rounded corners, filter button with teal background
+  - Active scale animations on touchable components
+  - Icon containers with colored borders matching sport themes
+- **Empty States**: Redesigned with larger rounded icons, better spacing, and prominent CTA buttons
+
 ## System Architecture
 
 ### Frontend Architecture

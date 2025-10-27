@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import * as Notifications from 'expo-notifications';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
@@ -22,6 +25,12 @@ const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 60 * 24,
     },
   },
+});
+
+const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+  key: 'P2P_REACT_QUERY_CACHE',
+  throttleTime: 1000,
 });
 
 function RootLayoutNav() {
@@ -71,11 +80,14 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: asyncStoragePersister }}
+    >
       <AuthProvider>
         <StatusBar style="light" />
         <RootLayoutNav />
       </AuthProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

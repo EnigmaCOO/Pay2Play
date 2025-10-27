@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '@/lib/api';
 import { GameCard } from '@/components/GameCard';
 import { FilterSheet, type FilterState } from '@/components/FilterSheet';
+import { GameCardSkeleton } from '@/components/SkeletonLoader';
 
 type Sport = 'all' | 'football' | 'cricket' | 'padel';
 
@@ -226,10 +227,19 @@ export default function DiscoverScreen() {
 
         {/* Search Bar */}
         <View className="px-6 py-4">
-          <View className="flex-row items-center bg-navy-700 rounded-xl px-4 py-3">
-            <Ionicons name="search" size={20} color="#8dabc9" />
+          <View 
+            className="flex-row items-center bg-navy-700 rounded-2xl px-5 py-3.5 border border-navy-600"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            }}
+          >
+            <Ionicons name="search" size={22} color="#8dabc9" />
             <TextInput
-              className="flex-1 text-white ml-3"
+              className="flex-1 text-white ml-3 text-base"
               placeholder="Search venues, locations..."
               placeholderTextColor="#8dabc9"
               value={searchQuery}
@@ -237,6 +247,11 @@ export default function DiscoverScreen() {
               data-testid="input-search"
             />
             <TouchableOpacity
+              className="w-10 h-10 rounded-xl bg-teal/20 items-center justify-center"
+              style={{
+                borderWidth: 1.5,
+                borderColor: '#14b8a640',
+              }}
               onPress={() => setShowFilters(!showFilters)}
               data-testid="button-filter"
             >
@@ -253,31 +268,46 @@ export default function DiscoverScreen() {
             className="flex-row"
             data-testid="scroll-date-pills"
           >
-            {dates.map((date, index) => (
-              <TouchableOpacity
-                key={index}
-                className={`mr-3 px-4 py-3 rounded-xl ${
-                  isDateSelected(date) ? 'bg-teal' : 'bg-navy-700'
-                }`}
-                onPress={() => setSelectedDate(date)}
-                data-testid={`pill-date-${index}`}
-              >
-                <Text
-                  className={`font-semibold text-center ${
-                    isDateSelected(date) ? 'text-white' : 'text-navy-300'
+            {dates.map((date, index) => {
+              const selected = isDateSelected(date);
+              return (
+                <TouchableOpacity
+                  key={index}
+                  className={`mr-3 px-5 py-3.5 rounded-2xl min-w-[85px] ${
+                    selected ? 'bg-teal' : 'bg-navy-700'
                   }`}
+                  style={selected ? {
+                    borderWidth: 2,
+                    borderColor: '#14b8a6',
+                    shadowColor: '#14b8a6',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 8,
+                    elevation: 5,
+                  } : {
+                    borderWidth: 1,
+                    borderColor: '#1e293b',
+                  }}
+                  onPress={() => setSelectedDate(date)}
+                  data-testid={`pill-date-${index}`}
                 >
-                  {formatDatePill(date)}
-                </Text>
-                <Text
-                  className={`text-xs text-center mt-1 ${
-                    isDateSelected(date) ? 'text-white/80' : 'text-navy-400'
-                  }`}
-                >
-                  {formatDateSubtext(date)}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    className={`font-bold text-center ${
+                      selected ? 'text-white' : 'text-navy-300'
+                    }`}
+                  >
+                    {formatDatePill(date)}
+                  </Text>
+                  <Text
+                    className={`text-xs text-center mt-1 ${
+                      selected ? 'text-white/90' : 'text-navy-400'
+                    }`}
+                  >
+                    {formatDateSubtext(date)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -289,29 +319,39 @@ export default function DiscoverScreen() {
             className="flex-row"
             data-testid="scroll-sport-selector"
           >
-            {SPORTS.map((sport) => (
-              <TouchableOpacity
-                key={sport.value}
-                className={`mr-3 px-4 py-2 rounded-full flex-row items-center ${
-                  selectedSport === sport.value ? 'bg-teal' : 'bg-navy-700'
-                }`}
-                onPress={() => setSelectedSport(sport.value)}
-                data-testid={`button-sport-${sport.value}`}
-              >
-                <Ionicons
-                  name={sport.icon as any}
-                  size={16}
-                  color={selectedSport === sport.value ? '#fff' : '#8dabc9'}
-                />
-                <Text
-                  className={`ml-2 font-semibold ${
-                    selectedSport === sport.value ? 'text-white' : 'text-navy-300'
+            {SPORTS.map((sport) => {
+              const selected = selectedSport === sport.value;
+              return (
+                <TouchableOpacity
+                  key={sport.value}
+                  className={`mr-3 px-5 py-2.5 rounded-full flex-row items-center ${
+                    selected ? 'bg-teal' : 'bg-navy-700'
                   }`}
+                  style={selected ? {
+                    borderWidth: 2,
+                    borderColor: '#14b8a6',
+                  } : {
+                    borderWidth: 1,
+                    borderColor: '#1e293b',
+                  }}
+                  onPress={() => setSelectedSport(sport.value)}
+                  data-testid={`button-sport-${sport.value}`}
                 >
-                  {sport.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Ionicons
+                    name={sport.icon as any}
+                    size={18}
+                    color={selected ? '#fff' : '#8dabc9'}
+                  />
+                  <Text
+                    className={`ml-2 font-bold ${
+                      selected ? 'text-white' : 'text-navy-300'
+                    }`}
+                  >
+                    {sport.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -328,28 +368,56 @@ export default function DiscoverScreen() {
           data-testid="scroll-games-list"
         >
           {isLoading ? (
-            <View className="py-12">
-              <Text className="text-navy-400 text-center">Loading games...</Text>
-            </View>
+            <>
+              <GameCardSkeleton />
+              <GameCardSkeleton />
+              <GameCardSkeleton />
+              <GameCardSkeleton />
+            </>
           ) : filteredGames.length > 0 ? (
             filteredGames.map((game) => (
               <GameCard key={game.id} game={game} />
             ))
           ) : (
-            <View className="bg-navy-700 rounded-xl p-8 items-center" data-testid="empty-state">
-              <View className="w-20 h-20 rounded-full bg-navy-600 items-center justify-center mb-4">
-                <Ionicons name="calendar-outline" size={32} color="#8dabc9" />
+            <View 
+              className="bg-navy-700 rounded-3xl p-10 items-center border border-navy-600"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.15,
+                shadowRadius: 8,
+                elevation: 3,
+              }}
+              data-testid="empty-state"
+            >
+              <View 
+                className="w-24 h-24 rounded-3xl bg-navy-600 items-center justify-center mb-5"
+                style={{
+                  borderWidth: 2,
+                  borderColor: '#1e293b',
+                }}
+              >
+                <Ionicons name="calendar-outline" size={40} color="#14b8a6" />
               </View>
-              <Text className="text-white text-xl font-bold mb-2">
+              <Text className="text-white text-2xl font-bold mb-2">
                 No games found
               </Text>
-              <Text className="text-navy-300 text-center mb-4">
+              <Text className="text-navy-300 text-center mb-6 text-base px-4">
                 {searchQuery
                   ? 'Try adjusting your search or filters'
                   : `No ${selectedSport === 'all' ? '' : selectedSport + ' '}games on ${formatDatePill(selectedDate)}`}
               </Text>
               <TouchableOpacity
-                className="bg-teal px-6 py-3 rounded-xl"
+                className="bg-teal px-8 py-4 rounded-2xl active:scale-95"
+                style={{
+                  borderWidth: 2,
+                  borderColor: '#14b8a6',
+                  shadowColor: '#14b8a6',
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  elevation: 5,
+                }}
                 onPress={() => {
                   setSearchQuery('');
                   setSelectedSport('all');
@@ -357,7 +425,7 @@ export default function DiscoverScreen() {
                 }}
                 data-testid="button-clear-filters"
               >
-                <Text className="text-white font-semibold">Clear Filters</Text>
+                <Text className="text-white font-bold text-base">Clear Filters</Text>
               </TouchableOpacity>
             </View>
           )}

@@ -71,24 +71,35 @@ export function GameCard({ game }: GameCardProps) {
 
   return (
     <TouchableOpacity
-      className="bg-navy-700 rounded-xl p-4 mb-3"
+      className="bg-navy-700 rounded-2xl p-5 mb-3 border border-navy-600/50 active:scale-[0.98]"
+      style={{
+        shadowColor: sportColor,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 4,
+      }}
       onPress={() => router.push(`/game/${game.id}` as any)}
       data-testid={`card-game-${game.id}`}
     >
       <View className="flex-row items-start justify-between mb-3">
         <View className="flex-row items-center flex-1">
           <View 
-            className="w-10 h-10 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: sportColor + '20' }}
+            className="w-12 h-12 rounded-2xl items-center justify-center mr-3"
+            style={{ 
+              backgroundColor: sportColor + '20',
+              borderWidth: 1.5,
+              borderColor: sportColor + '40',
+            }}
           >
             <Ionicons 
               name={sportIcons[game.sport] as any} 
-              size={20} 
+              size={22} 
               color={sportColor} 
             />
           </View>
           <View className="flex-1">
-            <Text className="text-white font-semibold text-lg capitalize">
+            <Text className="text-white font-bold text-lg capitalize">
               {game.sport}
             </Text>
             <Text className="text-navy-300 text-sm">
@@ -96,8 +107,14 @@ export function GameCard({ game }: GameCardProps) {
             </Text>
           </View>
         </View>
-        <View className={`px-3 py-1 rounded-full ${isFilling ? 'bg-teal/20' : 'bg-navy-600'}`}>
-          <Text className={`text-xs font-semibold ${isFilling ? 'text-teal' : 'text-navy-300'}`}>
+        <View 
+          className={`px-3 py-1.5 rounded-full ${isFilling ? 'bg-teal/20' : 'bg-navy-600'}`}
+          style={{
+            borderWidth: 1,
+            borderColor: isFilling ? '#14b8a620' : '#1e293b',
+          }}
+        >
+          <Text className={`text-xs font-bold ${isFilling ? 'text-teal' : 'text-navy-300'}`}>
             {game.status.toUpperCase()}
           </Text>
         </View>

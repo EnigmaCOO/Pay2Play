@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import apiClient from '@/lib/api';
 import { format, isPast } from 'date-fns';
 import type { BookingWithDetails } from '@shared/schema';
+import { BookingCardSkeleton } from '@/components/SkeletonLoader';
 
 type TabType = 'upcoming' | 'past';
 
@@ -44,8 +45,20 @@ export default function BookingsScreen() {
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-navy-800">
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-navy-400">Loading bookings...</Text>
+        <View className="flex-1">
+          <View className="px-6 py-4 border-b border-navy-700">
+            <Text className="text-3xl font-bold text-white">
+              Bookings
+            </Text>
+            <Text className="text-navy-300 mt-1">
+              Manage your reservations
+            </Text>
+          </View>
+          <ScrollView className="px-6 py-4">
+            <BookingCardSkeleton />
+            <BookingCardSkeleton />
+            <BookingCardSkeleton />
+          </ScrollView>
         </View>
       </SafeAreaView>
     );

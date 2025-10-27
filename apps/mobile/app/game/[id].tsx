@@ -8,6 +8,7 @@ import * as Notifications from 'expo-notifications';
 import apiClient from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { PaymentSheet } from '@/components/PaymentSheet';
+import { SkeletonBox } from '@/components/SkeletonLoader';
 
 type GameWithDetails = {
   id: string;
@@ -120,6 +121,48 @@ export default function GameDetailsScreen() {
   };
 
   if (isLoading || !game) {
+    return (
+      <SafeAreaView className="flex-1 bg-navy-800">
+        <View className="flex-1">
+          {/* Header Skeleton */}
+          <View className="flex-row items-center justify-between px-6 py-4 border-b border-navy-700">
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <SkeletonBox width={80} height={20} />
+            <View style={{ width: 24 }} />
+          </View>
+          
+          {/* Image Skeleton */}
+          <SkeletonBox width="100%" height={200} className="rounded-none" />
+          
+          {/* Content Skeleton */}
+          <ScrollView className="flex-1 px-6 py-4">
+            <SkeletonBox width="70%" height={28} className="mb-2" />
+            <SkeletonBox width="50%" height={20} className="mb-4" />
+            <SkeletonBox width="100%" height={40} className="mb-6" />
+            
+            {/* Tabs Skeleton */}
+            <View className="flex-row mb-4">
+              <SkeletonBox width={80} height={32} className="mr-2" />
+              <SkeletonBox width={80} height={32} className="mr-2" />
+              <SkeletonBox width={80} height={32} />
+            </View>
+            
+            {/* Players Skeleton */}
+            {[1, 2, 3, 4].map((i) => (
+              <View key={i} className="flex-row items-center mb-3">
+                <SkeletonBox width={40} height={40} className="rounded-full mr-3" />
+                <SkeletonBox width={120} height={20} />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!game) {
     return (
       <SafeAreaView className="flex-1 bg-navy-800">
         <View className="flex-1 items-center justify-center">
