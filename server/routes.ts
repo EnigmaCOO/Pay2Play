@@ -401,10 +401,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user profile
-  app.get("/api/users/profile/:userId", async (req, res) => {
+  app.get("/api/users/profile/:firebaseUid", async (req, res) => {
     try {
-      const { userId } = req.params;
-      const user = await storage.getUser(userId);
+      const { firebaseUid } = req.params;
+      const user = await storage.getUserByFirebaseUid(firebaseUid);
       
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -419,13 +419,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update user profile
   app.put("/api/users/profile", async (req, res) => {
     try {
-      const { userId, ...profileData } = req.body;
+      const { firebaseUid, ...profileData } = req.body;
 
-      if (!userId) {
-        return res.status(400).json({ error: "userId required" });
+      if (!firebaseUid) {
+        return res.status(400).json({ error: "firebaseUid required" });
       }
 
-      const updated = await storage.updateUserProfile(userId, profileData);
+      const user = await storage.getUserByFirebaseUid(firebaseUid);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const updated = await storage.updateUserProfile(user.id, profileData);
       res.json(updated);
     } catch (error: any) {
       res.status(500).json({ error: error.message });

@@ -61,7 +61,7 @@ export default function ProfileScreen() {
     mutationFn: async (data: typeof editForm) => {
       const completeness = calculateCompleteness(data);
       const response = await apiClient.put('/api/users/profile', {
-        userId: user?.uid,
+        firebaseUid: user?.uid,
         ...data,
         profileCompleteness: completeness,
       });
@@ -80,10 +80,9 @@ export default function ProfileScreen() {
   const calculateCompleteness = (data: typeof editForm) => {
     let score = 30; // Base score
     if (data.displayName) score += 15;
-    if (data.countryCode) score += 10;
+    if (data.countryCode) score += 15;
     if (data.skillLevel) score += 15;
     if (data.cricketPosition || data.footballPosition || data.padelPosition) score += 15;
-    if (data.cricketPosition && data.footballPosition) score += 15;
     return Math.min(score, 100);
   };
 
