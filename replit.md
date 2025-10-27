@@ -120,20 +120,44 @@ Preferred communication style: Simple, everyday language.
    - AsyncStorage persistence for filter preferences
    - Pull-to-refresh for game list
 
-2. **Authentication**
+2. **Game Details Screen**
+   - Header with venue image/thumbnail, name, and distance chip
+   - Roster progress bar showing scheduled → confirmed → full states
+   - Segmented control tabs (Status | About | Map)
+   - Status tab: List of players going to the game
+   - About tab: Complete game and venue details
+   - Map tab: Placeholder for map integration
+   - Join Game CTA button with payment flow
+   - Real-time player count and spots remaining
+   - Sport-specific color theming
+
+3. **Join Game & Payment Flow**
+   - Join Game button calls POST /api/game-pay/:gameId/intent with authenticated user
+   - Mock payment provider bottom sheet for development
+   - Simulated 2-second payment processing
+   - Success animation before sheet closes
+   - Automatic roster refresh after successful payment
+   - Local push notification on success ("You're going!")
+   - Idempotency key prevents duplicate payments
+   - Development mode badge indicating mock provider
+
+4. **Authentication**
    - Firebase phone/email OTP authentication
    - Secure token management with AuthContext
    - Protected routes requiring authentication
+   - User ID properly passed to all API calls
 
-3. **Custom Components**
+5. **Custom Components**
    - BottomSheet: Reusable animated modal-based sheet (avoids third-party dependency issues)
    - FilterSheet: Comprehensive filter UI with draft state management
-   - GameCard: Display game details with venue, time, players, and pricing
+   - PaymentSheet: Mock payment provider with success flow
+   - GameCard: Display game details with venue, time, players, and pricing (tappable to navigate to details)
 
 **Application Structure:**
 - `app/(tabs)/`: Bottom tab screens (index, bookings, friends, messages, profile)
 - `app/(auth)/`: Authentication screens (login, verify)
-- `components/`: Reusable UI components
+- `app/game/[id].tsx`: Dynamic game details screen
+- `components/`: Reusable UI components (BottomSheet, FilterSheet, PaymentSheet, GameCard)
 - `contexts/`: React contexts (Auth)
 - `lib/`: Utilities (api client, firebase config)
 - Path aliases: `@/` for mobile source root
@@ -144,6 +168,14 @@ Preferred communication style: Simple, everyday language.
 - State cloning: Deep cloning prevents reference sharing and unintended mutations
 - Query integration: Filter values included in React Query cache keys for proper invalidation
 - Backend ready: API params prepared (commented) for when backend supports advanced filters
+
+**Payment Flow Architecture:**
+- Mock payment provider for development (no real transactions)
+- Payment intent creation with idempotency key (prevents duplicates)
+- Backend adapter pattern (mock/paymob) for easy provider switching
+- Success flow: roster refetch + local notification
+- User authentication validated before payment intent creation
+- TanStack Query cache invalidation ensures UI updates
 
 ### Backend Architecture
 
