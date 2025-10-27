@@ -6,26 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import apiClient from '@/lib/api';
 import { format, isPast } from 'date-fns';
-
-type BookingWithDetails = {
-  id: string;
-  status: string;
-  amountPkr: number;
-  createdAt: string;
-  slot: {
-    startTime: string;
-    endTime: string;
-    field: {
-      name: string;
-      sport: string;
-      venue: {
-        name: string;
-        city: string;
-        imageUrl: string | null;
-      };
-    };
-  };
-};
+import type { BookingWithDetails } from '@shared/schema';
 
 type TabType = 'upcoming' | 'past';
 

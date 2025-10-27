@@ -5,7 +5,7 @@ import type {
   Venue, InsertVenue,
   Field, InsertField,
   Slot, InsertSlot,
-  Booking, InsertBooking,
+  Booking, InsertBooking, BookingWithDetails,
   Payment, InsertPayment,
   Game, InsertGame, GameWithDetails,
   GamePlayer, InsertGamePlayer,
@@ -42,7 +42,7 @@ export interface IStorage {
 
   // Bookings
   createBooking(booking: InsertBooking): Promise<Booking>;
-  getUserBookings(userId: string): Promise<any[]>;
+  getUserBookings(userId: string): Promise<BookingWithDetails[]>;
   getBooking(id: string): Promise<Booking | undefined>;
   updateBookingStatus(id: string, status: string): Promise<void>;
 
@@ -189,8 +189,8 @@ export class DbStorage implements IStorage {
     return created;
   }
 
-  async getUserBookings(userId: string): Promise<any[]> {
-    return db.query.bookings.findMany({
+  async getUserBookings(userId: string): Promise<BookingWithDetails[]> {
+    const results = await db.query.bookings.findMany({
       where: eq(schema.bookings.userId, userId),
       with: {
         slot: {
@@ -199,10 +199,12 @@ export class DbStorage implements IStorage {
               with: { venue: true }
             }
           }
-        }
+        },
+        user: true
       },
       orderBy: [desc(schema.bookings.createdAt)]
     });
+    return results as BookingWithDetails[];
   }
 
   async getBooking(id: string): Promise<Booking | undefined> {
