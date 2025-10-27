@@ -47,7 +47,7 @@ type GameWithDetails = {
   }>;
 };
 
-type TabType = 'status' | 'about' | 'map';
+type TabType = 'roster' | 'about' | 'map';
 
 const sportIcons: Record<string, string> = {
   cricket: 'baseball',
@@ -68,7 +68,7 @@ export default function GameDetailsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabType>('status');
+  const [activeTab, setActiveTab] = useState<TabType>('roster');
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
 
   const { data: game, isLoading, refetch } = useQuery<GameWithDetails>({
@@ -304,12 +304,12 @@ export default function GameDetailsScreen() {
         <View className="px-6 py-4 border-b border-navy-700">
           <View className="flex-row bg-navy-700 rounded-lg p-1">
             <TouchableOpacity
-              className={`flex-1 py-2 rounded-md ${activeTab === 'status' ? 'bg-teal' : ''}`}
-              onPress={() => setActiveTab('status')}
-              data-testid="button-tab-status"
+              className={`flex-1 py-2 rounded-md ${activeTab === 'roster' ? 'bg-teal' : ''}`}
+              onPress={() => setActiveTab('roster')}
+              data-testid="button-tab-roster"
             >
-              <Text className={`text-center font-semibold ${activeTab === 'status' ? 'text-white' : 'text-navy-300'}`}>
-                Status
+              <Text className={`text-center font-semibold ${activeTab === 'roster' ? 'text-white' : 'text-navy-300'}`}>
+                Roster
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -335,29 +335,117 @@ export default function GameDetailsScreen() {
 
         {/* Tab Content */}
         <View className="px-6 py-5 mb-24">
-          {activeTab === 'status' && (
+          {activeTab === 'roster' && (
             <View>
-              <Text className="text-white text-lg font-semibold mb-4">Players Going</Text>
+              {/* Invite Friends Button */}
+              <TouchableOpacity
+                className="bg-navy-700 rounded-xl p-4 mb-4 flex-row items-center justify-between border border-teal/30"
+                onPress={() => router.push('/(tabs)/friends')}
+                data-testid="button-invite-friends"
+              >
+                <View className="flex-row items-center flex-1">
+                  <View className="w-10 h-10 rounded-full bg-teal/20 items-center justify-center mr-3">
+                    <Ionicons name="person-add" size={20} color="#14b8a6" />
+                  </View>
+                  <Text className="text-white font-semibold">Invite Friends</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#8dabc9" />
+              </TouchableOpacity>
+
               {game.players && game.players.length > 0 ? (
-                game.players.map((player, index) => (
-                  <View 
-                    key={player.userId} 
-                    className="flex-row items-center py-3 border-b border-navy-700"
-                    data-testid={`player-item-${index}`}
-                  >
-                    <View className="w-10 h-10 rounded-full bg-teal/20 items-center justify-center mr-3">
-                      <Text className="text-teal font-bold">
-                        {player.user.name.charAt(0).toUpperCase()}
-                      </Text>
-                    </View>
+                <View>
+                  {/* Team Layout */}
+                  <View className="flex-row gap-3 mb-4">
+                    {/* Team 1 */}
                     <View className="flex-1">
-                      <Text className="text-white font-medium">{player.user.name}</Text>
-                      <Text className="text-navy-400 text-sm">
-                        {index === 0 ? 'Host' : 'Player'}
-                      </Text>
+                      <View className="bg-teal/10 rounded-t-xl px-3 py-2 border-b-2 border-teal">
+                        <Text className="text-teal font-bold text-center">Team 1</Text>
+                      </View>
+                      <View className="bg-navy-700 rounded-b-xl">
+                        {game.players
+                          .filter((_, idx) => idx % 2 === 0)
+                          .map((player, index) => (
+                            <View
+                              key={player.userId}
+                              className={`p-3 ${index < Math.ceil(game.players.length / 2) - 1 ? 'border-b border-navy-600' : ''}`}
+                              data-testid={`team1-player-${index}`}
+                            >
+                              <View className="flex-row items-center mb-2">
+                                <View className="w-8 h-8 rounded-full bg-teal/20 items-center justify-center mr-2">
+                                  <Text className="text-teal font-bold text-sm">
+                                    {player.user.name.charAt(0).toUpperCase()}
+                                  </Text>
+                                </View>
+                                <View className="flex-1">
+                                  <Text className="text-white font-medium text-sm">
+                                    {player.user.name}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View className="flex-row flex-wrap gap-1">
+                                {index === 0 && (
+                                  <View className="bg-gold/20 px-2 py-0.5 rounded">
+                                    <Text className="text-gold text-xs font-semibold">Host</Text>
+                                  </View>
+                                )}
+                                {/* Mock friend badge - would check actual friendship status */}
+                                {index === 1 && (
+                                  <View className="bg-teal/20 px-2 py-0.5 rounded">
+                                    <Text className="text-teal text-xs font-semibold">Friend</Text>
+                                  </View>
+                                )}
+                                {/* Skill level chip */}
+                                <View className="bg-navy-600 px-2 py-0.5 rounded">
+                                  <Text className="text-navy-300 text-xs">
+                                    {index === 0 ? 'High-Level' : index === 1 ? 'Intermediate' : 'Friendly'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                          ))}
+                      </View>
+                    </View>
+
+                    {/* Team 2 */}
+                    <View className="flex-1">
+                      <View className="bg-gold/10 rounded-t-xl px-3 py-2 border-b-2 border-gold">
+                        <Text className="text-gold font-bold text-center">Team 2</Text>
+                      </View>
+                      <View className="bg-navy-700 rounded-b-xl">
+                        {game.players
+                          .filter((_, idx) => idx % 2 === 1)
+                          .map((player, index) => (
+                            <View
+                              key={player.userId}
+                              className={`p-3 ${index < Math.floor(game.players.length / 2) - 1 ? 'border-b border-navy-600' : ''}`}
+                              data-testid={`team2-player-${index}`}
+                            >
+                              <View className="flex-row items-center mb-2">
+                                <View className="w-8 h-8 rounded-full bg-gold/20 items-center justify-center mr-2">
+                                  <Text className="text-gold font-bold text-sm">
+                                    {player.user.name.charAt(0).toUpperCase()}
+                                  </Text>
+                                </View>
+                                <View className="flex-1">
+                                  <Text className="text-white font-medium text-sm">
+                                    {player.user.name}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View className="flex-row flex-wrap gap-1">
+                                {/* Skill level chip */}
+                                <View className="bg-navy-600 px-2 py-0.5 rounded">
+                                  <Text className="text-navy-300 text-xs">
+                                    {index === 0 ? 'Intermediate' : 'Beginner'}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                          ))}
+                      </View>
                     </View>
                   </View>
-                ))
+                </View>
               ) : (
                 <View className="py-8 items-center">
                   <Ionicons name="people-outline" size={48} color="#374151" />
