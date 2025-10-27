@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Notifications from 'expo-notifications';
 import apiClient from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import { PaymentSheet } from '@/components/PaymentSheet';
 
 type GameWithDetails = {
@@ -66,6 +67,7 @@ export default function GameDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('status');
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
 
@@ -79,8 +81,9 @@ export default function GameDetailsScreen() {
 
   const joinGameMutation = useMutation({
     mutationFn: async () => {
-      // Mock user ID for now - in production this would come from auth context
-      const userId = 'user-123';
+      if (!user) throw new Error('User not authenticated');
+      
+      const userId = user.uid;
       const idempotencyKey = `join-${id}-${userId}-${Date.now()}`;
       
       const response = await apiClient.post(`/api/game-pay/${id}/intent`, {
@@ -108,7 +111,7 @@ export default function GameDetailsScreen() {
     // Show local notification
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "You're going! 🎉",
+        title: "You're going!",
         body: `Your spot is confirmed for ${game?.sport} at ${game?.field.venue.name}`,
         data: { gameId: id },
       },
