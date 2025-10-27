@@ -383,7 +383,7 @@ export default function GameDetailsScreen() {
                                 </View>
                               </View>
                               <View className="flex-row flex-wrap gap-1">
-                                {index === 0 && (
+                                {player.userId === game.hostId && (
                                   <View className="bg-gold/20 px-2 py-0.5 rounded">
                                     <Text className="text-gold text-xs font-semibold">Host</Text>
                                   </View>
@@ -397,7 +397,7 @@ export default function GameDetailsScreen() {
                                 {/* Skill level chip */}
                                 <View className="bg-navy-600 px-2 py-0.5 rounded">
                                   <Text className="text-navy-300 text-xs">
-                                    {index === 0 ? 'High-Level' : index === 1 ? 'Intermediate' : 'Friendly'}
+                                    {player.userId === game.hostId ? 'High-Level' : index === 0 ? 'Intermediate' : 'Friendly'}
                                   </Text>
                                 </View>
                               </View>
@@ -433,10 +433,15 @@ export default function GameDetailsScreen() {
                                 </View>
                               </View>
                               <View className="flex-row flex-wrap gap-1">
+                                {player.userId === game.hostId && (
+                                  <View className="bg-gold/20 px-2 py-0.5 rounded">
+                                    <Text className="text-gold text-xs font-semibold">Host</Text>
+                                  </View>
+                                )}
                                 {/* Skill level chip */}
                                 <View className="bg-navy-600 px-2 py-0.5 rounded">
                                   <Text className="text-navy-300 text-xs">
-                                    {index === 0 ? 'Intermediate' : 'Beginner'}
+                                    {player.userId === game.hostId ? 'High-Level' : index === 0 ? 'Intermediate' : 'Beginner'}
                                   </Text>
                                 </View>
                               </View>
