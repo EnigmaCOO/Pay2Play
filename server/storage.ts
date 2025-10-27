@@ -42,7 +42,7 @@ export interface IStorage {
 
   // Bookings
   createBooking(booking: InsertBooking): Promise<Booking>;
-  getUserBookings(userId: string): Promise<Booking[]>;
+  getUserBookings(userId: string): Promise<any[]>;
   getBooking(id: string): Promise<Booking | undefined>;
   updateBookingStatus(id: string, status: string): Promise<void>;
 
@@ -189,8 +189,20 @@ export class DbStorage implements IStorage {
     return created;
   }
 
-  async getUserBookings(userId: string): Promise<Booking[]> {
-    return db.select().from(schema.bookings).where(eq(schema.bookings.userId, userId)).orderBy(desc(schema.bookings.createdAt));
+  async getUserBookings(userId: string): Promise<any[]> {
+    return db.query.bookings.findMany({
+      where: eq(schema.bookings.userId, userId),
+      with: {
+        slot: {
+          with: {
+            field: {
+              with: { venue: true }
+            }
+          }
+        }
+      },
+      orderBy: [desc(schema.bookings.createdAt)]
+    });
   }
 
   async getBooking(id: string): Promise<Booking | undefined> {
