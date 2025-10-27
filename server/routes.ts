@@ -400,6 +400,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user profile
+  app.get("/api/users/profile/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update user profile
+  app.put("/api/users/profile", async (req, res) => {
+    try {
+      const { userId, ...profileData } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({ error: "userId required" });
+      }
+
+      const updated = await storage.updateUserProfile(userId, profileData);
+      res.json(updated);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // ========== SEASONS/LEAGUES ==========
   app.post("/api/leagues/season", async (req, res) => {
     try {

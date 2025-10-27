@@ -23,6 +23,7 @@ export interface IStorage {
   getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserPushToken(userId: string, expoPushToken: string): Promise<void>;
+  updateUserProfile(userId: string, profile: Partial<User>): Promise<User>;
 
   // Venues
   getVenues(verified?: boolean): Promise<Venue[]>;
@@ -117,6 +118,14 @@ export class DbStorage implements IStorage {
 
   async updateUserPushToken(userId: string, expoPushToken: string): Promise<void> {
     await db.update(schema.users).set({ expoPushToken }).where(eq(schema.users.id, userId));
+  }
+
+  async updateUserProfile(userId: string, profile: Partial<User>): Promise<User> {
+    const [updated] = await db.update(schema.users)
+      .set(profile)
+      .where(eq(schema.users.id, userId))
+      .returning();
+    return updated;
   }
 
   // Venues

@@ -8,6 +8,7 @@ export const sportEnum = pgEnum("sport", ["cricket", "football", "futsal", "pade
 export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["pending", "succeeded", "failed", "refunded"]);
 export const gameStatusEnum = pgEnum("game_status", ["open", "confirmed", "filled", "cancelled", "completed"]);
+export const skillLevelEnum = pgEnum("skill_level", ["beginner", "friendly", "intermediate", "high-level", "masters"]);
 
 // Users table
 export const users = pgTable("users", {
@@ -17,6 +18,15 @@ export const users = pgTable("users", {
   displayName: text("display_name"),
   phoneNumber: text("phone_number"),
   expoPushToken: text("expo_push_token"),
+  countryCode: text("country_code").default("PK"),
+  profileCompleteness: integer("profile_completeness").default(30),
+  cricketPosition: text("cricket_position"),
+  footballPosition: text("football_position"),
+  padelPosition: text("padel_position"),
+  skillLevel: skillLevelEnum("skill_level"),
+  gamesPlayed: integer("games_played").default(0),
+  facilitiesVisited: integer("facilities_visited").default(0),
+  hoursPlayed: integer("hours_played").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
