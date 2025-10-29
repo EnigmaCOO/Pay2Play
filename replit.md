@@ -62,9 +62,51 @@ Once you update `.replit` and `replit.nix` files:
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (October 27, 2025)
+
+### AsyncStorage Cache Persistence
+- Implemented React Query AsyncStorage persistence with 24-hour garbage collection time
+- Cache persists across app restarts using `@tanstack/query-async-storage-persister`
+- Persister configured with 1-second throttle time and custom key `P2P_REACT_QUERY_CACHE`
+- Wrapped app in `PersistQueryClientProvider` in `apps/mobile/app/_layout.tsx`
+
+### Skeleton Loaders
+- Created reusable skeleton loader components in `apps/mobile/components/SkeletonLoader.tsx`
+  - `SkeletonBox`: Animated pulsing box with 800ms animation duration
+  - `GameCardSkeleton`: Matches GameCard component structure
+  - `BookingCardSkeleton`: Matches BookingCard component structure
+  - `ProfileStatsSkeleton`: Three-column stats layout skeleton
+- Integrated skeleton loaders across all main screens:
+  - Discover screen: Shows 4 game card skeletons while loading
+  - Bookings screen: Shows 3 booking card skeletons with header
+  - Profile screen: Shows avatar, name, stats, and content skeletons
+  - GameDetails screen: Shows header, image, tabs, and player list skeletons
+- Uses React Native Animated API for smooth opacity transitions
+
+### Nintendo-Style Design Polish
+- **Rounded Cards**: Updated all card components to use rounded-2xl/3xl for softer, friendlier appearance
+- **Shadow & Glow Effects**: 
+  - GameCard components now have sport-specific colored shadows
+  - Selected date pills have teal glow effect with elevated borders
+  - Empty state and buttons feature subtle shadow depth
+- **Color-Coded Difficulty Chips**: Gradient system from beginner to masters
+  - Beginner: Green (#22c55e)
+  - Friendly: Lime (#84cc16)
+  - Intermediate: Yellow (#eab308)
+  - High-Level: Orange (#f97316)
+  - Masters: Red (#ef4444)
+- **Enhanced Interactive Elements**:
+  - Sport selector with bold text and borders when selected
+  - Search bar with rounded corners, filter button with teal background
+  - Active scale animations on touchable components
+  - Icon containers with colored borders matching sport themes
+- **Empty States**: Redesigned with larger rounded icons, better spacing, and prominent CTA buttons
+
 ## System Architecture
 
 ### Frontend Architecture
+
+#### Web Application (`client/`)
 
 **Technology Stack:**
 - React with TypeScript for component-based UI
@@ -86,6 +128,94 @@ Preferred communication style: Simple, everyday language.
 - Path aliases: `@/` for client source, `@shared/` for shared types
 - Main pages: Landing, Games (list/detail), Create Game, Venues, Leagues, Dashboard
 - Debug utility for push token registration
+
+#### Mobile Application (`apps/mobile/`)
+
+**Technology Stack:**
+- Expo (React Native) with TypeScript
+- Expo Router with file-based routing and bottom tabs navigation
+- TanStack Query for API data fetching and caching
+- NativeWind (Tailwind CSS for React Native)
+- AsyncStorage for local data persistence
+- Firebase Authentication for OTP login
+- Expo Push Notifications
+
+**Design System:**
+- Dark theme: Navy-800 background with Teal accent (#14b8a6)
+- Sport-specific icons and color coding
+- Custom bottom tab navigation (Discover, Bookings, Friends, Messages, Profile)
+- Responsive mobile-first UI components
+
+**Key Features:**
+1. **Discover Screen**
+   - Horizontal date selector with 7-day range
+   - Sport filter chips (All, Football, Cricket, Padel)
+   - Search bar with real-time filtering
+   - Advanced filter bottom sheet with:
+     - Time slot selector (7-12, 12-5, 5-10, 10-2 AM, Any Time)
+     - Distance buttons (5, 10, 20, 30, 50, 100+ km)
+     - Difficulty level multi-select chips (Beginner, Friendly, Intermediate, High-Level, Masters)
+     - Sort by options (Distance, Time)
+   - Staged-apply filter UX (changes only persist after "Apply" button)
+   - AsyncStorage persistence for filter preferences
+   - Pull-to-refresh for game list
+
+2. **Game Details Screen**
+   - Header with venue image/thumbnail, name, and distance chip
+   - Roster progress bar showing scheduled → confirmed → full states
+   - Segmented control tabs (Status | About | Map)
+   - Status tab: List of players going to the game
+   - About tab: Complete game and venue details
+   - Map tab: Placeholder for map integration
+   - Join Game CTA button with payment flow
+   - Real-time player count and spots remaining
+   - Sport-specific color theming
+
+3. **Join Game & Payment Flow**
+   - Join Game button calls POST /api/game-pay/:gameId/intent with authenticated user
+   - Mock payment provider bottom sheet for development
+   - Simulated 2-second payment processing
+   - Success animation before sheet closes
+   - Automatic roster refresh after successful payment
+   - Local push notification on success ("You're going!")
+   - Idempotency key prevents duplicate payments
+   - Development mode badge indicating mock provider
+
+4. **Authentication**
+   - Firebase phone/email OTP authentication
+   - Secure token management with AuthContext
+   - Protected routes requiring authentication
+   - User ID properly passed to all API calls
+
+5. **Custom Components**
+   - BottomSheet: Reusable animated modal-based sheet (avoids third-party dependency issues)
+   - FilterSheet: Comprehensive filter UI with draft state management
+   - PaymentSheet: Mock payment provider with success flow
+   - GameCard: Display game details with venue, time, players, and pricing (tappable to navigate to details)
+
+**Application Structure:**
+- `app/(tabs)/`: Bottom tab screens (index, bookings, friends, messages, profile)
+- `app/(auth)/`: Authentication screens (login, verify)
+- `app/game/[id].tsx`: Dynamic game details screen
+- `components/`: Reusable UI components (BottomSheet, FilterSheet, PaymentSheet, GameCard)
+- `contexts/`: React contexts (Auth)
+- `lib/`: Utilities (api client, firebase config)
+- Path aliases: `@/` for mobile source root
+
+**Filter Architecture:**
+- Draft state pattern: User changes stored in local component state
+- Apply/Reset actions: Only "Apply" commits changes to query and AsyncStorage
+- State cloning: Deep cloning prevents reference sharing and unintended mutations
+- Query integration: Filter values included in React Query cache keys for proper invalidation
+- Backend ready: API params prepared (commented) for when backend supports advanced filters
+
+**Payment Flow Architecture:**
+- Mock payment provider for development (no real transactions)
+- Payment intent creation with idempotency key (prevents duplicates)
+- Backend adapter pattern (mock/paymob) for easy provider switching
+- Success flow: roster refetch + local notification
+- User authentication validated before payment intent creation
+- TanStack Query cache invalidation ensures UI updates
 
 ### Backend Architecture
 

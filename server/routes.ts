@@ -174,6 +174,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current user's bookings by Firebase UID
+  app.get("/api/bookings/me/:firebaseUid", async (req, res) => {
+    try {
+      const { firebaseUid } = req.params;
+      const user = await storage.getUserByFirebaseUid(firebaseUid);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const bookings = await storage.getUserBookings(user.id);
+      res.json(bookings);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // ========== PAYMENTS (Bookings) ==========
   app.post("/api/payments/intent", async (req, res) => {
     try {
@@ -395,6 +412,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await storage.updateUserPushToken(userId, expoPushToken);
       res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get user profile
+  app.get("/api/users/profile/:firebaseUid", async (req, res) => {
+    try {
+      const { firebaseUid } = req.params;
+      const user = await storage.getUserByFirebaseUid(firebaseUid);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update user profile
+  app.put("/api/users/profile", async (req, res) => {
+    try {
+      const { firebaseUid, ...profileData } = req.body;
+
+      if (!firebaseUid) {
+        return res.status(400).json({ error: "firebaseUid required" });
+      }
+
+      const user = await storage.getUserByFirebaseUid(firebaseUid);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const updated = await storage.updateUserProfile(user.id, profileData);
+      res.json(updated);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
