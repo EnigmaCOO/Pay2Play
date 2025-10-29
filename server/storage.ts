@@ -5,7 +5,7 @@ import type {
   Venue, InsertVenue,
   Field, InsertField,
   Slot, InsertSlot,
-  Booking, InsertBooking, BookingWithDetails,
+  Booking, InsertBooking,
   Payment, InsertPayment,
   Game, InsertGame, GameWithDetails,
   GamePlayer, InsertGamePlayer,
@@ -23,7 +23,6 @@ export interface IStorage {
   getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserPushToken(userId: string, expoPushToken: string): Promise<void>;
-  updateUserProfile(userId: string, profile: Partial<User>): Promise<User>;
 
   // Venues
   getVenues(verified?: boolean): Promise<Venue[]>;
@@ -42,7 +41,7 @@ export interface IStorage {
 
   // Bookings
   createBooking(booking: InsertBooking): Promise<Booking>;
-  getUserBookings(userId: string): Promise<BookingWithDetails[]>;
+  getUserBookings(userId: string): Promise<Booking[]>;
   getBooking(id: string): Promise<Booking | undefined>;
   updateBookingStatus(id: string, status: string): Promise<void>;
 
@@ -120,14 +119,6 @@ export class DbStorage implements IStorage {
     await db.update(schema.users).set({ expoPushToken }).where(eq(schema.users.id, userId));
   }
 
-  async updateUserProfile(userId: string, profile: Partial<User>): Promise<User> {
-    const [updated] = await db.update(schema.users)
-      .set(profile)
-      .where(eq(schema.users.id, userId))
-      .returning();
-    return updated;
-  }
-
   // Venues
   async getVenues(verified?: boolean): Promise<Venue[]> {
     if (verified !== undefined) {
@@ -189,22 +180,8 @@ export class DbStorage implements IStorage {
     return created;
   }
 
-  async getUserBookings(userId: string): Promise<BookingWithDetails[]> {
-    const results = await db.query.bookings.findMany({
-      where: eq(schema.bookings.userId, userId),
-      with: {
-        slot: {
-          with: {
-            field: {
-              with: { venue: true }
-            }
-          }
-        },
-        user: true
-      },
-      orderBy: [desc(schema.bookings.createdAt)]
-    });
-    return results as BookingWithDetails[];
+  async getUserBookings(userId: string): Promise<Booking[]> {
+    return db.select().from(schema.bookings).where(eq(schema.bookings.userId, userId)).orderBy(desc(schema.bookings.createdAt));
   }
 
   async getBooking(id: string): Promise<Booking | undefined> {
