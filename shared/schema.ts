@@ -8,7 +8,6 @@ export const sportEnum = pgEnum("sport", ["cricket", "football", "futsal", "pade
 export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["pending", "succeeded", "failed", "refunded"]);
 export const gameStatusEnum = pgEnum("game_status", ["open", "confirmed", "filled", "cancelled", "completed"]);
-export const skillLevelEnum = pgEnum("skill_level", ["beginner", "friendly", "intermediate", "high-level", "masters"]);
 
 // Users table
 export const users = pgTable("users", {
@@ -18,15 +17,6 @@ export const users = pgTable("users", {
   displayName: text("display_name"),
   phoneNumber: text("phone_number"),
   expoPushToken: text("expo_push_token"),
-  countryCode: text("country_code").default("PK"),
-  profileCompleteness: integer("profile_completeness").default(30),
-  cricketPosition: text("cricket_position"),
-  footballPosition: text("football_position"),
-  padelPosition: text("padel_position"),
-  skillLevel: skillLevelEnum("skill_level"),
-  gamesPlayed: integer("games_played").default(0),
-  facilitiesVisited: integer("facilities_visited").default(0),
-  hoursPlayed: integer("hours_played").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -191,15 +181,6 @@ export const fixtures = pgTable("fixtures", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Payment Events table (for idempotency)
-export const paymentEvents = pgTable("payment_events", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  type: text("type").notNull(), // e.g., 'payment.succeeded', 'payment.failed'
-  payload: text("payload").notNull(), // JSON string of the event payload
-  receivedAt: timestamp("received_at").defaultNow().notNull(),
-  processedAt: timestamp("processed_at"), // Null if not yet processed
-});
-
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   bookings: many(bookings),
@@ -291,7 +272,6 @@ export const insertRefundSchema = createInsertSchema(refunds).omit({ id: true, c
 export const insertSeasonSchema = createInsertSchema(seasons).omit({ id: true, createdAt: true });
 export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true, played: true, won: true, drawn: true, lost: true, points: true });
 export const insertFixtureSchema = createInsertSchema(fixtures).omit({ id: true, createdAt: true });
-export const insertPaymentEventSchema = createInsertSchema(paymentEvents).omit({ id: true, receivedAt: true, processedAt: true });
 
 // TypeScript types
 export type User = typeof users.$inferSelect;
@@ -320,8 +300,6 @@ export type Team = typeof teams.$inferSelect;
 export type InsertTeam = z.infer<typeof insertTeamSchema>;
 export type Fixture = typeof fixtures.$inferSelect;
 export type InsertFixture = z.infer<typeof insertFixtureSchema>;
-export type PaymentEvent = typeof paymentEvents.$inferSelect;
-export type InsertPaymentEvent = z.infer<typeof insertPaymentEventSchema>;
 
 // Extended types with relations
 export type GameWithDetails = Game & {

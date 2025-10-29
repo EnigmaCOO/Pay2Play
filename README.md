@@ -8,7 +8,6 @@ Includes:
 - Leagues + Fixtures
 - Push Notifications + Refund Logic
 - Venue Dashboard (Web)
-- **Mobile App (React Native + Expo)** - see `mobile/` directory
 - Postman Collection & Dev Walkthrough
 
 ## Run (Replit)
