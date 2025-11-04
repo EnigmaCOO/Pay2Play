@@ -71,7 +71,7 @@ async function seed() {
     
     for (const field of createdFields) {
       // Create slots from 6 PM to 10 PM for today and tomorrow
-      for (let day of [now, tomorrow]) {
+      for (const day of [now, tomorrow]) {
         for (let hour = 18; hour <= 21; hour++) {
           const start = new Date(day);
           start.setHours(hour, 0, 0, 0);

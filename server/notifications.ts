@@ -1,5 +1,3 @@
-import type { SelectUser } from "@shared/schema";
-
 interface PushNotification {
   title: string;
   body: string;
