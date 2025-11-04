@@ -9,7 +9,7 @@ import { MapPin, Shield, Calendar } from "lucide-react";
 import type { Venue } from "@shared/schema";
 
 export default function Venues() {
-  const { data: venues, isLoading } = useQuery<Venue[]>({
+  const { data: venues = [], isLoading } = useQuery<Venue[]>({
     queryKey: ["/api/venues"],
   });
 
@@ -54,7 +54,7 @@ export default function Venues() {
               </Card>
             ))}
           </div>
-        ) : venues && venues.length > 0 ? (
+        ) : venues.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {venues.map((venue) => (
               <Card key={venue.id} className="hover-elevate" data-testid={`card-venue-${venue.id}`}>
@@ -62,7 +62,11 @@ export default function Venues() {
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <CardTitle className="text-lg">{venue.name}</CardTitle>
                     {venue.verified && (
-                      <Badge variant="success" data-testid="badge-verified">
+                      <Badge
+                        variant="outline"
+                        className="border-green-500 text-green-600 bg-green-500/10"
+                        data-testid="badge-verified"
+                      >
                         <Shield className="w-3 h-3 mr-1" />
                         Verified
                       </Badge>

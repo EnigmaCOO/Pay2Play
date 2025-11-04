@@ -109,28 +109,40 @@ type Payout = {
 };
 
 export class DbStorage implements IStorage {
+  private ensureDb() {
+    if (!db) {
+      throw new Error("Database client is not initialized");
+    }
+    return db;
+  }
+
   // Users
   async getUser(id: string): Promise<User | undefined> {
+    const db = this.ensureDb();
     const [user] = await db.select().from(schema.users).where(eq(schema.users.id, id));
     return user;
   }
 
   async getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined> {
+    const db = this.ensureDb();
     const [user] = await db.select().from(schema.users).where(eq(schema.users.firebaseUid, firebaseUid));
     return user;
   }
 
   async createUser(user: InsertUser): Promise<User> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.users).values(user).returning();
     return created;
   }
 
   async updateUserPushToken(userId: string, expoPushToken: string): Promise<void> {
+    const db = this.ensureDb();
     await db.update(schema.users).set({ expoPushToken }).where(eq(schema.users.id, userId));
   }
 
   // Venues
   async getVenues(verified?: boolean): Promise<Venue[]> {
+    const db = this.ensureDb();
     if (verified !== undefined) {
       return db.select().from(schema.venues).where(eq(schema.venues.verified, verified));
     }
@@ -138,32 +150,38 @@ export class DbStorage implements IStorage {
   }
 
   async getVenue(id: string): Promise<Venue | undefined> {
+    const db = this.ensureDb();
     const [venue] = await db.select().from(schema.venues).where(eq(schema.venues.id, id));
     return venue;
   }
 
   async createVenue(venue: InsertVenue): Promise<Venue> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.venues).values(venue).returning();
     return created;
   }
 
   // Fields
   async getFieldsByVenue(venueId: string): Promise<Field[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.fields).where(eq(schema.fields.venueId, venueId));
   }
 
   async getField(id: string): Promise<Field | undefined> {
+    const db = this.ensureDb();
     const [field] = await db.select().from(schema.fields).where(eq(schema.fields.id, id));
     return field;
   }
 
   async createField(field: InsertField): Promise<Field> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.fields).values(field).returning();
     return created;
   }
 
   // Slots
   async searchAvailableSlots(fieldId: string, startTime: Date, endTime: Date): Promise<Slot[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.slots).where(
       and(
         eq(schema.slots.fieldId, fieldId),
@@ -175,51 +193,61 @@ export class DbStorage implements IStorage {
   }
 
   async createSlot(slot: InsertSlot): Promise<Slot> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.slots).values(slot).returning();
     return created;
   }
 
   async getSlot(id: string): Promise<Slot | undefined> {
+    const db = this.ensureDb();
     const [slot] = await db.select().from(schema.slots).where(eq(schema.slots.id, id));
     return slot;
   }
 
   // Bookings
   async createBooking(booking: InsertBooking): Promise<Booking> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.bookings).values(booking).returning();
     return created;
   }
 
   async getUserBookings(userId: string): Promise<Booking[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.bookings).where(eq(schema.bookings.userId, userId)).orderBy(desc(schema.bookings.createdAt));
   }
 
   async getBooking(id: string): Promise<Booking | undefined> {
+    const db = this.ensureDb();
     const [booking] = await db.select().from(schema.bookings).where(eq(schema.bookings.id, id));
     return booking;
   }
 
   async updateBookingStatus(id: string, status: string): Promise<void> {
+    const db = this.ensureDb();
     await db.update(schema.bookings).set({ status: status as any }).where(eq(schema.bookings.id, id));
   }
 
   // Payments
   async createPayment(payment: InsertPayment): Promise<Payment> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.payments).values(payment).returning();
     return created;
   }
 
   async getPayment(id: string): Promise<Payment | undefined> {
+    const db = this.ensureDb();
     const [payment] = await db.select().from(schema.payments).where(eq(schema.payments.id, id));
     return payment;
   }
 
   async getPaymentByIdempotencyKey(key: string): Promise<Payment | undefined> {
+    const db = this.ensureDb();
     const [payment] = await db.select().from(schema.payments).where(eq(schema.payments.idempotencyKey, key));
     return payment;
   }
 
   async updatePaymentStatus(id: string, status: string, providerRef?: string): Promise<void> {
+    const db = this.ensureDb();
     const updates: any = { status: status as any, updatedAt: new Date() };
     if (providerRef) updates.providerRef = providerRef;
     await db.update(schema.payments).set(updates).where(eq(schema.payments.id, id));
@@ -227,6 +255,7 @@ export class DbStorage implements IStorage {
 
   // Games
   async createGame(game: InsertGame): Promise<Game> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.games).values(game).returning();
     // Add host as first player
     await this.addGamePlayer({ gameId: created.id, userId: game.hostId, isHost: true });
@@ -234,6 +263,7 @@ export class DbStorage implements IStorage {
   }
 
   async getGames(sportFilter?: string): Promise<GameWithDetails[]> {
+    const db = this.ensureDb();
     const query = db.query.games.findMany({
       where: sportFilter ? eq(schema.games.sport, sportFilter as any) : undefined,
       with: {
@@ -252,6 +282,7 @@ export class DbStorage implements IStorage {
   }
 
   async getGame(id: string): Promise<GameWithDetails | undefined> {
+    const db = this.ensureDb();
     const game = await db.query.games.findFirst({
       where: eq(schema.games.id, id),
       with: {
@@ -269,16 +300,19 @@ export class DbStorage implements IStorage {
   }
 
   async updateGameStatus(id: string, status: string): Promise<void> {
+    const db = this.ensureDb();
     await db.update(schema.games).set({ status: status as any }).where(eq(schema.games.id, id));
   }
 
   async incrementGamePlayers(id: string): Promise<void> {
-    await db.update(schema.games).set({ 
-      currentPlayers: sql`${schema.games.currentPlayers} + 1` 
+    const db = this.ensureDb();
+    await db.update(schema.games).set({
+      currentPlayers: sql`${schema.games.currentPlayers} + 1`
     }).where(eq(schema.games.id, id));
   }
 
   async getGamesNeedingCancellation(minutesBeforeStart: number): Promise<Game[]> {
+    const db = this.ensureDb();
     const threshold = new Date(Date.now() + minutesBeforeStart * 60 * 1000);
     return db.select().from(schema.games).where(
       and(
@@ -291,31 +325,37 @@ export class DbStorage implements IStorage {
 
   // Game Players
   async addGamePlayer(gamePlayer: InsertGamePlayer): Promise<GamePlayer> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.gamePlayers).values(gamePlayer).returning();
     return created;
   }
 
   async getGamePlayers(gameId: string): Promise<GamePlayer[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.gamePlayers).where(eq(schema.gamePlayers.gameId, gameId));
   }
 
   // Game Payments
   async createGamePayment(payment: InsertGamePayment): Promise<GamePayment> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.gamePayments).values(payment).returning();
     return created;
   }
 
   async getGamePayment(id: string): Promise<GamePayment | undefined> {
+    const db = this.ensureDb();
     const [payment] = await db.select().from(schema.gamePayments).where(eq(schema.gamePayments.id, id));
     return payment;
   }
 
   async getGamePaymentByIdempotencyKey(key: string): Promise<GamePayment | undefined> {
+    const db = this.ensureDb();
     const [payment] = await db.select().from(schema.gamePayments).where(eq(schema.gamePayments.idempotencyKey, key));
     return payment;
   }
 
   async updateGamePaymentStatus(id: string, status: string, providerRef?: string): Promise<void> {
+    const db = this.ensureDb();
     const updates: any = { status: status as any, updatedAt: new Date() };
     if (providerRef) updates.providerRef = providerRef;
     await db.update(schema.gamePayments).set(updates).where(eq(schema.gamePayments.id, id));
@@ -323,35 +363,42 @@ export class DbStorage implements IStorage {
 
   // Seasons
   async createSeason(season: InsertSeason): Promise<Season> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.seasons).values(season).returning();
     return created;
   }
 
   async getSeasons(): Promise<Season[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.seasons).orderBy(desc(schema.seasons.startDate));
   }
 
   async getSeason(id: string): Promise<Season | undefined> {
+    const db = this.ensureDb();
     const [season] = await db.select().from(schema.seasons).where(eq(schema.seasons.id, id));
     return season;
   }
 
   // Teams
   async createTeam(team: InsertTeam): Promise<Team> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.teams).values(team).returning();
     return created;
   }
 
   async getTeamsBySeason(seasonId: string): Promise<Team[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.teams).where(eq(schema.teams.seasonId, seasonId));
   }
 
   // Fixtures
   async createFixtures(fixtures: InsertFixture[]): Promise<Fixture[]> {
+    const db = this.ensureDb();
     return db.insert(schema.fixtures).values(fixtures).returning();
   }
 
   async getFixturesBySeason(seasonId: string): Promise<Fixture[]> {
+    const db = this.ensureDb();
     return db.query.fixtures.findMany({
       where: eq(schema.fixtures.seasonId, seasonId),
       with: {
@@ -364,6 +411,7 @@ export class DbStorage implements IStorage {
   }
 
   async updateFixtureScore(id: string, homeScore: number, awayScore: number, status: string): Promise<void> {
+    const db = this.ensureDb();
     await db.update(schema.fixtures).set({ homeScore, awayScore, status }).where(eq(schema.fixtures.id, id));
   }
 
@@ -378,15 +426,17 @@ export class DbStorage implements IStorage {
   
   // Refunds
   async createRefund(refund: InsertRefund): Promise<Refund> {
+    const db = this.ensureDb();
     const [created] = await db.insert(schema.refunds).values(refund).returning();
     return created;
   }
-  
+
   async getUserById(userId: string): Promise<User | undefined> {
     return this.getUser(userId);
   }
-  
+
   async getUpcomingGames(beforeTime: Date): Promise<GameWithDetails[]> {
+    const db = this.ensureDb();
     const now = new Date();
     return db.query.games.findMany({
       where: and(
@@ -404,6 +454,7 @@ export class DbStorage implements IStorage {
   }
   
   async getGamePaymentByUserAndGame(userId: string, gameId: string): Promise<GamePayment | undefined> {
+    const db = this.ensureDb();
     const [payment] = await db.select()
       .from(schema.gamePayments)
       .where(and(
@@ -415,10 +466,12 @@ export class DbStorage implements IStorage {
   
   // Dashboard
   async getVenuesByPartner(partnerId: string): Promise<Venue[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.venues).where(eq(schema.venues.partnerId, partnerId));
   }
-  
+
   async getBookingsByVenue(venueId: string): Promise<Booking[]> {
+    const db = this.ensureDb();
     return db.query.bookings.findMany({
       where: (bookings, { eq, and }) => {
         return sql`EXISTS (
@@ -435,8 +488,9 @@ export class DbStorage implements IStorage {
       orderBy: [desc(schema.bookings.createdAt)],
     });
   }
-  
+
   async getPayoutsByVenue(venueId: string): Promise<any[]> {
+    const db = this.ensureDb();
     return db.select().from(schema.payouts).where(eq(schema.payouts.venueId, venueId));
   }
 }
@@ -502,15 +556,15 @@ class InMemoryStorage implements IStorage {
       ].map((venue) => this.createVenue(venue)),
     );
 
-    const fields = await Promise.all(
-      [
-        { venueId: venues[0].id, name: "Cricket Ground A", sport: "cricket", pricePerHourPkr: 3000, capacity: 22 },
-        { venueId: venues[0].id, name: "Football Field 1", sport: "football", pricePerHourPkr: 2500, capacity: 22 },
-        { venueId: venues[1].id, name: "Futsal Court 1", sport: "futsal", pricePerHourPkr: 2000, capacity: 10 },
-        { venueId: venues[1].id, name: "Padel Court A", sport: "padel", pricePerHourPkr: 1800, capacity: 4 },
-        { venueId: venues[2].id, name: "Main Cricket Pitch", sport: "cricket", pricePerHourPkr: 3500, capacity: 22 },
-      ].map((field) => this.createField(field)),
-    );
+    const fieldSeeds: InsertField[] = [
+      { venueId: venues[0].id, name: "Cricket Ground A", sport: "cricket", pricePerHourPkr: 3000, capacity: 22 },
+      { venueId: venues[0].id, name: "Football Field 1", sport: "football", pricePerHourPkr: 2500, capacity: 22 },
+      { venueId: venues[1].id, name: "Futsal Court 1", sport: "futsal", pricePerHourPkr: 2000, capacity: 10 },
+      { venueId: venues[1].id, name: "Padel Court A", sport: "padel", pricePerHourPkr: 1800, capacity: 4 },
+      { venueId: venues[2].id, name: "Main Cricket Pitch", sport: "cricket", pricePerHourPkr: 3500, capacity: 22 },
+    ];
+
+    const fields = await Promise.all(fieldSeeds.map((field) => this.createField(field)));
 
     const now = new Date();
     const tomorrow = new Date(now);
@@ -534,43 +588,43 @@ class InMemoryStorage implements IStorage {
       }
     }
 
-    await Promise.all(
-      [
-        {
-          hostId: user.id,
-          fieldId: fields[1].id,
-          sport: "football",
-          startTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 18, 0),
-          endTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 19, 0),
-          minPlayers: 8,
-          maxPlayers: 14,
-          pricePerPlayerPkr: 400,
-          status: "open",
-        },
-        {
-          hostId: user.id,
-          fieldId: fields[2].id,
-          sport: "futsal",
-          startTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 19, 0),
-          endTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 20, 0),
-          minPlayers: 6,
-          maxPlayers: 10,
-          pricePerPlayerPkr: 350,
-          status: "open",
-        },
-        {
-          hostId: user.id,
-          fieldId: fields[0].id,
-          sport: "cricket",
-          startTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 17, 0),
-          endTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 19, 0),
-          minPlayers: 12,
-          maxPlayers: 22,
-          pricePerPlayerPkr: 300,
-          status: "open",
-        },
-      ].map((game) => this.createGame(game)),
-    );
+    const gameSeeds: InsertGame[] = [
+      {
+        hostId: user.id,
+        fieldId: fields[1].id,
+        sport: "football",
+        startTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 18, 0),
+        endTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 19, 0),
+        minPlayers: 8,
+        maxPlayers: 14,
+        pricePerPlayerPkr: 400,
+        status: "open",
+      },
+      {
+        hostId: user.id,
+        fieldId: fields[2].id,
+        sport: "futsal",
+        startTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 19, 0),
+        endTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 20, 0),
+        minPlayers: 6,
+        maxPlayers: 10,
+        pricePerPlayerPkr: 350,
+        status: "open",
+      },
+      {
+        hostId: user.id,
+        fieldId: fields[0].id,
+        sport: "cricket",
+        startTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 17, 0),
+        endTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 19, 0),
+        minPlayers: 12,
+        maxPlayers: 22,
+        pricePerPlayerPkr: 300,
+        status: "open",
+      },
+    ];
+
+    await Promise.all(gameSeeds.map((game) => this.createGame(game)));
 
     const season = await this.createSeason({
       name: "Lahore Premier League - Spring 2025",

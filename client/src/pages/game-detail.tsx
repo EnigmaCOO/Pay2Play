@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Calendar, MapPin, Users, DollarSign, Clock } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { GameWithDetails } from "@shared/schema";
+import type { GameWithDetails, GamePayment } from "@shared/schema";
 
 export default function GameDetail() {
   const params = useParams();
@@ -29,12 +29,14 @@ export default function GameDetail() {
       const userId = "e58ca82c-13b7-4731-8616-9aeb56a0ede5"; // Seeded test user
       const idempotencyKey = `game-join-${gameId}-${userId}-${Date.now()}`;
       
-      const payment = await apiRequest("POST", `/api/game-pay/${gameId}/intent`, {
+      const paymentResponse = await apiRequest("POST", `/api/game-pay/${gameId}/intent`, {
         userId,
         provider: "mock",
         idempotencyKey,
       });
-      
+
+      const payment = (await paymentResponse.json()) as GamePayment;
+
       // Simulate webhook callback for mock provider - server will handle HMAC
       const webhookPayload = {
         paymentId: payment.id,

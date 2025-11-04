@@ -18,6 +18,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Home, Building2, Calendar, DollarSign, Users, Trophy, Settings } from "lucide-react";
+import type { Venue } from "@shared/schema";
 
 const menuItems = [
   { title: "Overview", url: "/dashboard", icon: Home },
@@ -119,7 +120,7 @@ function DashboardOverview() {
 
 function VenuesSection() {
   const userId = "e58ca82c-13b7-4731-8616-9aeb56a0ede5"; // Seeded test user
-  const { data: venues, isLoading } = useQuery({
+  const { data: venues = [], isLoading } = useQuery<Venue[]>({
     queryKey: ["/api/dashboard/venues", userId],
   });
 
@@ -133,7 +134,7 @@ function VenuesSection() {
       </p>
 
       <div className="grid gap-4">
-        {venues?.map((venue: any) => (
+        {venues.map((venue) => (
           <Card key={venue.id}>
             <CardHeader>
               <CardTitle>{venue.name}</CardTitle>
