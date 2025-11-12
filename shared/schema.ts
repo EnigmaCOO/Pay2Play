@@ -4,10 +4,19 @@ import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const sportEnum = pgEnum("sport", ["cricket", "football", "futsal", "padel"]);
 export const bookingStatusEnum = pgEnum("booking_status", ["pending", "confirmed", "cancelled"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["pending", "succeeded", "failed", "refunded"]);
 export const gameStatusEnum = pgEnum("game_status", ["open", "confirmed", "filled", "cancelled", "completed"]);
+export const skillLevelEnum = pgEnum("skill_level", ["beginner", "intermediate", "advanced"]);
+
+// Sports table
+export const sports = pgTable("sports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 
 // Users table
 export const users = pgTable("users", {
@@ -17,6 +26,7 @@ export const users = pgTable("users", {
   displayName: text("display_name"),
   phoneNumber: text("phone_number"),
   expoPushToken: text("expo_push_token"),
+  skillLevel: skillLevelEnum("skill_level"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -38,7 +48,7 @@ export const fields = pgTable("fields", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   venueId: varchar("venue_id").notNull().references(() => venues.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
-  sport: sportEnum("sport").notNull(),
+  sportId: varchar("sport_id").notNull().references(() => sports.id),
   pricePerHourPkr: integer("price_per_hour_pkr").notNull(),
   capacity: integer("capacity"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -94,15 +104,25 @@ export const games = pgTable("games", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   hostId: varchar("host_id").notNull().references(() => users.id),
   fieldId: varchar("field_id").notNull().references(() => fields.id),
-  sport: sportEnum("sport").notNull(),
+  sportId: varchar("sport_id").notNull().references(() => sports.id),
   startTime: timestamp("start_time").notNull(),
   endTime: timestamp("end_time").notNull(),
   minPlayers: integer("min_players").notNull(),
   maxPlayers: integer("max_players").notNull(),
   pricePerPlayerPkr: integer("price_per_player_pkr").notNull(),
   status: gameStatusEnum("status").notNull().default("open"),
+  skillLevel: skillLevelEnum("skill_level"),
   currentPlayers: integer("current_players").notNull().default(1),
+  waitlistCount: integer("waitlist_count").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// GameWaitlist table (users waiting for a spot in a full game)
+export const gameWaitlist = pgTable("game_waitlist", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  gameId: varchar("game_id").notNull().references(() => games.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
 // GamePlayers table (players who joined a game)
@@ -145,7 +165,7 @@ export const refunds = pgTable("refunds", {
 export const seasons = pgTable("seasons", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  sport: sportEnum("sport").notNull(),
+  sportId: varchar("sport_id").notNull().references(() => sports.id),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
   organizerId: varchar("organizer_id").notNull().references(() => users.id),
@@ -181,7 +201,19 @@ export const fixtures = pgTable("fixtures", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// BlockedUsers table
+export const blockedUsers = pgTable("blocked_users", {
+  userId: varchar("user_id").notNull().references(() => users.id),
+  blockedUserId: varchar("blocked_user_id").notNull().references(() => users.id),
+});
+
 // Relations
+export const sportsRelations = relations(sports, ({ many }) => ({
+  fields: many(fields),
+  games: many(games),
+  seasons: many(seasons),
+}));
+
 export const usersRelations = relations(users, ({ many }) => ({
   bookings: many(bookings),
   payments: many(payments),
@@ -190,6 +222,11 @@ export const usersRelations = relations(users, ({ many }) => ({
   gamePayments: many(gamePayments),
   organizedSeasons: many(seasons),
   captainedTeams: many(teams),
+}));
+
+export const blockedUsersRelations = relations(blockedUsers, ({ one }) => ({
+  user: one(users, { fields: [blockedUsers.userId], references: [users.id] }),
+  blockedUser: one(users, { fields: [blockedUsers.blockedUserId], references: [users.id] }),
 }));
 
 export const venuesRelations = relations(venues, ({ one, many }) => ({
@@ -201,6 +238,7 @@ export const venuesRelations = relations(venues, ({ one, many }) => ({
 
 export const fieldsRelations = relations(fields, ({ one, many }) => ({
   venue: one(venues, { fields: [fields.venueId], references: [venues.id] }),
+  sport: one(sports, { fields: [fields.sportId], references: [sports.id] }),
   slots: many(slots),
   games: many(games),
 }));
@@ -224,8 +262,15 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
 export const gamesRelations = relations(games, ({ one, many }) => ({
   host: one(users, { fields: [games.hostId], references: [users.id] }),
   field: one(fields, { fields: [games.fieldId], references: [fields.id] }),
+  sport: one(sports, { fields: [games.sportId], references: [sports.id] }),
   players: many(gamePlayers),
+  waitlist: many(gameWaitlist),
   payments: many(gamePayments),
+}));
+
+export const gameWaitlistRelations = relations(gameWaitlist, ({ one }) => ({
+  game: one(games, { fields: [gameWaitlist.gameId], references: [games.id] }),
+  user: one(users, { fields: [gameWaitlist.userId], references: [users.id] }),
 }));
 
 export const gamePlayersRelations = relations(gamePlayers, ({ one }) => ({
@@ -240,6 +285,7 @@ export const gamePaymentsRelations = relations(gamePayments, ({ one }) => ({
 
 export const seasonsRelations = relations(seasons, ({ one, many }) => ({
   organizer: one(users, { fields: [seasons.organizerId], references: [users.id] }),
+  sport: one(sports, { fields: [seasons.sportId], references: [sports.id] }),
   teams: many(teams),
   fixtures: many(fixtures),
 }));
@@ -259,21 +305,26 @@ export const fixturesRelations = relations(fixtures, ({ one }) => ({
 }));
 
 // Insert schemas
+export const insertSportSchema = createInsertSchema(sports).omit({ id: true, createdAt: true });
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 export const insertVenueSchema = createInsertSchema(venues).omit({ id: true, createdAt: true });
 export const insertFieldSchema = createInsertSchema(fields).omit({ id: true, createdAt: true });
 export const insertSlotSchema = createInsertSchema(slots).omit({ id: true, createdAt: true });
 export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true });
 export const insertPaymentSchema = createInsertSchema(payments).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertGameSchema = createInsertSchema(games).omit({ id: true, createdAt: true, currentPlayers: true });
+export const insertGameSchema = createInsertSchema(games).omit({ id: true, createdAt: true, currentPlayers: true, waitlistCount: true });
+export const insertGameWaitlistSchema = createInsertSchema(gameWaitlist).omit({ id: true, joinedAt: true });
 export const insertGamePlayerSchema = createInsertSchema(gamePlayers).omit({ id: true, joinedAt: true });
 export const insertGamePaymentSchema = createInsertSchema(gamePayments).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertRefundSchema = createInsertSchema(refunds).omit({ id: true, createdAt: true });
 export const insertSeasonSchema = createInsertSchema(seasons).omit({ id: true, createdAt: true });
 export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true, played: true, won: true, drawn: true, lost: true, points: true });
 export const insertFixtureSchema = createInsertSchema(fixtures).omit({ id: true, createdAt: true });
+export const insertBlockedUserSchema = createInsertSchema(blockedUsers);
 
 // TypeScript types
+export type Sport = typeof sports.$inferSelect;
+export type InsertSport = z.infer<typeof insertSportSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Venue = typeof venues.$inferSelect;
@@ -288,6 +339,8 @@ export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Game = typeof games.$inferSelect;
 export type InsertGame = z.infer<typeof insertGameSchema>;
+export type GameWaitlist = typeof gameWaitlist.$inferSelect;
+export type InsertGameWaitlist = z.infer<typeof insertGameWaitlistSchema>;
 export type GamePlayer = typeof gamePlayers.$inferSelect;
 export type InsertGamePlayer = z.infer<typeof insertGamePlayerSchema>;
 export type GamePayment = typeof gamePayments.$inferSelect;
@@ -300,12 +353,15 @@ export type Team = typeof teams.$inferSelect;
 export type InsertTeam = z.infer<typeof insertTeamSchema>;
 export type Fixture = typeof fixtures.$inferSelect;
 export type InsertFixture = z.infer<typeof insertFixtureSchema>;
+export type BlockedUser = typeof blockedUsers.$inferSelect;
+export type InsertBlockedUser = z.infer<typeof insertBlockedUserSchema>;
 
 // Extended types with relations
 export type GameWithDetails = Game & {
   field: Field & { venue: Venue };
   host: User;
   players: (GamePlayer & { user: User })[];
+  waitlist: (GameWaitlist & { user: User })[];
   _count?: { players: number };
 };
 

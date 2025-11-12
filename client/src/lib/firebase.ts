@@ -1,5 +1,6 @@
 import { initializeApp, type FirebaseApp } from "firebase/app";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyArQjL38x2egEme3PNNtjhICzt3hekcouA",
@@ -27,6 +28,12 @@ if (typeof window !== "undefined") {
         console.warn("Firebase analytics initialization failed", error);
       }
     });
+}
+
+// Connect to Firebase emulators in development
+if (import.meta.env.DEV) {
+  const functions = getFunctions(firebaseApp);
+  connectFunctionsEmulator(functions, "localhost", 5001);
 }
 
 export { analytics, firebaseApp, firebaseConfig };

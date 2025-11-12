@@ -473,7 +473,7 @@ export class DbStorage implements IStorage {
   async getBookingsByVenue(venueId: string): Promise<Booking[]> {
     const db = this.ensureDb();
     return db.query.bookings.findMany({
-      where: (bookings, { eq, and }) => {
+      where: (bookings) => {
         return sql`EXISTS (
           SELECT 1 FROM ${schema.slots} s
           JOIN ${schema.fields} f ON s.field_id = f.id

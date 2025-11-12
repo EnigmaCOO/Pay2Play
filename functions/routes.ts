@@ -1,7 +1,7 @@
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertVenueSchema, insertFieldSchema, insertSlotSchema, insertBookingSchema, insertPaymentSchema, insertGameSchema, insertGamePaymentSchema, insertSeasonSchema, insertTeamSchema, insertFixtureSchema } from "@shared/schema";
+import { insertVenueSchema, insertFieldSchema, insertSlotSchema, insertBookingSchema, insertGameSchema, insertSeasonSchema, insertTeamSchema } from "@shared/schema";
 import crypto from "crypto";
 import { notificationService, notifications } from "./notifications";
 

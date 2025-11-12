@@ -27,7 +27,7 @@ export async function checkAndCancelUnderfilledGames() {
         for (const payment of payments) {
           if (payment && payment.status === 'succeeded') {
             // Create refund record
-            const refund = await storage.createRefund({
+            await storage.createRefund({
               gamePaymentId: payment.id,
               amountPkr: payment.amountPkr,
               reason: `Game cancelled - minimum ${game.minPlayers} players not reached`,
