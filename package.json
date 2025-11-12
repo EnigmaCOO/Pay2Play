@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "firebase emulators:start --import=./firebase-emulator-data --export-on-exit=./firebase-emulator-data --only=functions,firestore,hosting & vite --debug",
     "check": "tsc",
-    "lint": "eslint .",
+    "lint": "eslint functions client",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "build": "vite build",
