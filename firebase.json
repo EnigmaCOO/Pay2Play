@@ -30,14 +30,20 @@
   ],
   "hosting": {
     "site": "pay-2-play-f1da3",
-    "public": "dist/public"
+    "public": "dist/public",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   },
   "emulators": {
     "functions": {
       "port": 5001
     },
     "firestore": {
-      "port": 8081
+      "port": 8082
     }
   }
 }

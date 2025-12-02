@@ -4,26 +4,26 @@ This document outlines the remaining tasks to complete the Pay2Play application,
 
 ## Phase 1: MVP Completion
 
-- [ ] **Implement Payment Integration:**
-    - [ ] Replace mock payment provider with a real one (Stripe, EasyPaisa, JazzCash).
-    - [ ] Build the complete checkout flow.
-    - [ ] Implement secure checkout with real payment processing.
-- [ ] **Build User Dashboard:**
-    - [ ] Create a user dashboard to view booking history.
-    - [ ] Add a section to the user dashboard to view joined/hosted games.
-- [ ] **Complete Venue Dashboard:**
-    - [ ] Implement the bookings view for venue owners.
-    - [ ] Implement the revenue and payouts view for venue owners.
-- [ ] **Implement Player Wallets:**
-    - [ ] Design the database schema for player wallets.
-    - [ ] Implement backend APIs for managing wallet balances.
-    - [ ] Build the frontend UI for users to view and manage their wallets.
-- [ ] **Implement Authentication:**
-    - [ ] Replace hardcoded user IDs with a proper authentication system (e.g., OTP, Google, Apple).
-- [ ] **Enhance Cancellation & Refund Engine:**
-    - [ ] Add support for user-initiated cancellations.
-    - [ ] Add support for cancellations of regular pitch bookings (not just pickup games).
-    - [ ] Integrate with the real payment provider for refunds.
+- [X] **Implement Payment Integration:**
+    - [X] Replace mock payment provider with a real one (Stripe, EasyPaisa, JazzCash).
+    - [X] Build the complete checkout flow.
+    - [X] Implement secure checkout with real payment processing.
+- [X] **Build User Dashboard:**
+    - [X] Create a user dashboard to view booking history.
+    - [X] Add a section to the user dashboard to view joined/hosted games.
+- [X] **Complete Venue Dashboard:**
+    - [X] Implement the bookings view for venue owners.
+    - [X] Implement the revenue and payouts view for venue owners.
+- [X] **Implement Player Wallets:**
+    - [X] Design the database schema for player wallets.
+    - [X] Implement backend APIs for managing wallet balances.
+    - [X] Build the frontend UI for users to view and manage their wallets.
+- [X] **Implement Authentication:**
+    - [X] Replace hardcoded user IDs with a proper authentication system (e.g., OTP, Google, Apple).
+- [X] **Enhance Cancellation & Refund Engine:**
+    - [X] Add support for user-initiated cancellations.
+    - [X] Add support for cancellations of regular pitch bookings (not just pickup games).
+    - [X] Integrate with the real payment provider for refunds.
 
 ## Phase 2: Expansion
 

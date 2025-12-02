@@ -1,0 +1,46 @@
+{
+  "general": {
+    "sessionRetention": {
+      "enabled": true
+    },
+    "previewFeatures": true,
+    "enablePromptCompletion": true
+  },
+  "output": {
+    "format": "text"
+  },
+  "ui": {
+    "footer": {
+      "hideContextPercentage": false
+    },
+    "showMemoryUsage": true
+  },
+  "context": {
+    "discoveryMaxDirs": 500,
+    "fileFiltering": {
+      "respectGitIgnore": false
+    }
+  },
+  "tools": {
+    "shell": {
+      "showColor": true
+    },
+    "autoAccept": false,
+    "truncateToolOutputThreshold": 2000000,
+    "truncateToolOutputLines": 500,
+    "enableMessageBusIntegration": true
+  },
+  "security": {
+    "folderTrust": {
+      "enabled": true
+    }
+  },
+  "experimental": {
+    "codebaseInvestigatorSettings": {
+      "maxNumTurns": 100
+    }
+  },
+  "ide": {
+    "enabled": true
+  }
+}

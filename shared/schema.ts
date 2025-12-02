@@ -27,6 +27,7 @@ export const users = pgTable("users", {
   phoneNumber: text("phone_number"),
   expoPushToken: text("expo_push_token"),
   skillLevel: skillLevelEnum("skill_level"),
+  balancePkr: integer("balance_pkr").notNull().default(0), // New field for wallet balance
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -138,6 +139,20 @@ export const gamePlayers = pgTable("game_players", {
 export const gamePayments = pgTable("game_payments", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   gameId: varchar("game_id").notNull().references(() => games.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  amountPkr: integer("amount_pkr").notNull(),
+  provider: text("provider").notNull().default("mock"),
+  providerRef: text("provider_ref"),
+  status: paymentStatusEnum("status").notNull().default("pending"),
+  idempotencyKey: text("idempotency_key").unique(),
+  redirectUrl: text("redirect_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// WalletPayments table (payments for topping up wallet)
+export const walletPayments = pgTable("wallet_payments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
   amountPkr: integer("amount_pkr").notNull(),
   provider: text("provider").notNull().default("mock"),
@@ -283,6 +298,10 @@ export const gamePaymentsRelations = relations(gamePayments, ({ one }) => ({
   user: one(users, { fields: [gamePayments.userId], references: [users.id] }),
 }));
 
+export const walletPaymentsRelations = relations(walletPayments, ({ one }) => ({
+  user: one(users, { fields: [walletPayments.userId], references: [users.id] }),
+}));
+
 export const seasonsRelations = relations(seasons, ({ one, many }) => ({
   organizer: one(users, { fields: [seasons.organizerId], references: [users.id] }),
   sport: one(sports, { fields: [seasons.sportId], references: [sports.id] }),
@@ -316,6 +335,7 @@ export const insertGameSchema = createInsertSchema(games).omit({ id: true, creat
 export const insertGameWaitlistSchema = createInsertSchema(gameWaitlist).omit({ id: true, joinedAt: true });
 export const insertGamePlayerSchema = createInsertSchema(gamePlayers).omit({ id: true, joinedAt: true });
 export const insertGamePaymentSchema = createInsertSchema(gamePayments).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertWalletPaymentSchema = createInsertSchema(walletPayments).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertRefundSchema = createInsertSchema(refunds).omit({ id: true, createdAt: true });
 export const insertSeasonSchema = createInsertSchema(seasons).omit({ id: true, createdAt: true });
 export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true, played: true, won: true, drawn: true, lost: true, points: true });
@@ -345,6 +365,8 @@ export type GamePlayer = typeof gamePlayers.$inferSelect;
 export type InsertGamePlayer = z.infer<typeof insertGamePlayerSchema>;
 export type GamePayment = typeof gamePayments.$inferSelect;
 export type InsertGamePayment = z.infer<typeof insertGamePaymentSchema>;
+export type WalletPayment = typeof walletPayments.$inferSelect;
+export type InsertWalletPayment = z.infer<typeof insertWalletPaymentSchema>;
 export type Refund = typeof refunds.$inferSelect;
 export type InsertRefund = z.infer<typeof insertRefundSchema>;
 export type Season = typeof seasons.$inferSelect;
@@ -360,6 +382,7 @@ export type InsertBlockedUser = z.infer<typeof insertBlockedUserSchema>;
 export type GameWithDetails = Game & {
   field: Field & { venue: Venue };
   host: User;
+  sport: Sport; // Added sport relation
   players: (GamePlayer & { user: User })[];
   waitlist: (GameWaitlist & { user: User })[];
   _count?: { players: number };
