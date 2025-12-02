@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "firebase emulators:start --import=./firebase-emulator-data --export-on-exit=./firebase-emulator-data --only=functions,firestore,hosting & vite --debug",
     "check": "tsc",
-    "lint": "eslint functions client",
+    "lint": "eslint backend/functions apps/player-app",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "build": "vite build",
     "build:web": "vite build",
-    "build:functions": "tsc --project functions/tsconfig.json",
+    "build:functions": "tsc --project backend/functions/tsconfig.json",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
@@ -89,6 +89,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@gannonh/firebase-mcp": "^1.4.9",
     "@replit/vite-plugin-cartographer": "^0.3.1",
     "@replit/vite-plugin-dev-banner": "^0.1.1",
     "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
@@ -128,6 +129,6 @@
     "bufferutil": "^4.0.8"
   },
   "ignore": [
-    "functions"
+    "backend/functions"
   ]
 }

@@ -42,5 +42,18 @@
   },
   "ide": {
     "enabled": true
+  },
+  "mcpServers": {
+    "firebase-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gannonh/firebase-mcp"
+      ],
+      "env": {
+        "SERVICE_ACCOUNT_KEY_PATH": "/Users/lionking/Pay2Play/code/Pay2Play-googleserviceaccount.json",
+        "FIREBASE_STORAGE_BUCKET": "pay-2-play-f1da3.firebasestorage.app"
+      }
+    }
   }
 }

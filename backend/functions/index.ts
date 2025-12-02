@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes.js";
-import { startAutoCancelScheduler } from "./auto-cancel.js";
+import { startAutoCancelScheduler } from "./booking/auto-cancel.js";
 
 const app = express();
 app.use(express.json());

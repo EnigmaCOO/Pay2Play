@@ -12,7 +12,7 @@
       "predeploy": [
         "npm --prefix \"$RESOURCE_DIR\" run build"
       ],
-      "source": "functions"
+      "source": "backend/functions"
     }
   ],
   "apphosting": [
@@ -24,7 +24,7 @@
         ".git",
         "firebase-debug.log",
         "firebase-debug.*.log",
-        "functions"
+        "backend/functions"
       ]
     }
   ],
