@@ -1,121 +1,83 @@
-interface PushNotification {
-  title: string;
-  body: string;
-  data?: Record<string, any>;
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import { Booking, User, Notification as UserNotification } from "@pay2play/types";
+import { Timestamp } from "firebase-admin/firestore";
+
+// Initialize Firebase Admin SDK if not already initialized
+if (!admin.apps.length) {
+  admin.initializeApp();
 }
+const db = admin.firestore();
 
-interface NotificationService {
-  sendToUser(userId: string, notification: PushNotification): Promise<void>;
-  sendToMultipleUsers(userIds: string[], notification: PushNotification): Promise<void>;
-}
+// Note: To send push notifications, you would use a library like 'expo-server-sdk'.
+// import { Expo } from "expo-server-sdk";
+// const expo = new Expo();
 
-class MockNotificationService implements NotificationService {
-  async sendToUser(userId: string, notification: PushNotification): Promise<void> {
-    console.log(`📱 [MOCK] Push notification to user ${userId}:`, notification);
-  }
 
-  async sendToMultipleUsers(userIds: string[], notification: PushNotification): Promise<void> {
-    console.log(`📱 [MOCK] Push notification to ${userIds.length} users:`, notification);
-  }
-}
+/**
+ * Firestore trigger that sends a notification when a booking is confirmed.
+ */
+export const onBookingConfirmed = functions.firestore
+  .document("bookings/{bookingId}")
+  .onUpdate(async (change, context) => {
+    const bookingBefore = change.before.data() as Booking;
+    const bookingAfter = change.after.data() as Booking;
 
-// TODO: Implement ExpoNotificationService once expo-server-sdk is installable
-// class ExpoNotificationService implements NotificationService {
-//   private expo: Expo;
-//   
-//   constructor() {
-//     this.expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
-//   }
-//   
-//   async sendToUser(userId: string, notification: PushNotification): Promise<void> {
-//     const user = await storage.getUserById(userId);
-//     if (!user?.pushToken) return;
-//     
-//     if (!Expo.isExpoPushToken(user.pushToken)) {
-//       console.error(`Invalid push token for user ${userId}`);
-//       return;
-//     }
-//     
-//     await this.expo.sendPushNotificationsAsync([{
-//       to: user.pushToken,
-//       title: notification.title,
-//       body: notification.body,
-//       data: notification.data,
-//     }]);
-//   }
-//   
-//   async sendToMultipleUsers(userIds: string[], notification: PushNotification): Promise<void> {
-//     const users = await Promise.all(userIds.map(id => storage.getUserById(id)));
-//     const validTokens = users
-//       .filter(u => u?.pushToken && Expo.isExpoPushToken(u.pushToken))
-//       .map(u => u!.pushToken!);
-//     
-//     if (validTokens.length === 0) return;
-//     
-//     const messages = validTokens.map(token => ({
-//       to: token,
-//       title: notification.title,
-//       body: notification.body,
-//       data: notification.data,
-//     }));
-//     
-//     const chunks = this.expo.chunkPushNotifications(messages);
-//     for (const chunk of chunks) {
-//       await this.expo.sendPushNotificationsAsync(chunk);
-//     }
-//   }
-// }
+    // Check if the booking status changed to 'confirmed'.
+    if (bookingBefore.status === "pending" && bookingAfter.status === "confirmed") {
+      const userId = bookingAfter.userId;
+      const bookingId = context.params.bookingId;
 
-// Use mock service until expo-server-sdk can be installed
-export const notificationService: NotificationService = new MockNotificationService();
+      functions.logger.info(`Booking ${bookingId} confirmed for user ${userId}. Preparing notification.`);
 
-// Notification templates
-export const notifications = {
-  gameJoined: (gameSport: string, playerCount: number, maxPlayers: number) => ({
-    title: `Player Joined Your ${gameSport} Game!`,
-    body: `${playerCount}/${maxPlayers} players confirmed. Game filling up!`,
-    data: { type: "game_joined" },
-  }),
-  
-  gameFull: (gameSport: string) => ({
-    title: `Game Full!`,
-    body: `Your ${gameSport} game is now full. Get ready to play!`,
-    data: { type: "game_full" },
-  }),
-  
-  gameCancelled: (gameSport: string, reason: string) => ({
-    title: `Game Cancelled`,
-    body: `Your ${gameSport} game was cancelled: ${reason}. Full refund issued.`,
-    data: { type: "game_cancelled" },
-  }),
-  
-  gameReminder: (gameSport: string, minutesUntilStart: number) => ({
-    title: `Game Starting Soon!`,
-    body: `Your ${gameSport} game starts in ${minutesUntilStart} minutes. See you there!`,
-    data: { type: "game_reminder" },
-  }),
-  
-  paymentSuccess: (amount: number) => ({
-    title: `Payment Confirmed`,
-    body: `Your payment of PKR ${amount} was successful. You're all set!`,
-    data: { type: "payment_success" },
-  }),
-  
-  refundIssued: (amount: number) => ({
-    title: `Refund Processed`,
-    body: `PKR ${amount} has been refunded to your account.`,
-    data: { type: "refund_issued" },
-  }),
-  
-  walletTopUpSuccess: (amount: number) => ({
-    title: `Wallet Top-Up Successful`,
-    body: `Your wallet has been topped up with PKR ${amount}.`,
-    data: { type: "wallet_top_up_success" },
-  }),
+      // 1. Create a Notification document in Firestore
+      const notificationPayload: UserNotification = {
+        id: db.collection("users").doc(userId).collection("notifications").doc().id,
+        userId,
+        type: "booking_confirmation",
+        title: "Booking Confirmed!",
+        body: `Your booking for ${bookingAfter.fieldName || 'a field'} at ${bookingAfter.venueName || 'a venue'} is confirmed.`,
+        isRead: false,
+        createdAt: Timestamp.now(),
+        relatedEntityId: bookingId,
+      };
+      
+      const notificationRef = db.collection(`users/${userId}/notifications`).doc(notificationPayload.id);
+      await notificationRef.set(notificationPayload);
+      
+      // 2. Send a Push Notification
+      const userRef = db.collection("users").doc(userId);
+      const userDoc = await userRef.get();
 
-  waitlistSpotOpen: (gameId: string, token: string) => ({
-    title: "A spot has opened up!",
-    body: "A spot has opened up in a game you're on the waitlist for. Join now!",
-    data: { type: "waitlist_spot_open", gameId, token },
-  }),
-};
+      if (userDoc.exists) {
+        const userData = userDoc.data() as User;
+        const expoPushToken = userData.expoPushToken;
+
+        if (expoPushToken) {
+          // --- Placeholder for Expo Push Notification ---
+          // if (Expo.isExpoPushToken(expoPushToken)) {
+          //   try {
+          //     await expo.sendPushNotificationsAsync([{
+          //       to: expoPushToken,
+          //       sound: "default",
+          //       title: notificationPayload.title,
+          //       body: notificationPayload.body,
+          //       data: { bookingId },
+          //     }]);
+          //     functions.logger.info(`Push notification sent to user ${userId} for booking ${bookingId}.`);
+          //   } catch (error) {
+          //     functions.logger.error(`Failed to send push notification to user ${userId}:`, error);
+          //   }
+          // }
+          // --- End Placeholder ---
+          functions.logger.info(`(Mock) Push notification payload for user ${userId}:`, {
+            to: expoPushToken,
+            title: notificationPayload.title,
+            body: notificationPayload.body,
+          });
+        } else {
+          functions.logger.warn(`User ${userId} does not have an Expo push token. Skipping push notification.`);
+        }
+      }
+    }
+  });

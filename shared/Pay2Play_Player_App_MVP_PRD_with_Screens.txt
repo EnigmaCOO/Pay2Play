@@ -1,0 +1,479 @@
+﻿Pay2Play Player App – MVP PRD 
+1. Product Overview 
+Product: Pay2Play – Player App (MVP) 
+Platform: Expo React Native (iOS, Android, Web) 
+Market (Phase 1): Lahore, Pakistan (Cricket, Futsal/Football, Padel) 
+The Player App is the consumer-facing experience of Pay2Play: it lets players discover vetted venues, see real-time availability, book and pay digitally, find teammates/opponents, and join leagues/events—while enjoying visible discounts funded by venue promotions. 
+The MVP focuses on the fastest possible journey from “I want to play” to “booking confirmed”, targeted at “book a pitch in under 60 seconds” from home screen to success state. 
+2. Goals & Non-Goals 
+2.1 Goals (MVP) 
+1. Let a new player: 
+○ Download/open the app, 
+○ Complete onboarding, 
+○ Discover a venue, 
+○ See real-time slots, 
+○ Book & pay, 
+○ See clear confirmation + discount, 
+○ All in < 60 seconds under ideal network conditions.
+2. Enable basic social play: 
+○ Players can join host-led matches that need extra players. 
+○ Players can post simple LFP/LFG posts (no advanced matchmaking yet). 3. Establish trust & retention hooks: 
+○ Transparent venue info, pricing, and available time slots. 
+○ Display of discount and money saved per booking. 
+○ Basic loyalty & rewards currency (credits) earned via play and referrals. 
+2.2 Non-Goals (Not in this MVP) 
+● Split payments between teammates. 
+● Dynamic pricing rules engine for venues. 
+● Weather & AI-based attendance prediction. 
+● Full tournament management, marketplace, or AI matchmaking. 
+These are planned for later phases. 
+3. Target Users & Personas 
+3.1 Casual Captain (“Organizer Player”) 
+● Age 18–35, organizes weekly 5-a-side or tape-ball games. 
+● Needs: fast ground booking, reliable slots, easy way to fill missing players. ● Key flows: Onboarding → Venue Discovery → Booking → Host Match → Invite/Share. 
+3.2 Regular Player (“Joiner”)
+● Age 16–35, joins existing games more than organizing them. ● Needs: visibility of open games, simple join flow, in-app chat. ● Key flows: Onboarding → Player Matching → Join Host-Led Match → Pay. 
+4. Core Experience & Navigation 
+4.1 App Navigation Structure (MVP) 
+Bottom tab bar (4–5 tabs): 
+1. Home 
+○ Smart shortcuts: “Book a pitch”, “Join a match tonight”. 
+○ Highlighted venues and open matches. 
+2. Venues 
+○ Venue Discovery, search, filters, and venue detail. 
+3. Matches 
+○ Player Matching feed (LFP/LFG) + Host-led Gameplay list. 4. Messages 
+○ Conversation list and chat threads. 
+5. Profile 
+○ Player Profile, rewards & referrals, booking history, settings. 5. Feature Specifications
+For each feature, I’ll cover: User stories → Functional requirements → UX & visualization notes → Analytics & edge cases. 
+5.1 Onboarding 
+5.1.1 User Stories 
+● As a new player, I want to quickly set up my basic preferences so the app shows relevant venues and matches. 
+● As a returning player, I want to skip unnecessary steps and go directly to the home screen. 
+5.1.2 Functional Requirements 
+1. First-run detection 
+○ Detect first app launch vs logged-in user. 
+2. Auth 
+○ MVP: Phone number + OTP (primary), optionally social (Google/Apple) if ready. 3. Data collected during onboarding 
+○ Name and display handle (e.g. “Abdullah F.”). 
+○ Primary location: city (Lahore) and area/neighborhood. 
+○ Preferred sports (multi-select: Cricket, Football/Futsal, Padel). 
+○ Skill level (Beginner / Intermediate / Advanced). 
+○ Time preference (Evenings / Weekends / Flexible). 
+4. Consent & policies 
+○ Terms & Conditions, Privacy Policy acceptance. 
+5. Onboarding completion
+○ Persist profile data. 
+○ Navigate to Home. 
+5.1.3 UX / Visualization 
+Screens: 
+1. Welcome Screen 
+○ Branding, tagline: “Pay less, play more” / “Book a pitch in under 60 seconds”. ○ Buttons: “Continue with Phone” (primary). 
+2. Phone Verification 
+○ Phone input → OTP verification screen. 
+3. Basic Info 
+○ Form with Name, Avatar selection (preset avatars) and preferred sport chips. 4. Preferences 
+○ Select city/area (dropdown or typeahead). 
+○ Sport, skill level, time preference (radio buttons or segment controls). 5. Review & Continue 
+○ Short summary and “Finish & Go to Home”. 
+5.2 Player Profiles 
+5.2.1 User Stories 
+● As a player, I want a profile with my preferred sports and avatar so other players know what I play. 
+● As a host, I want to see basic info on players joining my match.
+5.2.2 Functional Requirements 
+● Store: 
+○ Name, avatar, city/area. 
+○ Preferred sports list + primary sport. 
+○ Skill level per sport (optional MVP: one global level). 
+○ Short bio (max 160 chars). 
+● Profile editing: 
+○ Editable from Profile tab. 
+● View: 
+○ Public mini-profile (when tapping a player in match participants or chat). 
+5.2.3 UX / Visualization 
+Profile Screen (tab) 
+● Header: Avatar, name, primary sport, city. 
+● Sections: 
+○ About: Bio, skill level. 
+○ Sports: Sport chips with icons. 
+○ Stats (stub for future): “Games played, win rate” placeholders (greyed or “Coming soon”). 
+○ Bookings: Shortcut to booking history. 
+○ Rewards: See current credits balance and referral link. 
+5.3 Venue Discovery
+5.3.1 User Stories 
+● As a player, I want to discover vetted venues near me by sport, area, and amenities. 
+5.3.2 Functional Requirements 
+● Venue List: 
+○ Data: name, sport(s), location, price per slot/hour, rating (if available), key amenities (lights, parking, showers), thumbnail image, discount badge (if active). 
+● Search: 
+○ Search by venue name, area, or keyword. 
+● Filters: 
+○ Sport, location/area, price range, indoor/outdoor, “has discount”. 
+● Sorting: 
+○ Recommended (default), Price (low–high), Distance (if location available). 
+5.3.3 UX / Visualization 
+Venues Tab: 
+● Top: Search bar + filter icon. 
+● Underneath: Horizontal chips (Cricket, Football, Padel). 
+● Venue cards: 
+○ Image banner. 
+○ Name + area. 
+○ Price from (e.g., “From PKR 5,000 / hour”). 
+○ Discount pill: “Save up to 20%”. 
+○ Rating (stars) and number of reviews (when available).
+Venue Detail Screen: 
+● Header: Image carousel, venue name, area, rating. 
+● Tabs/sections: 
+1. About: Description, amenities list, house rules. 
+2. Availability: Date selector + time slot grid (see next section). 
+3. Location: Map or address + directions link. 
+5.4 Real-time Availability 
+5.4.1 User Stories 
+● As a player, I need to see which slots are actually free so I can confidently book. ● As a venue, I want a single source of truth to avoid double bookings. 
+5.4.2 Functional Requirements 
+● Date selector (today + next 7–14 days). 
+● Slots: 
+○ Fetch real-time slot availability from backend for chosen sport, date, and pitch/court (if multiple). 
+○ Statuses: Available, Booked, Unavailable (greyed), Past (disabled). ● Slot duration: 
+○ Configurable per venue (e.g., 60 or 90 minutes). 
+● Time zone: Local (PKT). 
+5.4.3 UX / Visualization 
+In Venue Detail → Availability:
+● Horizontal date strip (Today, Wed 26, Thu 27…). 
+● Beneath: segmented control to choose pitch/court if venue has multiple. ● Grid-style slot display: 
+○ Pill buttons with time range (e.g., “7:00–8:00 PM”). 
+○ Color coding: 
+■ Primary for Available. 
+■ Grey for Booked/Unavailable. 
+● Selecting a slot leads to Booking Review screen. 
+5.5 Booking Engine 
+5.5.1 User Stories 
+● As a player, I want to confirm details (date, time, price, discount) before paying. ● As a player, I want to see and manage my upcoming and past bookings. 
+5.5.2 Functional Requirements 
+1. Booking creation 
+○ Inputs: venue, sport, pitch (if any), date, time slot, number of players (approx.), price, discount applied, final amount. 
+○ API call to create pending booking before payment; confirmed after successful payment. 
+2. Booking status 
+○ Pending, Confirmed, Cancelled, Refunded. 
+3. Booking history
+○ List of upcoming and past bookings for the user. 
+4. Cancellation 
+○ MVP: simple cancellation rule (e.g., free cancellation until X hours before; beyond that, non-refundable or partial) aligning with existing refund engine. 
+5.5.3 UX / Visualization 
+Booking Review Screen: 
+● Card with: 
+○ Venue, sport, pitch. 
+○ Date and time slot. 
+○ Price breakdown: 
+■ Base price 
+■ Discount (“You save PKR X thanks to Pay2Play”) 
+■ Payable amount. 
+● Bottom CTA: “Pay & Book”. 
+My Bookings Screen (under Profile or separate entry): 
+● Tabs: Upcoming | Past. 
+● Booking cards displaying: 
+○ Venue, sport icon, date/time. 
+○ Status chip (Confirmed, Cancelled). 
+● Tapping card: Booking Detail with map, rules, cancellation button (if allowed), “Contact venue” and “Open chat”.
+5.6 Digital Payments 
+5.6.1 User Stories 
+● As a player, I want to pay seamlessly via local payment methods and see a clear confirmation. 
+5.6.2 Functional Requirements 
+● Integrations (MVP): 
+○ JazzCash, Easypaisa, bank card gateway (or Stripe for card). 
+● Payment flows: 
+○ Initiate payment from Booking Review. 
+○ Show loading/success/failure states. 
+● Wallet / credits: 
+○ Show available credits (loyalty) that can be applied to reduce payable amount. ● Receipts: 
+○ Store transaction reference and display on Booking Confirmation and Booking Detail. 
+5.6.3 UX / Visualization 
+Payment Screen: 
+● Order summary at top. 
+● Payment options list: 
+○ “Pay with JazzCash” 
+○ “Pay with Easypaisa” 
+○ “Pay with Card”
+● Toggle: “Apply X credits (save PKR Y)” when loyalty is present. 
+● After success: 
+○ Booking Success Screen with confetti animation, quick share CTA: “Share booking with your team”. 
+5.7 Discount Display 
+5.7.1 User Stories 
+● As a player, I want to clearly see how much I am saving so that I feel the value of using Pay2Play. 
+5.7.2 Functional Requirements 
+● Per booking: 
+○ Show full venue price vs discounted price. 
+○ Show “You saved PKR X” line item. 
+● On venue and search cards: 
+○ Show discount badge or highlight (e.g., “Up to 20% off today”). 
+● Hook into backend discount pool logic. 
+5.7.3 UX / Visualization 
+● Venue cards: small colored pill “Save up to 20%”. 
+● Booking Review/Payment: line item “Discount (Pay2Play offer)” and “You saved PKR X”. ● Booking Success: highlight text “You saved PKR X on this game”. 
+5.8 Player Matching (LFP/LFG Posts)
+5.8.1 User Stories 
+● As a host, I want to create a post saying I’m looking for players for a booked slot. 
+● As a player, I want to see nearby games where teams are missing players and join easily. 
+5.8.2 Functional Requirements 
+1. Create LFP/LFG Post 
+○ Link to an existing booking OR generic “looking for ground + players” (MVP: strongly encourage linking to a booking). 
+○ Fields: 
+■ Sport, date, time, venue (if fixed), skill level, required positions/roles, number of players needed. 
+2. Match Feed 
+○ List posts filtered by: 
+■ Sport, date range, area, skill level. 
+3. Join Flow 
+○ Player taps “Request to Join”. 
+○ Host gets a notification and can accept/decline. 
+4. Participant list 
+○ For each match, show number of confirmed players and their mini-profiles. 
+5.8.3 UX / Visualization 
+Matches Tab: 
+● Top: Sport filter chips + date filter. 
+● Cards:
+○ Title: “5-a-side game needs 2 players”. 
+○ Subtitle: Venue/Area + time. 
+○ Chips: Skill level, sport. 
+○ CTA: “Request to Join”. 
+● Detail Screen: 
+○ Host info, slots, list of confirmed players, “Chat with Host” button. 
+5.9 Leagues & Events 
+5.9.1 User Stories 
+● As a player, I want to discover leagues and tournaments and register from the app. 
+5.9.2 Functional Requirements 
+● Basic list of upcoming leagues/events: 
+○ Fields: title, sport, organizer name, venue(s), dates, registration fee, registration deadline. 
+● Registration: 
+○ MVP: simple “Register Interest” or “External Link” (to WhatsApp/website) if full payment integration for leagues isn’t ready. 
+● Event detail: 
+○ Description, schedule overview, rules, link to contact organizer. 
+5.9.3 UX / Visualization 
+● Section on Home & Matches: 
+○ Horizontal carousel: “Upcoming Leagues & Events”.
+● Event Detail Screen: 
+○ Hero banner, title, sports icons. 
+○ Date range, location, fee. 
+○ CTA: “Register” (in-app or external). 
+5.10 In-app Messaging 
+5.10.1 User Stories 
+● As a host, I want to coordinate with players who joined my match. ● As a player, I want to ask venue-specific questions (e.g., ball provided?). 
+5.10.2 Functional Requirements 
+● Conversation types: 
+○ Player ↔ Player (around matches). 
+○ Player ↔ Venue (booking-related). 
+● Message basics: 
+○ Text messages, timestamps, read status (simple). 
+○ Push notifications for new messages. 
+● Linking: 
+○ Chat thread associated with a booking or match. 
+5.10.3 UX / Visualization 
+Messages Tab: 
+● List of conversations:
+○ Avatar (user or venue logo), name, last message snippet, timestamp. ● Chat Screen: 
+○ Standard bubble layout, sticky header with opponent name and linked booking/match info. 
+5.11 Loyalty & Rewards 
+5.11.1 User Stories 
+● As a player, I want to earn credits when I play and refer friends, and later redeem them to pay less. 
+5.11.2 Functional Requirements 
+● Credits: 
+○ Earn rules (MVP simple): 
+■ X credits per completed booking. 
+■ Y credits when a referral completes their first booking. 
+○ Redeem rules: 
+■ 1 credit = 1 PKR discount (or other conversion). 
+■ Max % of booking payable with credits (e.g., 30%). 
+● Balance: 
+○ Display on Profile and Payment screen. 
+● Referral: 
+○ Each user gets a referral link/code. 
+○ Track installs and first booking with that code.
+5.11.3 UX / Visualization 
+Rewards Section (Profile): 
+● Current balance: “You have 450 credits”. 
+● Recent activity: “+200 from last game at XYZ”, “+250 from inviting Ali”. ● Button: “Invite friends” → share sheet. 
+Payment screen shows toggle: “Apply 200 credits (save PKR 200)”. 
+5.12 Organizers / Host-led Gameplay 
+(Tightly coupled with Player Matching & Booking) 
+5.12.1 User Stories 
+● As a host (player or organizer), I want to list my match so others can join. ● As a player, I want to scroll a feed of host-led games and join with one tap. 
+5.12.2 Functional Requirements 
+● Create Host-led Match: 
+○ Either: 
+■ From a confirmed booking: “List this booking as open game”. 
+■ Or from Matches tab: create generic host-led game (MVP: strongly prefer linking to booking). 
+● Fields: 
+○ Maximum players, open slots, cost per player (informational), rules (e.g., “no studs on turf”). 
+● Joining: 
+○ When player is accepted, show:
+■ Match in “Joined Matches” section. 
+■ Payment expectations (if host collects money offline vs via app; MVP: show offline cash note). 
+5.12.3 UX / Visualization 
+● On Booking Detail: Button “Host a game from this slot”. 
+● Host-led Game Creation Sheet: 
+○ Step 1: Confirm date/time/sport/venue (prefilled). 
+○ Step 2: Set number of extra players and any notes. 
+○ Step 3: Publish → appears on Matches feed. 
+6. Cross-cutting Requirements 
+6.1 Performance 
+● All key pages (Home, Venues list, Venue detail) should load within 2–3 seconds on average 4G. 
+6.2 Security & Privacy 
+● Phone number and personal details stored securely. 
+● Payment handled via PCI-compliant gateways; no sensitive card data stored directly. 
+6.3 Analytics & KPIs 
+Track: 
+● Time from app open → booking confirmation (median). 
+● Conversion funnel:
+○ Onboarding complete 
+○ Venue viewed 
+○ Slot selected 
+○ Payment started 
+○ Payment success 
+● Engagement: 
+○ DAU/MAU 
+○ Matches joined/created per user 
+● Monetization: 
+○ Average discount per booking 
+○ Credits earned vs redeemed 
+These align with the broader KPIs like conversion time and retention rate in the strategic blueprint. 
+7. Out of Scope (for This MVP) 
+● Full player statistics and advanced gamification (badges, levels beyond simple XP). ● Corporate tournament management suite. 
+● Equipment marketplace. 
+● AI-driven matchmaking or national analytics dashboards.
+Screen Mock: Academies – Empty State File: IMG_3442.jpeg 
+  
+
+Description: Academies directory with search, sport type filter, and 'No Academies Found' message. Represents the academies discovery UX using the same list/filter pattern as Leagues & Events listing.
+Screen Mock: Academies – Empty State (cont.) 
+PRD Linkage: Relates to: 4.1 App Navigation (Home → Academies), 5.3 Venue Discovery, 5.9 Leagues & Events (list pattern).
+Screen Mock: Profile Hub 
+File: IMG_3443.jpeg 
+  
+
+Description: Profile overlay with avatar, player name (Musa), and navigation rows for Account, Attributes, Statistics, Connections, Joined Academies. 
+PRD Linkage: Relates to: 4.1 App Navigation (Profile tab), 5.2 Player Profiles.
+Screen Mock: Teams – Explore (Grid Top) File: IMG_3444.jpeg 
+  
+
+Description: Teams discovery screen with Explore/Joined/Create tabs, search, filter button, and grid of team cards. 
+PRD Linkage: Relates to: 4.1 App Navigation (Home → Teams), 5.8 Player Matching (team
+Screen Mock: Teams – Explore (Grid Top) (cont.) discovery pattern).
+Screen Mock: Player Statistics 
+File: IMG_3445.jpeg 
+  
+
+Description: Statistics screen with Football/Padel tabs, player header, and stat cards (Wins, Losses, Draw, Goals, Rating, MOTM, Organized, No-show). 
+PRD Linkage: Relates to: 5.2 Player Profiles (Stats subsection), 5.11 Loyalty & Rewards
+Screen Mock: Player Statistics (cont.) (future gamification hooks).
+Screen Mock: Teams – Explore (Scrolled) File: IMG_3446.jpeg 
+  
+
+Description: Continuation of the Teams Explore grid, showing additional team cards in the same layout. 
+PRD Linkage: Relates to: same as IMG_3444 – Teams discovery UI.
+Screen Mock: Notifications – Empty State File: IMG_3447.jpeg 
+  
+
+Description: Notifications center with green header and 'No Notifications Yet' empty state. 
+PRD Linkage: Relates to: 4.1 App Navigation (global bell icon), 6.3 Analytics & KPIs
+Screen Mock: Notifications – Empty State (cont.) (events that generate notifications).
+Screen Mock: Booking – Grounds List (Set 1) File: IMG_3448.jpeg 
+  
+
+Description: Booking tab listing multiple grounds with banner image, price from, rating, and location; search + filter at top. 
+PRD Linkage: Relates to: 5.3 Venue Discovery (list cards), 5.5 Booking Engine (pre-booking
+Screen Mock: Booking – Grounds List (Set 1) (cont.) venue selection).
+Screen Mock: Account – Name Required Modal File: IMG_3449.jpeg 
+  
+
+Description: Account screen with modal 'Welcome to MAIDAN' asking user to provide their name to proceed. 
+PRD Linkage: Relates to: 5.1 Onboarding (required profile fields), 5.2 Player Profiles
+Screen Mock: Account – Name Required Modal (cont.) (Account editing UX).
+Screen Mock: Booking – Grounds List (Set 2) File: IMG_3450.jpeg 
+  
+
+Description: Alternative dataset of grounds in the same Booking list layout as IMG_3448. PRD Linkage: Relates to: 5.3 Venue Discovery, 5.5 Booking Engine.
+Screen Mock: Verify Phone – OTP Blank File: IMG_3451.jpeg 
+  
+
+Description: Verify Phone screen with 4 empty OTP boxes, Submit button, countdown, and bottom toast confirming OTP was sent. 
+PRD Linkage: Relates to: 5.1 Onboarding (Phone Verification step).
+Screen Mock: Sign In 
+File: IMG_3452.jpeg 
+  
+
+Description: Authentication screen with phone number and password fields, Forgot Password link, Sign In CTA, and link to Sign up. 
+PRD Linkage: Relates to: 5.1 Onboarding (returning user auth flow).
+Screen Mock: Attributes – Position & Footedness File: IMG_3453.jpeg 
+  
+
+Description: Attributes form for Football with radio options for position and preferred foot, plus age/weight/height fields. 
+PRD Linkage: Relates to: 5.1 Onboarding (Basic Info / Preferences), 5.2 Player Profiles
+Screen Mock: Attributes – Position & Footedness (cont.) (sports-specific attributes).
+Screen Mock: Home – Auth Required Alert File: IMG_3454.jpeg 
+  
+
+Description: Home dashboard blurred behind a centered Alert modal prompting user to sign in to view bookings and matches. 
+PRD Linkage: Relates to: 4.1 App Navigation (Home), 5.5 Booking Engine & 5.8 Player
+Screen Mock: Home – Auth Required Alert (cont.) Matching (auth gating on protected flows).
+Screen Mock: Home – Main Dashboard 
+File: IMG_3455.jpeg 
+  
+
+Description: Maidan home screen with tiles for Academies, Teams, Tournaments, Leagues; Visit Store banner; Upcoming Matches list; bottom navigation bar. 
+PRD Linkage: Relates to: 4.1 App Navigation (Home), entry points into 5.3 Venue Discovery,
+Screen Mock: Home – Main Dashboard (cont.) 5.8 Player Matching, 5.9 Leagues & Events, 5.11 Loyalty & Rewards.
+Screen Mock: Attributes – Tags & Save File: IMG_3456.jpeg 
+  
+
+Description: Continuation of Attributes screen showing long list of descriptive tag chips and a primary Save button. 
+PRD Linkage: Relates to: 5.1 Onboarding, 5.2 Player Profiles (player identity & play style
+Screen Mock: Attributes – Tags & Save (cont.) tags).
+Screen Mock: Account – Core Details 
+File: IMG_3457.jpeg 
+
+Description: Account form with avatar, Name, Phone Number, Email, CNIC, Password, and Date of Birth fields. 
+PRD Linkage: Relates to: 5.2 Player Profiles (Profile editing), 6.2 Security & Privacy
+Screen Mock: Account – Core Details (cont.) (sensitive fields).
+Screen Mock: Wallet – Pay Now 
+File: IMG_3458.jpeg 
+
+Description: Wallet screen with current balance, Pay Now/Top-up/History tabs, local payment methods (EasyPaisa, JazzCash, HBL Konnect, Alfa), account number and amount fields, Get OTP button.
+Screen Mock: Wallet – Pay Now (cont.) 
+PRD Linkage: Relates to: 5.6 Digital Payments, 5.11 Loyalty & Rewards (credits surfaced alongside balance).
+Screen Mock: Sign Up 
+File: IMG_3459.jpeg 
+
+Description: Sign up screen with name, phone, password fields, SMS vs WhatsApp verification method, and Sign up CTA. 
+PRD Linkage: Relates to: 5.1 Onboarding (new user registration).
+Screen Mock: Tournaments – List 
+File: IMG_3460.jpeg 
+
+Description: Tournaments listing with Ongoing/Upcoming/Completed tabs, search + filter, and tournament card (title, city, date). 
+PRD Linkage: Relates to: 5.9 Leagues & Events (event discovery & list view).
+Screen Mock: Verify Phone – OTP Filled File: IMG_3461.jpeg 
+
+Description: Verify Phone screen with all 4 OTP digits filled and Submit CTA highlighted. PRD Linkage: Relates to: 5.1 Onboarding (OTP verification success state).
+Screen Mock: Account – Sports Played & Delete File: IMG_3462.jpeg 
+
+Description: Lower half of Account form including City, Sports Played checkboxes, 'Request to delete account?' link, and Save button. 
+PRD Linkage: Relates to: 5.2 Player Profiles (sport preferences & account deletion request
+Screen Mock: Account – Sports Played & Delete (cont.) UX).
+Screen Mock: Booking – Select Your Sport File: IMG_3463.jpeg 
+
+Description: Booking tab step where user selects sport via grid of tiles (Football, Padel, Cricket, Nets, Pickleball, Volleyball, Basketball, All Sports). 
+PRD Linkage: Relates to: 5.3 Venue Discovery (sport filtering), 5.5 Booking Engine
+Screen Mock: Booking – Select Your Sport (cont.) (booking entry step).
+Screen Mock: Home – Main Dashboard (Alt Scroll) File: IMG_3464.jpeg 
+
+Description: Same Maidan home layout as IMG_3455 with slightly different scroll position on Upcoming Matches. 
+PRD Linkage: Relates to: 4.1 App Navigation (Home).
+Screen Mock: Location Permission over Booking File: IMG_3465.jpeg 
+
+Description: Android system dialog asking to allow Maidan to access device location, shown over the Booking tab search header. 
+PRD Linkage: Relates to: 5.3 Venue Discovery (distance-based sorting and nearby grounds),
+Screen Mock: Location Permission over Booking (cont.) 6.2 Security & Privacy (location permissions).
+Screen Mock: Account – Welcome Modal After OTP Match File: IMG_3466.jpeg 
+
+Description: Account screen with 'Welcome to MAIDAN' modal including logo, and toast 'otp matched' at bottom. 
+PRD Linkage: Relates to: 5.1 Onboarding (post-OTP profile completion nudge), 5.2 Player
+Screen Mock: Account – Welcome Modal After OTP Match (cont.) Profiles.

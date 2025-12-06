@@ -1,18 +1,111 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2025, 12, 4);
+
+    // Helper function to check if a user is authenticated.
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if the requesting user is the owner of a document.
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Helper function to get user's roles from their profile.
+    function getRoles() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles;
+    }
+
+    // Helper function to check if a user has a specific role.
+    function hasRole(role) {
+      return role in getRoles();
+    }
+
+    // Users can read/update their own profile.
+    // Super admins can read any user profile for administrative purposes.
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || hasRole('superAdmin'));
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && isOwner(userId);
+      // Deletion of user profiles should be handled by a backend process.
+      allow delete: if false;
+
+      // Notifications are a subcollection of users.
+      match /notifications/{notificationId} {
+        // A user can only access their own notifications.
+        allow read, write: if isAuthenticated() && isOwner(userId);
+      }
+    }
+
+    // Venues can be read by any authenticated user.
+    // Only verified venueAdmins can create or update venues.
+    match /venues/{venueId} {
+      allow read: if isAuthenticated();
+      
+      // Allow create/update only if user is a venueAdmin and the ownerId matches.
+      allow create, update: if isAuthenticated() &&
+                               hasRole('venueAdmin') &&
+                               request.resource.data.ownerId == request.auth.uid;
+
+      // Only a superAdmin can delete a venue.
+      allow delete: if isAuthenticated() && hasRole('superAdmin');
+
+      // Fields are a subcollection of venues.
+      // Rules are inherited and can be refined.
+      match /fields/{fieldId} {
+        allow read: if isAuthenticated();
+        // The venue owner (checked at the /venues/{venueId} level) can manage their fields.
+        allow create, update: if get(/databases/$(database)/documents/venues/$(venueId)).data.ownerId == request.auth.uid;
+        allow delete: if get(/databases/$(database)/documents/venues/$(venueId)).data.ownerId == request.auth.uid || hasRole('superAdmin');
+      }
+    }
+    
+    // Slots can be read by any authenticated user.
+    match /slots/{slotId} {
+      allow read: if isAuthenticated();
+      // Writing to slots is handled by the booking process and backend functions.
+      // Direct client writes should be disallowed.
+      allow write: if false; 
+    }
+
+    // Bookings can be created by any authenticated user.
+    // They can only be read by the user who made the booking or the venue owner.
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() && 
+                    (request.auth.uid == resource.data.userId || 
+                     get(/databases/$(database)/documents/venues/$(resource.data.venueId)).data.ownerId == request.auth.uid);
+
+      // User must be the owner of the booking to create it.
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      
+      // Only the user who made the booking can update its status (e.g., cancel).
+      // Venue owners might have limited update rights via backend functions.
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      
+      // Deletion should be handled via a backend function (e.g., for data cleanup).
+      allow delete: if false;
+    }
+    
+    // Financial collections (payments, promotions, discount pools) should generally
+    // only be written to by trusted backend functions, not directly by clients.
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow write: if false; // Managed by Cloud Functions
+    }
+
+    match /promotions/{promotionId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Managed by Cloud Functions / Venue Admins via backend
+    }
+    
+    match /discountPools/{venueId} {
+      allow read: if isAuthenticated() && (
+        hasRole('superAdmin') || 
+        get(/databases/$(database)/documents/venues/$(venueId)).data.ownerId == request.auth.uid
+      );
+      allow write: if false; // Managed by Cloud Functions
     }
   }
 }

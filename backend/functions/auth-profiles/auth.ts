@@ -1,10 +1,85 @@
+import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { Request, Response, NextFunction } from "express";
+import { User } from "@pay2play/types";
+import { Timestamp } from "firebase-admin/firestore";
 
 // Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
   admin.initializeApp();
 }
+const db = admin.firestore();
+
+/**
+ * Cloud Function trigger that creates a user profile in Firestore
+ * when a new Firebase Authentication user is created.
+ */
+export const onUserCreate = functions.auth.user().onCreate(async (user) => {
+  functions.logger.info(`New user created: ${user.uid}`, { email: user.email });
+
+  const newUser: User = {
+    id: user.uid,
+    email: user.email || null,
+    displayName: user.displayName || null,
+    phoneNumber: user.phoneNumber || null,
+    roles: ["player"], // Default role
+    createdAt: Timestamp.now(),
+    balancePkr: 0, // Default wallet balance
+  };
+
+  try {
+    await db.collection("users").doc(user.uid).set(newUser);
+    functions.logger.info(`Successfully created Firestore profile for user: ${user.uid}`);
+  } catch (error) {
+    functions.logger.error(`Error creating Firestore profile for user: ${user.uid}`, error);
+  }
+});
+
+/**
+ * Callable Cloud Function to allow users to update their own profile information.
+ */
+export const updateUserProfile = functions.https.onCall(async (data, context) => {
+  // Check if the user is authenticated.
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated."
+    );
+  }
+
+  const uid = context.auth.uid;
+  const userProfileRef = db.collection("users").doc(uid);
+
+  const allowedFields = ["displayName", "skillLevel", "expoPushToken"];
+  const profileUpdateData: { [key: string]: any } = {};
+
+  // Validate the incoming data to only allow specific fields to be updated.
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      profileUpdateData[field] = data[field];
+    }
+  }
+
+  if (Object.keys(profileUpdateData).length === 0) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "The function must be called with at least one valid field to update."
+    );
+  }
+
+  try {
+    await userProfileRef.update(profileUpdateData);
+    functions.logger.info(`User profile updated for UID: ${uid}`, profileUpdateData);
+    return { success: true, message: "Profile updated successfully." };
+  } catch (error) {
+    functions.logger.error(`Error updating user profile for UID: ${uid}`, error);
+    throw new functions.https.HttpsError(
+      "internal",
+      "An error occurred while updating the profile."
+    );
+  }
+});
+
 
 // Middleware to authenticate Firebase ID tokens
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
@@ -49,7 +124,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 // Function for user login (this typically happens on the client-side,
 // but we can provide a custom token endpoint if needed for specific flows)
-// For standard Firebase Auth, client-side SDKs handle login and token generation.
+// For standard Firebase Auth, client-side SDKs handle login and token verification on the backend.
 // This example assumes client-side login and token verification on the backend.
 export const loginUser = async (req: Request, res: Response) => {
   // In a typical Firebase Auth flow, login happens on the client-side,

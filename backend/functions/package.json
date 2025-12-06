@@ -1,5 +1,6 @@
 {
   "name": "functions",
+  "version": "1.0.0",
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "lint": "eslint .",
@@ -11,10 +12,11 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@pay2play/types": "file:../../packages/types",
     "@genkit-ai/firebase": "^1.22.0",
     "@genkit-ai/googleai": "^1.22.0",
     "@neondatabase/serverless": "^1.0.2",

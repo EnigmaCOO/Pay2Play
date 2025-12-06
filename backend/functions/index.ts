@@ -2,6 +2,13 @@ import * as functions from "firebase-functions";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes.js";
 import { startAutoCancelScheduler } from "./booking/auto-cancel.js";
+import { onUserCreate, updateUserProfile } from "./auth-profiles/auth.js";
+import { createBooking, getAvailableSlots } from "./booking/booking.js";
+import { createPaymentIntent } from "./payments-discounts/payments.js";
+import { onBookingConfirmed } from "./notifications/notifications.js";
+import { aiChat } from "./ai/chat.js";
+import { createPromotion, getPromotions, updatePromotion, deletePromotion } from "./promotions/promotions.js";
+import { fundDiscountPool, getDiscountPool } from "./discount-pools/discount-pools.js";
 
 const app = express();
 app.use(express.json());
@@ -52,3 +59,18 @@ app.use((req, res, next) => {
 })();
 
 export const api = functions.https.onRequest(app);
+export { 
+  onUserCreate, 
+  updateUserProfile, 
+  createBooking, 
+  getAvailableSlots,
+  createPaymentIntent,
+  onBookingConfirmed,
+  aiChat,
+  createPromotion,
+  getPromotions,
+  updatePromotion,
+  deletePromotion,
+  fundDiscountPool,
+  getDiscountPool
+};
