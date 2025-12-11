@@ -7,7 +7,12 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     name: "global-ignores",
-    ignores: ["dist/**", "node_modules/**", "functions/functions/lib/**"],
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "functions/functions/lib/**",
+      "backend/functions/lib/**",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

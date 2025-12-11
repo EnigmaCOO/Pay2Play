@@ -1,5 +1,5 @@
-import { storage } from "./storage.js";
-import { notificationService, notifications } from "./notifications.js";
+import { storage } from "../storage.js";
+import { notificationService, notifications } from "../notifications/notifications.js";
 
 const MINUTES_BEFORE_START = 30;
 
@@ -50,20 +50,22 @@ export async function checkAndCancelUnderfilledGames() {
         // Notify all players about cancellation
         const playerIds = gamePlayers.map(p => p.userId);
         if (playerIds.length > 0) {
+          const sportName = (game as any).sport?.name ?? (game as any).sport ?? null;
           await notificationService.sendToMultipleUsers(
             playerIds,
             notifications.gameCancelled(
-              game.sport,
+              sportName,
               `Only ${game.currentPlayers}/${game.minPlayers} players joined`
             )
           );
         }
         
         // Also notify host
+        const sportName = (game as any).sport?.name ?? (game as any).sport ?? null;
         await notificationService.sendToUser(
           game.hostId,
           notifications.gameCancelled(
-            game.sport,
+            sportName,
             `Only ${game.currentPlayers}/${game.minPlayers} players joined`
           )
         );

@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 // In a real Genkit setup, you would import and configure the Genkit library
 // import { generate } from '@genkit-ai/ai';

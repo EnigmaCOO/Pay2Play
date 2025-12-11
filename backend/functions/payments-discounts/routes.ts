@@ -1,5 +1,6 @@
-import { Request, type Response, Express } from "express";
-import { storage } from "../db.js";
+/* eslint-disable no-case-declarations */
+import { Request, Express } from "express";
+import { storage } from "../storage.js";
 import crypto from "crypto";
 import { notificationService, notifications } from "../notifications/notifications.js";
 import { authenticate } from "../auth-profiles/auth.js";
@@ -228,6 +229,7 @@ export function registerPaymentsDiscountsRoutes(app: Express) {
                 if (game) {
                   const wasFilled = game.currentPlayers >= game.maxPlayers;
                   
+                  const sportName = (game as any).sport?.name ?? (game as any).sport ?? "game";
                   if (wasFilled) {
                     await storage.updateGameStatus(game.id, 'filled');
                     // Notify all players game is full
@@ -235,7 +237,7 @@ export function registerPaymentsDiscountsRoutes(app: Express) {
                     const playerIds = gamePlayers.map(p => p.userId);
                     await notificationService.sendToMultipleUsers(
                       playerIds,
-                      notifications.gameFull(game.sport.name)
+                      notifications.gameFull(sportName)
                     );
                   } else if (game.currentPlayers >= game.minPlayers && game.status === 'open') {
                     await storage.updateGameStatus(game.id, 'confirmed');
@@ -251,7 +253,7 @@ export function registerPaymentsDiscountsRoutes(app: Express) {
                   if (!wasFilled) {
                     await notificationService.sendToUser(
                       game.hostId,
-                      notifications.gameJoined(game.sport.name, game.currentPlayers, game.maxPlayers)
+                      notifications.gameJoined(sportName, game.currentPlayers, game.maxPlayers)
                     );
                   }
                 }
@@ -293,6 +295,7 @@ export function registerPaymentsDiscountsRoutes(app: Express) {
             if (game) {
               const wasFilled = game.currentPlayers >= game.maxPlayers;
               
+              const sportName = (game as any).sport?.name ?? (game as any).sport ?? "game";
               if (wasFilled) {
                 await storage.updateGameStatus(game.id, 'filled');
                 // Notify all players game is full
@@ -300,7 +303,7 @@ export function registerPaymentsDiscountsRoutes(app: Express) {
                 const playerIds = gamePlayers.map(p => p.userId);
                 await notificationService.sendToMultipleUsers(
                   playerIds,
-                  notifications.gameFull(game.sport.name)
+                  notifications.gameFull(sportName)
                 );
               } else if (game.currentPlayers >= game.minPlayers && game.status === 'open') {
                 await storage.updateGameStatus(game.id, 'confirmed');
@@ -316,7 +319,7 @@ export function registerPaymentsDiscountsRoutes(app: Express) {
               if (!wasFilled) {
                 await notificationService.sendToUser(
                   game.hostId,
-                  notifications.gameJoined(game.sport.name, game.currentPlayers, game.maxPlayers)
+                  notifications.gameJoined(sportName, game.currentPlayers, game.maxPlayers)
                 );
               }
             }

@@ -1,5 +1,5 @@
 import { storage } from "./storage.js";
-import type { InsertVenue, InsertField, InsertSlot, InsertGame, InsertTeam, Sport } from "../shared/schema.js";
+import type { InsertVenue, InsertField, InsertSlot, InsertGame, InsertTeam } from "./shared/schema.js";
 
 export async function seed() {
   console.log("🌱 Seeding database...");

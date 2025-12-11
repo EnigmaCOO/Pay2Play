@@ -1,7 +1,6 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 import { Request, Response, NextFunction } from "express";
-import { User } from "@pay2play/types";
 import { Timestamp } from "firebase-admin/firestore";
 
 // Initialize Firebase Admin SDK if not already initialized
@@ -17,7 +16,7 @@ const db = admin.firestore();
 export const onUserCreate = functions.auth.user().onCreate(async (user) => {
   functions.logger.info(`New user created: ${user.uid}`, { email: user.email });
 
-  const newUser: User = {
+  const newUser = {
     id: user.uid,
     email: user.email || null,
     displayName: user.displayName || null,

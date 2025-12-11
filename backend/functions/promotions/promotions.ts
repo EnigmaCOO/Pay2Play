@@ -1,8 +1,20 @@
 
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import { Promotion, Venue } from "../../packages/types/src/firestore-schema";
 import { z } from "zod";
+
+type VenueDoc = { ownerId?: string };
+type PromotionDoc = {
+  id: string;
+  venueId: string;
+  title: string;
+  description: string;
+  discountPercentage: number;
+  validFrom: admin.firestore.Timestamp;
+  validUntil: admin.firestore.Timestamp;
+  isActive: boolean;
+  createdAt: admin.firestore.Timestamp;
+};
 
 // Initialize Firebase Admin SDK
 if (admin.apps.length === 0) {
@@ -50,7 +62,7 @@ export const createPromotion = functions.https.onRequest(async (request, respons
       response.status(404).send({ error: "Venue not found" });
       return;
     }
-    const venue = venueDoc.data() as Venue;
+    const venue = venueDoc.data() as VenueDoc;
     if (venue.ownerId !== requestingUid) {
       response.status(403).send({ error: "Forbidden: You are not the owner of this venue." });
       return;
@@ -58,7 +70,7 @@ export const createPromotion = functions.https.onRequest(async (request, respons
 
     // 4. Create the new promotion
     const promotionRef = firestore.collection("promotions").doc();
-    const newPromotion: Promotion = {
+    const newPromotion: PromotionDoc = {
       id: promotionRef.id,
       venueId,
       title,
@@ -96,7 +108,7 @@ export const getPromotions = functions.https.onRequest(async (request, response)
 
     const promotionsQuery = firestore.collection("promotions").where("venueId", "==", venueId);
     const snapshot = await promotionsQuery.get();
-    const promotions = snapshot.docs.map(doc => doc.data() as Promotion);
+    const promotions = snapshot.docs.map(doc => doc.data() as PromotionDoc);
 
     response.status(200).send({ success: true, promotions });
 
@@ -147,7 +159,7 @@ export const updatePromotion = functions.https.onRequest(async (request, respons
       response.status(404).send({ error: "Promotion not found" });
       return;
     }
-    const promotion = promotionDoc.data() as Promotion;
+    const promotion = promotionDoc.data() as PromotionDoc;
 
     const venueRef = firestore.collection("venues").doc(promotion.venueId);
     const venueDoc = await venueRef.get();
@@ -156,7 +168,7 @@ export const updatePromotion = functions.https.onRequest(async (request, respons
       response.status(404).send({ error: "Associated venue not found" });
       return;
     }
-    const venue = venueDoc.data() as Venue;
+    const venue = venueDoc.data() as VenueDoc;
     if (venue.ownerId !== requestingUid) {
       response.status(403).send({ error: "Forbidden: You are not the owner of this venue." });
       return;
@@ -205,7 +217,7 @@ export const deletePromotion = functions.https.onRequest(async (request, respons
       response.status(404).send({ error: "Promotion not found" });
       return;
     }
-    const promotion = promotionDoc.data() as Promotion;
+    const promotion = promotionDoc.data() as PromotionDoc;
 
     const venueRef = firestore.collection("venues").doc(promotion.venueId);
     const venueDoc = await venueRef.get();
@@ -213,7 +225,7 @@ export const deletePromotion = functions.https.onRequest(async (request, respons
       response.status(404).send({ error: "Associated venue not found" });
       return;
     }
-    const venue = venueDoc.data() as Venue;
+    const venue = venueDoc.data() as VenueDoc;
     if (venue.ownerId !== requestingUid) {
       response.status(403).send({ error: "Forbidden: You are not the owner of this venue." });
       return;

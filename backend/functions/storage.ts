@@ -17,10 +17,10 @@ import type {
   Team, InsertTeam, TeamStanding,
   Fixture, InsertFixture,
   Sport, InsertSport,
-  GameWaitlist, InsertGameWaitlist,
-  BlockedUser, InsertBlockedUser,
-} from "../shared/schema.js";
-import * as schema from "../shared/schema.js";
+  GameWaitlist,
+  BlockedUser,
+} from "./shared/schema.js";
+import * as schema from "./shared/schema.js";
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_SECRET_KEY', {
@@ -683,10 +683,21 @@ export class DbStorage implements IStorage {
   // Standings
   async getStandings(seasonId: string): Promise<TeamStanding[]> {
     const teams = await this.getTeamsBySeason(seasonId);
-    return teams.map(team => ({
-      ...team,
-      goalDifference: 0 // Calculate based on fixtures if needed
-    }));
+    return teams.map((team) => ({
+      id: randomUUID(),
+      teamId: team.id,
+      seasonId: team.seasonId,
+      createdAt: team.createdAt ?? new Date(),
+      goalsFor: 0,
+      goalsAgainst: 0,
+      goalDifference: 0,
+      played: 0,
+      won: 0,
+      drawn: 0,
+      lost: 0,
+      points: 0,
+      team,
+    } as TeamStanding));
   }
   
   // Refunds
@@ -711,6 +722,9 @@ export class DbStorage implements IStorage {
     }
     if (payment.provider !== "stripe") {
       throw new Error("Cannot create Stripe refund for non-Stripe payment.");
+    }
+    if (!payment.providerRef) {
+      throw new Error("Missing providerRef for Stripe refund.");
     }
 
     try {
@@ -1069,7 +1083,9 @@ class InMemoryStorage implements IStorage {
       email: user.email ?? null,
       displayName: user.displayName ?? null,
       phoneNumber: user.phoneNumber ?? null,
-    };
+      skillLevel: user.skillLevel ?? null,
+      balancePkr: user.balancePkr ?? 0,
+    } as User;
     this.users.push(created);
     return this.clone(created);
   }
@@ -1574,7 +1590,6 @@ class InMemoryStorage implements IStorage {
         homeTeamId: fixture.homeTeamId,
         awayTeamId: fixture.awayTeamId,
         scheduledDate: this.ensureDate(fixture.scheduledDate),
-        venueId: fixture.venueId ?? null,
         homeScore: fixture.homeScore ?? null,
         awayScore: fixture.awayScore ?? null,
         status: fixture.status ?? "scheduled",
@@ -1594,7 +1609,6 @@ class InMemoryStorage implements IStorage {
         ...fixture,
         homeTeam: this.teams.find((team) => team.id === fixture.homeTeamId) ?? null,
         awayTeam: this.teams.find((team) => team.id === fixture.awayTeamId) ?? null,
-        venue: fixture.venueId ? this.findVenue(fixture.venueId) ?? null : null,
       }));
 
     return this.clone(fixtures);
@@ -1612,7 +1626,10 @@ class InMemoryStorage implements IStorage {
   async getStandings(seasonId: string): Promise<TeamStanding[]> {
     const teams = this.teams.filter((team) => team.seasonId === seasonId);
     const standings = teams.map((team) => ({
-      ...team,
+      id: randomUUID(),
+      teamId: team.id,
+      seasonId: team.seasonId,
+      createdAt: team.createdAt ?? new Date(),
       goalsFor: 0,
       goalsAgainst: 0,
       goalDifference: 0,
@@ -1621,7 +1638,8 @@ class InMemoryStorage implements IStorage {
       drawn: 0,
       lost: 0,
       points: 0,
-    }));
+      team,
+    } as TeamStanding));
 
     const map = new Map<string, TeamStanding>();
     standings.forEach((team) => map.set(team.id, team));

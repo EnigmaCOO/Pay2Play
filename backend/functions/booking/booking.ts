@@ -1,7 +1,30 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import { Booking, Slot } from "@pay2play/types";
 import { Timestamp } from "firebase-admin/firestore";
+
+type SlotDoc = {
+  id?: string;
+  fieldId: string;
+  venueId: string;
+  startTime: FirebaseFirestore.Timestamp;
+  endTime: FirebaseFirestore.Timestamp;
+  isBooked: boolean;
+  bookingId?: string;
+};
+
+type BookingDoc = {
+  id: string;
+  userId: string;
+  slotId: string;
+  fieldId: string;
+  venueId: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  amountPkr: number;
+  createdAt: FirebaseFirestore.Timestamp;
+  slotStartTime?: FirebaseFirestore.Timestamp;
+  fieldName?: string;
+  venueName?: string;
+};
 
 // Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
@@ -37,7 +60,7 @@ export const getAvailableSlots = functions.https.onCall(async (data, context) =>
       .orderBy("startTime");
 
     const snapshot = await slotsQuery.get();
-    const availableSlots = snapshot.docs.map(doc => doc.data() as Slot);
+    const availableSlots = snapshot.docs.map((doc) => doc.data() as SlotDoc);
 
     return { success: true, slots: availableSlots };
 
@@ -82,7 +105,7 @@ export const createBooking = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError("not-found", "The specified slot does not exist.");
       }
 
-      const slotData = slotDoc.data() as Slot;
+      const slotData = slotDoc.data() as SlotDoc;
 
       // 3. Check Slot Availability
       if (slotData.isBooked) {
@@ -100,7 +123,7 @@ export const createBooking = functions.https.onCall(async (data, context) => {
       const fieldData = fieldDoc.data();
 
       // 4. Create New Booking Document
-      const newBookingData: Booking = {
+      const newBookingData: BookingDoc = {
         id: newBookingRef.id,
         userId,
         slotId,

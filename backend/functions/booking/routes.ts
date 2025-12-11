@@ -1,7 +1,6 @@
-import { Request, type Response, Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "../db.js";
-import { insertVenueSchema, insertFieldSchema, insertSlotSchema, insertBookingSchema, insertGameSchema, insertSeasonSchema, insertTeamSchema, insertSportSchema } from "../../shared/schema.js";
+import { Request, Express } from "express";
+import { storage } from "../storage.js";
+import { insertVenueSchema, insertFieldSchema, insertSlotSchema, insertBookingSchema, insertGameSchema, insertSeasonSchema, insertTeamSchema, insertSportSchema } from "../shared/schema.js";
 import crypto from "crypto";
 import { notificationService, notifications } from "../notifications/notifications.js";
 import { authenticate } from "../auth-profiles/auth.js";
@@ -513,6 +512,5 @@ export function registerBookingRoutes(app: Express) {
     }
   });
 
-  const httpServer = createServer(app);
-  return httpServer;
+  return app;
 }

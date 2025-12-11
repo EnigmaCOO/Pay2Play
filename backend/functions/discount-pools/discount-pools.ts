@@ -1,8 +1,16 @@
 
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import { DiscountPool, Venue } from "../../packages/types/src/firestore-schema";
 import { z } from "zod";
+
+type VenueDoc = { ownerId?: string };
+type DiscountPoolDoc = {
+  id: string;
+  venueId: string;
+  balancePkr: number;
+  totalFundedPkr: number;
+  updatedAt: admin.firestore.Timestamp;
+};
 
 // Initialize Firebase Admin SDK
 if (admin.apps.length === 0) {
@@ -46,7 +54,7 @@ export const fundDiscountPool = functions.https.onRequest(async (request, respon
       response.status(404).send({ error: "Venue not found" });
       return;
     }
-    const venue = venueDoc.data() as Venue;
+    const venue = venueDoc.data() as VenueDoc;
     if (venue.ownerId !== requestingUid) {
       response.status(403).send({ error: "Forbidden: You are not the owner of this venue." });
       return;
@@ -63,7 +71,7 @@ export const fundDiscountPool = functions.https.onRequest(async (request, respon
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } else {
-      const newDiscountPool: DiscountPool = {
+      const newDiscountPool: DiscountPoolDoc = {
         id: venueId,
         venueId,
         balancePkr: amountPkr,

@@ -8,7 +8,10 @@ vite.config.ts.*
 **/*.js*
 **/node_modules/*
 **/dist/*
+**/lib
 **/lib/*
+**/lib/**/*.js
+**/lib/**/*.js*
 **/dist-ssr/*
 **/logs/*
 **/logs/*

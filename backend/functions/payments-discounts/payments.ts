@@ -1,14 +1,6 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import { Booking, Payment } from "@pay2play/types";
 import { Timestamp } from "firebase-admin/firestore";
-
-// This would be your Stripe secret key, stored in Firebase environment configuration
-// functions.config().stripe.secret
-const STRIPE_SECRET_KEY = "sk_test_...your_secret_key"; 
-// Note: For a real app, integrate the Stripe Node.js library
-// import Stripe from "stripe";
-// const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
 
 // Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
@@ -19,6 +11,25 @@ const db = admin.firestore();
 /**
  * Callable Cloud Function to create a payment intent for a booking.
  */
+type BookingDoc = {
+  id: string;
+  userId: string;
+  amountPkr: number;
+  status: string;
+};
+
+type PaymentDoc = {
+  id: string;
+  userId: string;
+  bookingId: string;
+  amountPkr: number;
+  provider: string;
+  providerRef?: string;
+  status: string;
+  createdAt: FirebaseFirestore.Timestamp;
+  updatedAt: FirebaseFirestore.Timestamp;
+};
+
 export const createPaymentIntent = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "You must be logged in to make a payment.");
@@ -38,7 +49,7 @@ export const createPaymentIntent = functions.https.onCall(async (data, context) 
       throw new functions.https.HttpsError("not-found", "The specified booking does not exist.");
     }
 
-    const bookingData = bookingDoc.data() as Booking;
+    const bookingData = bookingDoc.data() as BookingDoc;
 
     // Verify the booking belongs to the authenticated user.
     if (bookingData.userId !== userId) {
@@ -66,7 +77,7 @@ export const createPaymentIntent = functions.https.onCall(async (data, context) 
 
     // Create a corresponding Payment document in Firestore to track the transaction.
     const newPaymentRef = db.collection("payments").doc();
-    const newPayment: Payment = {
+    const newPayment: PaymentDoc = {
       id: newPaymentRef.id,
       userId,
       bookingId,

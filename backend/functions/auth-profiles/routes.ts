@@ -1,6 +1,6 @@
-import { Request, type Response, Express } from "express";
+import { Request, Express } from "express";
 import { authenticate, registerUser, loginUser } from "./auth.js";
-import { storage } from "../db.js";
+import { storage } from "../storage.js";
 
 export function registerAuthRoutes(app: Express) {
   // Authentication routes
