@@ -8,7 +8,7 @@
  * which is different from the `Date` object used in the previous relational schema.
  */
 
-import { Timestamp } from "firebase/firestore";
+import type { Timestamp } from "firebase/firestore";
 
 // ==============
 // Enums

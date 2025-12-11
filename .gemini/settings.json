@@ -54,6 +54,17 @@
         "SERVICE_ACCOUNT_KEY_PATH": "/Users/lionking/Pay2Play/code/Pay2Play-googleserviceaccount.json",
         "FIREBASE_STORAGE_BUCKET": "pay-2-play-f1da3.firebasestorage.app"
       }
+    },
+    "Dice Roller": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "fastmcp",
+        "run",
+        "/Users/lionking/Pay2Play/code/Pay2Play/server.py"
+      ]
     }
   }
 }

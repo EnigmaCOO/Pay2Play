@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from './firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'; // Added collection, query, where, getDocs
-import { User, Venue, Field } from '@pay2play/types'; // Import User, Venue, Field types
+import type { User, Venue, Field } from '@pay2play/types'; // Import User, Venue, Field types
 import './App.css';
 
 function App() {

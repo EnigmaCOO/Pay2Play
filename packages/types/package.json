@@ -7,9 +7,12 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0"
   },
+  "peerDependencies": {
+    "firebase": "^12.6.0"
+  },
   "devDependencies": {
     "eslint": "^8.57.0",
     "typescript": "^5.3.3",
-    "firebase": "^10.7.1"
+    "firebase": "^12.6.0"
   }
 }
