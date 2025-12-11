@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView, Image as RNImage, Button, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { View, StyleSheet, ScrollView, ActivityIndicator, Text, Alert } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db, functions, auth } from '../../lib/firebase';
 import { Venue, Field, Slot } from '@pay2play/types';
 import { httpsCallable } from 'firebase/functions';
 import { onAuthStateChanged } from 'firebase/auth';
 
+import ScreenBackground from '../../shared/ui/ScreenBackground';
+import VenueHeader from '../components/venues/VenueHeader';
+import VenueImageCarousel from '../components/venues/VenueImageCarousel';
+import VenueInfoStrip from '../components/venues/VenueInfoStrip';
+import SegmentedTabs from '../../shared/ui/SegmentedTabs';
+import DateChipStrip from '../../shared/ui/DateChipStrip';
+import SlotGrid from '../components/venues/SlotGrid';
+import BookingFooterBar from '../components/venues/BookingFooterBar';
+
 const getAvailableSlotsCallable = httpsCallable(functions, 'getAvailableSlots');
 const createBookingCallable = httpsCallable(functions, 'createBooking');
-const createPaymentIntentCallable = httpsCallable(functions, 'createPaymentIntent'); // New callable function
 
 export default function VenueDetailScreen() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [venue, setVenue] = useState<Venue | null>(null);
   const [fields, setFields] = useState<Field[]>([]);
@@ -20,13 +29,17 @@ export default function VenueDetailScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const [selectedField, setSelectedField] = useState<Field | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [activeTab, setActiveTab] = useState('Availability');
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [fetchingSlots, setFetchingSlots] = useState(false);
-  const [bookingLoading, setBookingLoading] = useState(false);
-  const [latestBookingId, setLatestBookingId] = useState<string | null>(null); // To store booking ID for payment
-  const [paymentLoading, setPaymentLoading] = useState(false);
+
+  const dates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return d;
+  });
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
@@ -97,7 +110,7 @@ export default function VenueDetailScreen() {
         });
 
         if (result.data && result.data.success) {
-          setAvailableSlots(result.data.slots.sort((a: Slot, b: Slot) => a.startTime.toMillis() - b.startTime.toMillis()));
+          setAvailableSlots(result.data.slots);
         } else {
           setError(result.data?.message || "Failed to fetch slots.");
         }
@@ -112,202 +125,70 @@ export default function VenueDetailScreen() {
     fetchSlots();
   }, [selectedField, selectedDate]);
 
-  const handleBooking = async () => {
-    if (!user) {
-      Alert.alert("Authentication Required", "Please log in to make a booking.");
-      return;
-    }
-    if (!selectedSlot) {
-      Alert.alert("No Slot Selected", "Please select a time slot to book.");
-      return;
-    }
-
-    setBookingLoading(true);
-    try {
-      const result: any = await createBookingCallable({ slotId: selectedSlot.id });
-      if (result.data && result.data.success) {
-        Alert.alert("Booking Successful!", `Your booking ID: ${result.data.bookingId}`);
-        setLatestBookingId(result.data.bookingId); // Store booking ID for payment
-        setSelectedSlot(null); // Clear selected slot
-        // Re-fetch slots to update availability
-        if (selectedField) {
-            const startOfDay = new Date(selectedDate);
-            startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date(selectedDate);
-            endOfDay.setHours(23, 59, 59, 999);
-            const refetchResult: any = await getAvailableSlotsCallable({
-                fieldId: selectedField.id,
-                startDate: startOfDay.toISOString(),
-                endDate: endOfDay.toISOString(),
-            });
-            if (refetchResult.data && refetchResult.data.success) {
-                setAvailableSlots(refetchResult.data.slots.sort((a: Slot, b: Slot) => a.startTime.toMillis() - b.startTime.toMillis()));
-            }
-        }
-      } else {
-        Alert.alert("Booking Failed", result.data?.message || "Could not create booking.");
+  const handleBooking = () => {
+      if (!selectedSlot) {
+          Alert.alert("No slot selected", "Please select a slot to continue.");
+          return;
       }
-    } catch (err: any) {
-      console.error("Error creating booking:", err);
-      Alert.alert("Booking Error", err.message || "An unexpected error occurred during booking.");
-    } finally {
-      setBookingLoading(false);
-    }
-  };
-
-  const handlePayment = async () => {
-    if (!latestBookingId) {
-      Alert.alert("Error", "No booking ID found for payment.");
-      return;
-    }
-
-    setPaymentLoading(true);
-    try {
-      const result: any = await createPaymentIntentCallable({ bookingId: latestBookingId });
-      if (result.data && result.data.success) {
-        Alert.alert("Payment Intent Created!", `Client Secret: ${result.data.clientSecret}\n\nIn a real app, this would be used by a payment SDK.`);
-        // Here you would typically use Stripe's SDK to complete the payment
-        setLatestBookingId(null); // Clear booking ID after payment intent
-      } else {
-        Alert.alert("Payment Failed", result.data?.message || "Could not create payment intent.");
-      }
-    } catch (err: any) {
-      console.error("Error creating payment intent:", err);
-      Alert.alert("Payment Error", err.message || "An unexpected error occurred during payment intent creation.");
-    } finally {
-      setPaymentLoading(false);
-    }
-  };
-
+      // For now, navigate to a placeholder booking review screen.
+      // We will create this screen next.
+      router.push('/booking/review');
+  }
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading venue details...</Text>
-      </View>
+      <ScreenBackground>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      </ScreenBackground>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Error: {error}</Text>
-      </View>
+      <ScreenBackground>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'red' }}>{error}</Text>
+        </View>
+      </ScreenBackground>
     );
   }
-
-  if (!venue) {
-    return (
-      <View style={styles.container}>
-        <Text>No venue data available.</Text>
-      </View>
-    );
-  }
-
-  const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <Text style={styles.venueName}>{venue.name}</Text>
-        {venue.imageUrls && venue.imageUrls.length > 0 && (
-          <RNImage source={{ uri: venue.imageUrls[0] }} style={styles.venueImage} />
-        )}
-        <Text style={styles.venueAddress}>{venue.address}, {venue.city}</Text>
-        <Text style={styles.venueDescription}>{venue.description}</Text>
-
-        <Text style={styles.sectionTitle}>Fields:</Text>
-        {fields.length === 0 ? (
-          <Text>No fields available for this venue.</Text>
-        ) : (
-          <View style={styles.fieldSelectionContainer}>
-            {fields.map((field) => (
-              <TouchableOpacity
-                key={field.id}
-                style={[
-                  styles.fieldSelectionButton,
-                  selectedField?.id === field.id && styles.selectedFieldButton,
-                ]}
-                onPress={() => setSelectedField(field)}
-              >
-                <Text style={selectedField?.id === field.id && styles.selectedFieldButtonText}>{field.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {selectedField && (
-          <>
-            <Text style={styles.sectionTitle}>Select Date:</Text>
-            <View style={styles.dateSelectionContainer}>
-              <Button title="Previous Day" onPress={() => setSelectedDate(prev => {
-                  const newDate = new Date(prev);
-                  newDate.setDate(prev.getDate() - 1);
-                  return newDate;
-              })} />
-              <Text style={styles.selectedDateText}>{formatDate(selectedDate)}</Text>
-              <Button title="Next Day" onPress={() => setSelectedDate(prev => {
-                  const newDate = new Date(prev);
-                  newDate.setDate(prev.getDate() + 1);
-                  return newDate;
-              })} />
+    <ScreenBackground>
+        <VenueHeader name={venue?.name || 'Venue'} onBack={() => router.back()} />
+        <ScrollView>
+            <VenueImageCarousel images={venue?.imageUrls}/>
+            <View style={styles.content}>
+                <VenueInfoStrip rating="4.7" price="5,000" discount="20%" />
+                <SegmentedTabs 
+                    tabs={['About', 'Availability', 'Location']}
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                />
+                {activeTab === 'Availability' && (
+                    <>
+                        <DateChipStrip dates={dates} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+                        {fetchingSlots ? <ActivityIndicator color="#fff" /> : 
+                          <SlotGrid slots={availableSlots} onSelectSlot={setSelectedSlot} selectedSlot={selectedSlot}/>
+                        }
+                    </>
+                )}
+                {activeTab === 'About' && <Text style={{color: 'white'}}>{venue?.description}</Text>}
             </View>
-
-            <Text style={styles.sectionTitle}>Available Slots ({selectedField.name}):</Text>
-            {fetchingSlots ? (
-              <ActivityIndicator size="small" color="#0000ff" />
-            ) : availableSlots.length === 0 ? (
-              <Text>No slots available for this date and field.</Text>
-            ) : (
-              <View style={styles.slotsContainer}>
-                {availableSlots.map((slot) => (
-                  <TouchableOpacity
-                    key={slot.id}
-                    style={[
-                      styles.slotButton,
-                      selectedSlot?.id === slot.id && styles.selectedSlotButton,
-                    ]}
-                    onPress={() => setSelectedSlot(slot)}
-                  >
-                    <Text style={selectedSlot?.id === slot.id && styles.selectedSlotButtonText}>
-                      {new Date(slot.startTime.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            {selectedSlot && (
-              <View style={styles.bookingSummary}>
-                <Text style={styles.bookingSummaryText}>Selected Slot: {new Date(selectedSlot.startTime.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                <Text style={styles.bookingSummaryText}>Price: PKR {selectedField.pricePerHourPkr}</Text>
-                <Button
-                  title={bookingLoading ? "Booking..." : "Book Now"}
-                  onPress={handleBooking}
-                  disabled={bookingLoading || !user || latestBookingId !== null} // Disable if booking or payment in progress
-                />
-                 {!user && <Text style={styles.loginPrompt}>Login to book this slot</Text>}
-              </View>
-            )}
-
-            {latestBookingId && (
-              <View style={styles.paymentSection}>
-                <Text style={styles.sectionTitle}>Payment:</Text>
-                <Text>Booking created, proceed to payment.</Text>
-                <Button
-                  title={paymentLoading ? "Processing Payment..." : "Pay Now"}
-                  onPress={handlePayment}
-                  disabled={paymentLoading || !user}
-                />
-              </View>
-            )}
-          </>
-        )}
-      </View>
-    </ScrollView>
+        </ScrollView>
+        {selectedSlot && <BookingFooterBar slot={selectedSlot} onContinue={handleBooking} />}
+    </ScreenBackground>
   );
-}
+};
+
+const styles = StyleSheet.create({
+    content: {
+        padding: 16,
+    }
+});
+
 
 const styles = StyleSheet.create({
   scrollView: {

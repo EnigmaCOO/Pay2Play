@@ -4,17 +4,21 @@ import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestor
 import { db, auth } from '../../lib/firebase';
 import { Booking } from '@pay2play/types';
 import { onAuthStateChanged } from 'firebase/auth';
+import ScreenBackground from '../../shared/ui/ScreenBackground';
+import BookingCard from '../components/booking/BookingCard';
+import SegmentedTabs from '../../shared/ui/SegmentedTabs';
 
 export default function MyBookingsScreen() {
   const [user, setUser] = useState<any>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('Upcoming');
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false); // Auth state might change, so stop initial loading
+      setLoading(false); 
     });
     return () => unsubscribeAuth();
   }, []);
@@ -32,7 +36,7 @@ export default function MyBookingsScreen() {
     const userBookingsQuery = query(
       bookingsRef,
       where('userId', '==', user.uid),
-      orderBy('createdAt', 'desc')
+      orderBy('slotStartTime', 'desc')
     );
 
     const unsubscribeBookings = onSnapshot(
@@ -55,52 +59,61 @@ export default function MyBookingsScreen() {
     return () => unsubscribeBookings();
   }, [user]);
 
+  const filteredBookings = bookings.filter(b => {
+      const isUpcoming = new Date(b.slotStartTime.seconds * 1000) > new Date();
+      return activeTab === 'Upcoming' ? isUpcoming : !isUpcoming;
+  });
+
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading bookings...</Text>
-      </View>
+      <ScreenBackground>
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      </ScreenBackground>
     );
   }
 
   if (!user) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.messageText}>Please log in to view your bookings.</Text>
-      </View>
+      <ScreenBackground>
+        <View style={styles.container}>
+          <Text style={styles.messageText}>Please log in to view your bookings.</Text>
+        </View>
+      </ScreenBackground>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Error: {error}</Text>
-      </View>
+      <ScreenBackground>
+        <View style={styles.container}>
+          <Text style={styles.errorText}>Error: {error}</Text>
+        </View>
+      </ScreenBackground>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>My Bookings</Text>
-      {bookings.length === 0 ? (
-        <Text style={styles.messageText}>You have no bookings yet.</Text>
-      ) : (
-        <FlatList
-          data={bookings}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.bookingItem}>
-              <Text style={styles.bookingDetail}>Venue: {item.venueName || 'N/A'}</Text>
-              <Text style={styles.bookingDetail}>Field: {item.fieldName || 'N/A'}</Text>
-              <Text style={styles.bookingDetail}>Slot: {item.slotStartTime ? new Date(item.slotStartTime.toMillis()).toLocaleString() : 'N/A'}</Text>
-              <Text style={styles.bookingDetail}>Amount: PKR {item.amountPkr}</Text>
-              <Text style={styles.bookingDetail}>Status: {item.status}</Text>
-            </View>
-          )}
+    <ScreenBackground>
+      <View style={styles.container}>
+        <Text style={styles.title}>My Bookings</Text>
+        <SegmentedTabs 
+            tabs={['Upcoming', 'Past']}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
         />
-      )}
-    </View>
+        {filteredBookings.length === 0 ? (
+          <Text style={styles.messageText}>You have no {activeTab.toLowerCase()} bookings.</Text>
+        ) : (
+          <FlatList
+            data={filteredBookings}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <BookingCard booking={item} />}
+          />
+        )}
+      </View>
+    </ScreenBackground>
   );
 }
 
@@ -108,35 +121,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: 'white',
   },
   messageText: {
     fontSize: 16,
-    color: '#666',
+    color: '#94a3b8',
     textAlign: 'center',
-  },
-  bookingItem: {
-    padding: 15,
-    marginVertical: 8,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
-  bookingDetail: {
-    fontSize: 16,
-    marginBottom: 5,
+    marginTop: 20,
   },
   errorText: {
     color: 'red',

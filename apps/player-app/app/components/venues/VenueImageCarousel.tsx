@@ -2,16 +2,12 @@
 import React from 'react';
 import { View, Image, StyleSheet, ScrollView } from 'react-native';
 
-const images = [
-    'https://via.placeholder.com/400x200',
-    'https://via.placeholder.com/400x200',
-    'https://via.placeholder.com/400x200',
-]
+const VenueImageCarousel = ({ images }) => {
+  const imageList = images && images.length > 0 ? images : ['https://via.placeholder.com/400x200'];
 
-const VenueImageCarousel = () => {
   return (
     <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>
-        {images.map((uri, index) => (
+        {imageList.map((uri, index) => (
             <Image key={index} source={{ uri }} style={styles.image} />
         ))}
     </ScrollView>

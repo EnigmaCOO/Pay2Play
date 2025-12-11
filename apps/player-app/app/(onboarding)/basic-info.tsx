@@ -1,16 +1,18 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import ScreenBackground from '../../../../shared/ui/ScreenBackground';
-import AppHeader from '../../../../shared/ui/AppHeader';
-import PrimaryButton from '../../../../shared/ui/PrimaryButton';
-import GlassCard from '../../../../shared/ui/GlassCard';
-import AvatarCarousel from '../../components/onboarding/AvatarCarousel';
-import SportChip from '../../../../shared/ui/SportChip';
+import { useRouter } from 'expo-router';
+import ScreenBackground from '../../../shared/ui/ScreenBackground';
+import AppHeader from '../../../shared/ui/AppHeader';
+import PrimaryButton from '../../../shared/ui/PrimaryButton';
+import GlassCard from '../../../shared/ui/GlassCard';
+import AvatarCarousel from '../components/onboarding/AvatarCarousel';
+import SportChip from '../../../shared/ui/SportChip';
 
-const BasicInfoScreen = ({ navigation }) => {
+const BasicInfoScreen = () => {
   const [name, setName] = useState('');
   const [selectedSports, setSelectedSports] = useState([]);
+  const router = useRouter();
 
   const toggleSport = (sport) => {
     setSelectedSports(prev => 
@@ -20,7 +22,7 @@ const BasicInfoScreen = ({ navigation }) => {
 
   return (
     <ScreenBackground>
-      <AppHeader title="Set up your player profile" onBack={() => navigation.goBack()} stepIndicator="Step 2 of 3"/>
+      <AppHeader title="Set up your player profile" onBack={() => router.back()} stepIndicator="Step 2 of 3"/>
       <View style={styles.container}>
         <AvatarCarousel />
         <GlassCard>
@@ -55,7 +57,7 @@ const BasicInfoScreen = ({ navigation }) => {
         </GlassCard>
         <PrimaryButton 
           title="Continue" 
-          onPress={() => navigation.navigate('Preferences')} 
+          onPress={() => router.push('/(onboarding)/preferences')} 
         />
       </View>
     </ScreenBackground>

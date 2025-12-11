@@ -4,10 +4,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import PrimaryButton from '../../../../shared/ui/PrimaryButton';
 
 const BookingFooterBar = ({ slot, onContinue }) => {
+  const time = new Date(slot.startTime.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
   return (
     <View style={styles.footer}>
       <View>
-        <Text style={styles.time}>Today · {slot.time}</Text>
+        <Text style={styles.time}>Today · {time}</Text>
         <Text style={styles.price}>PKR 4,000 <Text style={styles.oldPrice}>PKR 5,000</Text></Text>
         <Text style={styles.savings}>You save PKR 1,000</Text>
       </View>

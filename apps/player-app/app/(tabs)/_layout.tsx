@@ -24,23 +24,30 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="venues"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Venues',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="building.2.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="bookings"
+        name="matches"
         options={{
-          title: 'My Bookings',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="calendar.fill" color={color} />,
+          title: 'Matches',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="sportscourt.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="index" // This now corresponds to the Auth/Profile screen
+        name="messages"
         options={{
-          title: 'Profile',
+          title: 'Messages',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="message.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Me',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />

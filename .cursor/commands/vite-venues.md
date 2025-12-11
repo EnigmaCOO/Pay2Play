@@ -1,0 +1,1 @@
+`bash -c '/opt/homebrew/bin/yarn workspace venue-dashboard dev'`

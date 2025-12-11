@@ -1,42 +1,38 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import ScreenBackground from '../../../../shared/ui/ScreenBackground';
-import AppHeader from '../../../../shared/ui/AppHeader';
-import PrimaryButton from '../../../../shared/ui/PrimaryButton';
-import OtpInputRow from '../../components/onboarding/OtpInputRow';
-import CountdownText from '../../components/onboarding/CountdownText';
+import { useRouter } from 'expo-router';
+import ScreenBackground from '../../../shared/ui/ScreenBackground';
+import AppHeader from '../../../shared/ui/AppHeader';
+import PrimaryButton from '../../../shared/ui/PrimaryButton';
+import OtpInputRow from '../components/onboarding/OtpInputRow';
+import CountdownText from '../components/onboarding/CountdownText';
 
-const OtpVerificationScreen = ({ navigation }) => {
+const OtpVerificationScreen = () => {
   const [otp, setOtp] = useState('');
+  const router = useRouter();
 
   return (
     <ScreenBackground>
-      <AppHeader title="Enter the 6-digit code" onBack={() => navigation.goBack()} />
+      <AppHeader title="Enter the 6-digit code" onBack={() => router.back()} />
       <View style={styles.container}>
         <Text style={styles.subtitle}>We’ve sent it to +92 3XX-XXXXXXX</Text>
         <OtpInputRow otp={otp} setOtp={setOtp} />
         <View style={styles.actions}>
           <CountdownText />
-          <TouchableOpacity onPress={() => navigation.navigate('PhoneEntry')}>
+          <TouchableOpacity onPress={() => router.replace('/(onboarding)/phone-entry')}>
             <Text style={styles.link}>Change number</Text>
           </TouchableOpacity>
         </View>
         <PrimaryButton 
           title="Verify & Continue" 
-          onPress={() => navigation.navigate('BasicInfo')} 
+          onPress={() => router.push('/(onboarding)/basic-info')} 
           disabled={otp.length !== 6}
         />
       </View>
     </ScreenBackground>
   );
 };
-
-// Simple CountdownText component for demonstration
-const CountdownText = () => {
-    // Logic for countdown would be here
-    return <Text style={styles.link}>Resend code in 00:34</Text>
-}
 
 const styles = StyleSheet.create({
   container: {

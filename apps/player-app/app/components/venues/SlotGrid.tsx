@@ -2,30 +2,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const slots = [
-    { id: '1', time: '6:00-7:00', status: 'Booked' },
-    { id: '2', time: '7:00-8:00', status: 'Available' },
-    { id: '3', time: '8:00-9:00', status: 'Available' },
-    { id: '4', time: '9:00-10:00', status: 'Unavailable' },
-];
-
-const SlotGrid = ({ onSelectSlot, selectedSlot }) => {
+const SlotGrid = ({ slots, onSelectSlot, selectedSlot }) => {
   return (
     <View style={styles.grid}>
-      {slots.map((slot) => (
-        <TouchableOpacity 
-            key={slot.id} 
-            style={[
-                styles.slot, 
-                styles[slot.status.toLowerCase()],
-                selectedSlot?.id === slot.id && styles.selected
-            ]} 
-            onPress={() => onSelectSlot(slot)}
-            disabled={slot.status !== 'Available'}
-        >
-          <Text style={styles.slotText}>{slot.time}</Text>
-        </TouchableOpacity>
-      ))}
+      {slots.map((slot) => {
+        const status = slot.isBooked ? 'Booked' : 'Available';
+        const time = new Date(slot.startTime.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        return (
+          <TouchableOpacity 
+              key={slot.id} 
+              style={[
+                  styles.slot, 
+                  styles[status.toLowerCase()],
+                  selectedSlot?.id === slot.id && styles.selected
+              ]} 
+              onPress={() => onSelectSlot(slot)}
+              disabled={status !== 'Available'}
+          >
+            <Text style={styles.slotText}>{time}</Text>
+          </TouchableOpacity>
+        )
+      })}
     </View>
   );
 };

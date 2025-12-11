@@ -1,18 +1,20 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import ScreenBackground from '../../../../shared/ui/ScreenBackground';
-import AppHeader from '../../../../shared/ui/AppHeader';
-import PrimaryButton from '../../../../shared/ui/PrimaryButton';
-import GlassCard from '../../../../shared/ui/GlassCard';
-import Chip from '../../../../shared/ui/Chip';
-import NeighborhoodField from '../../components/onboarding/NeighborhoodField';
-import StepIndicator from '../../components/onboarding/StepIndicator';
+import { useRouter } from 'expo-router';
+import ScreenBackground from '../../../shared/ui/ScreenBackground';
+import AppHeader from '../../../shared/ui/AppHeader';
+import PrimaryButton from '../../../shared/ui/PrimaryButton';
+import GlassCard from '../../../shared/ui/GlassCard';
+import Chip from '../../../shared/ui/Chip';
+import NeighborhoodField from '../components/onboarding/NeighborhoodField';
+import StepIndicator from '../components/onboarding/StepIndicator';
 
 
-const PreferencesScreen = ({ navigation }) => {
+const PreferencesScreen = () => {
   const [playTimes, setPlayTimes] = useState([]);
   const [gameStyles, setGameStyles] = useState([]);
+  const router = useRouter();
 
   const togglePlayTime = (time) => {
     setPlayTimes(prev => 
@@ -28,7 +30,7 @@ const PreferencesScreen = ({ navigation }) => {
 
   return (
     <ScreenBackground>
-      <AppHeader title="Where and when do you play?" onBack={() => navigation.goBack()} />
+      <AppHeader title="Where and when do you play?" onBack={() => router.back()} />
        <StepIndicator current={3} total={3} />
       <View style={styles.container}>
         <GlassCard>
@@ -56,7 +58,7 @@ const PreferencesScreen = ({ navigation }) => {
         </GlassCard>
         <PrimaryButton 
           title="Finish Setup" 
-          onPress={() => navigation.navigate('Home')} 
+          onPress={() => router.replace('/(tabs)/home')} 
         />
       </View>
     </ScreenBackground>
