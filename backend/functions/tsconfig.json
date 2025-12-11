@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "include": [
-    "*.ts",
+    "**/*.ts",
     "../shared"
   ],
   "exclude": [

@@ -55,7 +55,17 @@
     "build:functions": "tsc --project backend/functions/tsconfig.json",
     "db:push": "drizzle-kit push",
     "prepare": "husky",
-    "nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && yarn install"
+    "nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && yarn install",
+    "venues": "yarn workspace venue-dashboard",
+    "venues:start": "yarn workspace venue-dashboard start",
+    "venues:dev": "yarn workspace venue-dashboard dev",
+    "venues:build": "yarn workspace venue-dashboard build",
+    "venues:test": "yarn workspace venue-dashboard test:selenium",
+    "players": "yarn workspace player-app",
+    "players:start": "yarn workspace player-app start",
+    "players:dev": "yarn workspace player-app dev",
+    "players:build": "yarn workspace player-app build",
+    "players:test": "yarn workspace player-app test:selenium"
   },
   "dependencies": {
     "@genkit-ai/firebase": "^1.22.0",
