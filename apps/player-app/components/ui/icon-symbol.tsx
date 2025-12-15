@@ -23,6 +23,7 @@ const MAPPING = {
   'message.fill': 'message',
   'person.fill': 'person',
   'calendar.fill': 'calendar-today',
+  'plus': 'add',
 } as IconMapping;
 
 /**

@@ -1,17 +1,46 @@
-import { randomUUID } from "crypto";
-import { db } from "./db";
-import { eq, and, gte, lte, desc, sql } from "drizzle-orm";
-import * as schema from "@shared/schema";
-import Stripe from 'stripe';
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_SECRET_KEY', {
-    apiVersion: '2023-10-16',
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
 });
-export class DbStorage {
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.storage = exports.DbStorage = void 0;
+const crypto_1 = require("crypto");
+const db_js_1 = require("./db.js");
+const drizzle_orm_1 = require("drizzle-orm");
+const schema = __importStar(require("./shared/schema.js"));
+const stripe_1 = __importDefault(require("stripe"));
+const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY || 'sk_test_YOUR_STRIPE_SECRET_KEY', {
+    apiVersion: '2025-10-29.clover',
+});
+class DbStorage {
     ensureDb() {
-        if (!db) {
+        if (!db_js_1.db) {
             throw new Error("Database client is not initialized");
         }
-        return db;
+        return db_js_1.db;
     }
     // Sports
     async createSport(sport) {
@@ -21,7 +50,7 @@ export class DbStorage {
     }
     async getSport(id) {
         const db = this.ensureDb();
-        const [sport] = await db.select().from(schema.sports).where(eq(schema.sports.id, id));
+        const [sport] = await db.select().from(schema.sports).where((0, drizzle_orm_1.eq)(schema.sports.id, id));
         return sport;
     }
     async getSports() {
@@ -31,12 +60,12 @@ export class DbStorage {
     // Users
     async getUser(id) {
         const db = this.ensureDb();
-        const [user] = await db.select().from(schema.users).where(eq(schema.users.id, id));
+        const [user] = await db.select().from(schema.users).where((0, drizzle_orm_1.eq)(schema.users.id, id));
         return user;
     }
     async getUserByFirebaseUid(firebaseUid) {
         const db = this.ensureDb();
-        const [user] = await db.select().from(schema.users).where(eq(schema.users.firebaseUid, firebaseUid));
+        const [user] = await db.select().from(schema.users).where((0, drizzle_orm_1.eq)(schema.users.firebaseUid, firebaseUid));
         return user;
     }
     async createUser(user) {
@@ -46,11 +75,11 @@ export class DbStorage {
     }
     async updateUserPushToken(userId, expoPushToken) {
         const db = this.ensureDb();
-        await db.update(schema.users).set({ expoPushToken }).where(eq(schema.users.id, userId));
+        await db.update(schema.users).set({ expoPushToken }).where((0, drizzle_orm_1.eq)(schema.users.id, userId));
     }
     async updateUserSkillLevel(userId, skillLevel) {
         const db = this.ensureDb();
-        await db.update(schema.users).set({ skillLevel }).where(eq(schema.users.id, userId));
+        await db.update(schema.users).set({ skillLevel }).where((0, drizzle_orm_1.eq)(schema.users.id, userId));
     }
     async blockUser(userId, blockedUserId) {
         const db = this.ensureDb();
@@ -58,41 +87,41 @@ export class DbStorage {
     }
     async unblockUser(userId, blockedUserId) {
         const db = this.ensureDb();
-        await db.delete(schema.blockedUsers).where(and(eq(schema.blockedUsers.userId, userId), eq(schema.blockedUsers.blockedUserId, blockedUserId)));
+        await db.delete(schema.blockedUsers).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.blockedUsers.userId, userId), (0, drizzle_orm_1.eq)(schema.blockedUsers.blockedUserId, blockedUserId)));
     }
     async getBlockedUsers(userId) {
         const db = this.ensureDb();
-        return db.select().from(schema.blockedUsers).where(eq(schema.blockedUsers.userId, userId));
+        return db.select().from(schema.blockedUsers).where((0, drizzle_orm_1.eq)(schema.blockedUsers.userId, userId));
     }
     async getUserWalletBalance(userId) {
         const db = this.ensureDb();
-        const [user] = await db.select({ balancePkr: schema.users.balancePkr }).from(schema.users).where(eq(schema.users.id, userId));
+        const [user] = await db.select({ balancePkr: schema.users.balancePkr }).from(schema.users).where((0, drizzle_orm_1.eq)(schema.users.id, userId));
         return (user === null || user === void 0 ? void 0 : user.balancePkr) || 0;
     }
     async updateUserWalletBalance(userId, amount) {
         const db = this.ensureDb();
         await db.update(schema.users).set({
-            balancePkr: sql `${schema.users.balancePkr} + ${amount}`
-        }).where(eq(schema.users.id, userId));
+            balancePkr: (0, drizzle_orm_1.sql) `${schema.users.balancePkr} + ${amount}`
+        }).where((0, drizzle_orm_1.eq)(schema.users.id, userId));
     }
     // Venues
     async getVenues(verified, sportId) {
         const db = this.ensureDb();
         if (sportId) {
             const venuesWithSportFields = await db.select({ venue: schema.venues }).from(schema.venues)
-                .innerJoin(schema.fields, eq(schema.venues.id, schema.fields.venueId))
-                .where(and(eq(schema.fields.sportId, sportId), verified !== undefined ? eq(schema.venues.verified, verified) : undefined))
+                .innerJoin(schema.fields, (0, drizzle_orm_1.eq)(schema.venues.id, schema.fields.venueId))
+                .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.fields.sportId, sportId), verified !== undefined ? (0, drizzle_orm_1.eq)(schema.venues.verified, verified) : undefined))
                 .groupBy(schema.venues.id);
             return venuesWithSportFields.map(row => row.venue);
         }
         else if (verified !== undefined) {
-            return db.select().from(schema.venues).where(eq(schema.venues.verified, verified));
+            return db.select().from(schema.venues).where((0, drizzle_orm_1.eq)(schema.venues.verified, verified));
         }
         return db.select().from(schema.venues);
     }
     async getVenue(id) {
         const db = this.ensureDb();
-        const [venue] = await db.select().from(schema.venues).where(eq(schema.venues.id, id));
+        const [venue] = await db.select().from(schema.venues).where((0, drizzle_orm_1.eq)(schema.venues.id, id));
         return venue;
     }
     async createVenue(venue) {
@@ -103,11 +132,11 @@ export class DbStorage {
     // Fields
     async getFieldsByVenue(venueId) {
         const db = this.ensureDb();
-        return db.select().from(schema.fields).where(eq(schema.fields.venueId, venueId));
+        return db.select().from(schema.fields).where((0, drizzle_orm_1.eq)(schema.fields.venueId, venueId));
     }
     async getField(id) {
         const db = this.ensureDb();
-        const [field] = await db.select().from(schema.fields).where(eq(schema.fields.id, id));
+        const [field] = await db.select().from(schema.fields).where((0, drizzle_orm_1.eq)(schema.fields.id, id));
         return field;
     }
     async createField(field) {
@@ -118,7 +147,7 @@ export class DbStorage {
     // Slots
     async searchAvailableSlots(fieldId, startTime, endTime) {
         const db = this.ensureDb();
-        return db.select().from(schema.slots).where(and(eq(schema.slots.fieldId, fieldId), gte(schema.slots.startTime, startTime), lte(schema.slots.endTime, endTime), eq(schema.slots.availableForBooking, true)));
+        return db.select().from(schema.slots).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.slots.fieldId, fieldId), (0, drizzle_orm_1.gte)(schema.slots.startTime, startTime), (0, drizzle_orm_1.lte)(schema.slots.endTime, endTime), (0, drizzle_orm_1.eq)(schema.slots.availableForBooking, true)));
     }
     async createSlot(slot) {
         const db = this.ensureDb();
@@ -127,7 +156,7 @@ export class DbStorage {
     }
     async getSlot(id) {
         const db = this.ensureDb();
-        const [slot] = await db.select().from(schema.slots).where(eq(schema.slots.id, id));
+        const [slot] = await db.select().from(schema.slots).where((0, drizzle_orm_1.eq)(schema.slots.id, id));
         return slot;
     }
     // Bookings
@@ -138,16 +167,16 @@ export class DbStorage {
     }
     async getUserBookings(userId) {
         const db = this.ensureDb();
-        return db.select().from(schema.bookings).where(eq(schema.bookings.userId, userId)).orderBy(desc(schema.bookings.createdAt));
+        return db.select().from(schema.bookings).where((0, drizzle_orm_1.eq)(schema.bookings.userId, userId)).orderBy((0, drizzle_orm_1.desc)(schema.bookings.createdAt));
     }
     async getBooking(id) {
         const db = this.ensureDb();
-        const [booking] = await db.select().from(schema.bookings).where(eq(schema.bookings.id, id));
+        const [booking] = await db.select().from(schema.bookings).where((0, drizzle_orm_1.eq)(schema.bookings.id, id));
         return booking;
     }
     async updateBookingStatus(id, status) {
         const db = this.ensureDb();
-        await db.update(schema.bookings).set({ status: status }).where(eq(schema.bookings.id, id));
+        await db.update(schema.bookings).set({ status: status }).where((0, drizzle_orm_1.eq)(schema.bookings.id, id));
     }
     // Payments
     async createPayment(payment) {
@@ -176,17 +205,17 @@ export class DbStorage {
     }
     async getPayment(id) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.payments).where(eq(schema.payments.id, id));
+        const [payment] = await db.select().from(schema.payments).where((0, drizzle_orm_1.eq)(schema.payments.id, id));
         return payment;
     }
     async getPaymentByIdempotencyKey(key) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.payments).where(eq(schema.payments.idempotencyKey, key));
+        const [payment] = await db.select().from(schema.payments).where((0, drizzle_orm_1.eq)(schema.payments.idempotencyKey, key));
         return payment;
     }
     async getPaymentByBookingId(bookingId) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.payments).where(eq(schema.payments.bookingId, bookingId));
+        const [payment] = await db.select().from(schema.payments).where((0, drizzle_orm_1.eq)(schema.payments.bookingId, bookingId));
         return payment;
     }
     async updatePaymentStatus(id, status, providerRef) {
@@ -194,7 +223,7 @@ export class DbStorage {
         const updates = { status: status, updatedAt: new Date() };
         if (providerRef)
             updates.providerRef = providerRef;
-        await db.update(schema.payments).set(updates).where(eq(schema.payments.id, id));
+        await db.update(schema.payments).set(updates).where((0, drizzle_orm_1.eq)(schema.payments.id, id));
     }
     // Games
     async createGame(game) {
@@ -210,16 +239,16 @@ export class DbStorage {
         const blockedUserIds = blockedUsers.map(u => u.blockedUserId);
         const conditions = [];
         if (sportIdFilter) {
-            conditions.push(eq(schema.games.sportId, sportIdFilter));
+            conditions.push((0, drizzle_orm_1.eq)(schema.games.sportId, sportIdFilter));
         }
         if (skillLevelFilter) {
-            conditions.push(eq(schema.games.skillLevel, skillLevelFilter));
+            conditions.push((0, drizzle_orm_1.eq)(schema.games.skillLevel, skillLevelFilter));
         }
         if (blockedUserIds.length > 0) {
-            conditions.push(sql `${schema.games.hostId} NOT IN ${blockedUserIds}`);
+            conditions.push((0, drizzle_orm_1.sql) `${schema.games.hostId} NOT IN ${blockedUserIds}`);
         }
         const query = db.query.games.findMany({
-            where: and(...conditions),
+            where: (0, drizzle_orm_1.and)(...conditions),
             with: {
                 field: {
                     with: { venue: true }
@@ -228,16 +257,19 @@ export class DbStorage {
                 sport: true,
                 players: {
                     with: { user: true }
+                },
+                waitlist: {
+                    with: { user: true }
                 }
             },
-            orderBy: [desc(schema.games.createdAt)]
+            orderBy: [(0, drizzle_orm_1.desc)(schema.games.createdAt)]
         });
         return query;
     }
     async getGame(id) {
         const db = this.ensureDb();
         const game = await db.query.games.findFirst({
-            where: eq(schema.games.id, id),
+            where: (0, drizzle_orm_1.eq)(schema.games.id, id),
             with: {
                 field: {
                     with: { venue: true }
@@ -245,6 +277,9 @@ export class DbStorage {
                 host: true,
                 sport: true,
                 players: {
+                    with: { user: true }
+                },
+                waitlist: {
                     with: { user: true }
                 }
             }
@@ -253,18 +288,18 @@ export class DbStorage {
     }
     async updateGameStatus(id, status) {
         const db = this.ensureDb();
-        await db.update(schema.games).set({ status: status }).where(eq(schema.games.id, id));
+        await db.update(schema.games).set({ status: status }).where((0, drizzle_orm_1.eq)(schema.games.id, id));
     }
     async incrementGamePlayers(id) {
         const db = this.ensureDb();
         await db.update(schema.games).set({
-            currentPlayers: sql `${schema.games.currentPlayers} + 1`
-        }).where(eq(schema.games.id, id));
+            currentPlayers: (0, drizzle_orm_1.sql) `${schema.games.currentPlayers} + 1`
+        }).where((0, drizzle_orm_1.eq)(schema.games.id, id));
     }
     async getGamesNeedingCancellation(minutesBeforeStart) {
         const db = this.ensureDb();
         const threshold = new Date(Date.now() + minutesBeforeStart * 60 * 1000);
-        return db.select().from(schema.games).where(and(eq(schema.games.status, "open"), lte(schema.games.startTime, threshold), sql `${schema.games.currentPlayers} < ${schema.games.minPlayers}`));
+        return db.select().from(schema.games).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.games.status, "open"), (0, drizzle_orm_1.lte)(schema.games.startTime, threshold), (0, drizzle_orm_1.sql) `${schema.games.currentPlayers} < ${schema.games.minPlayers}`));
     }
     // Game Players
     async addGamePlayer(gamePlayer) {
@@ -274,17 +309,17 @@ export class DbStorage {
     }
     async getGamePlayers(gameId) {
         const db = this.ensureDb();
-        return db.select().from(schema.gamePlayers).where(eq(schema.gamePlayers.gameId, gameId));
+        return db.select().from(schema.gamePlayers).where((0, drizzle_orm_1.eq)(schema.gamePlayers.gameId, gameId));
     }
     async removeGamePlayer(gameId, userId) {
         const db = this.ensureDb();
-        await db.delete(schema.gamePlayers).where(and(eq(schema.gamePlayers.gameId, gameId), eq(schema.gamePlayers.userId, userId)));
+        await db.delete(schema.gamePlayers).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.gamePlayers.gameId, gameId), (0, drizzle_orm_1.eq)(schema.gamePlayers.userId, userId)));
     }
     async decrementGamePlayers(id) {
         const db = this.ensureDb();
         await db.update(schema.games).set({
-            currentPlayers: sql `${schema.games.currentPlayers} - 1`
-        }).where(eq(schema.games.id, id));
+            currentPlayers: (0, drizzle_orm_1.sql) `${schema.games.currentPlayers} - 1`
+        }).where((0, drizzle_orm_1.eq)(schema.games.id, id));
     }
     // Game Waitlist
     async addUserToGameWaitlist(gameId, userId) {
@@ -295,24 +330,24 @@ export class DbStorage {
     }
     async removeUserFromGameWaitlist(gameId, userId) {
         const db = this.ensureDb();
-        await db.delete(schema.gameWaitlist).where(and(eq(schema.gameWaitlist.gameId, gameId), eq(schema.gameWaitlist.userId, userId)));
+        await db.delete(schema.gameWaitlist).where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.gameWaitlist.gameId, gameId), (0, drizzle_orm_1.eq)(schema.gameWaitlist.userId, userId)));
         await this.decrementGameWaitlistCount(gameId);
     }
     async getGameWaitlist(gameId) {
         const db = this.ensureDb();
-        return db.select().from(schema.gameWaitlist).where(eq(schema.gameWaitlist.gameId, gameId));
+        return db.select().from(schema.gameWaitlist).where((0, drizzle_orm_1.eq)(schema.gameWaitlist.gameId, gameId));
     }
     async incrementGameWaitlistCount(gameId) {
         const db = this.ensureDb();
         await db.update(schema.games).set({
-            waitlistCount: sql `${schema.games.waitlistCount} + 1`
-        }).where(eq(schema.games.id, gameId));
+            waitlistCount: (0, drizzle_orm_1.sql) `${schema.games.waitlistCount} + 1`
+        }).where((0, drizzle_orm_1.eq)(schema.games.id, gameId));
     }
     async decrementGameWaitlistCount(gameId) {
         const db = this.ensureDb();
         await db.update(schema.games).set({
-            waitlistCount: sql `${schema.games.waitlistCount} - 1`
-        }).where(eq(schema.games.id, gameId));
+            waitlistCount: (0, drizzle_orm_1.sql) `${schema.games.waitlistCount} - 1`
+        }).where((0, drizzle_orm_1.eq)(schema.games.id, gameId));
     }
     // Game Payments
     async createGamePayment(payment) {
@@ -341,12 +376,12 @@ export class DbStorage {
     }
     async getGamePayment(id) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.gamePayments).where(eq(schema.gamePayments.id, id));
+        const [payment] = await db.select().from(schema.gamePayments).where((0, drizzle_orm_1.eq)(schema.gamePayments.id, id));
         return payment;
     }
     async getGamePaymentByIdempotencyKey(key) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.gamePayments).where(eq(schema.gamePayments.idempotencyKey, key));
+        const [payment] = await db.select().from(schema.gamePayments).where((0, drizzle_orm_1.eq)(schema.gamePayments.idempotencyKey, key));
         return payment;
     }
     async updateGamePaymentStatus(id, status, providerRef) {
@@ -354,7 +389,7 @@ export class DbStorage {
         const updates = { status: status, updatedAt: new Date() };
         if (providerRef)
             updates.providerRef = providerRef;
-        await db.update(schema.gamePayments).set(updates).where(eq(schema.gamePayments.id, id));
+        await db.update(schema.gamePayments).set(updates).where((0, drizzle_orm_1.eq)(schema.gamePayments.id, id));
     }
     // Wallet Payments
     async createWalletPayment(payment) {
@@ -383,12 +418,12 @@ export class DbStorage {
     }
     async getWalletPayment(id) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.walletPayments).where(eq(schema.walletPayments.id, id));
+        const [payment] = await db.select().from(schema.walletPayments).where((0, drizzle_orm_1.eq)(schema.walletPayments.id, id));
         return payment;
     }
     async getWalletPaymentByIdempotencyKey(key) {
         const db = this.ensureDb();
-        const [payment] = await db.select().from(schema.walletPayments).where(eq(schema.walletPayments.idempotencyKey, key));
+        const [payment] = await db.select().from(schema.walletPayments).where((0, drizzle_orm_1.eq)(schema.walletPayments.idempotencyKey, key));
         return payment;
     }
     async updateWalletPaymentStatus(id, status, providerRef) {
@@ -396,7 +431,7 @@ export class DbStorage {
         const updates = { status: status, updatedAt: new Date() };
         if (providerRef)
             updates.providerRef = providerRef;
-        await db.update(schema.walletPayments).set(updates).where(eq(schema.walletPayments.id, id));
+        await db.update(schema.walletPayments).set(updates).where((0, drizzle_orm_1.eq)(schema.walletPayments.id, id));
     }
     // Seasons
     async createSeason(season) {
@@ -406,11 +441,11 @@ export class DbStorage {
     }
     async getSeasons() {
         const db = this.ensureDb();
-        return db.select().from(schema.seasons).orderBy(desc(schema.seasons.startDate));
+        return db.select().from(schema.seasons).orderBy((0, drizzle_orm_1.desc)(schema.seasons.startDate));
     }
     async getSeason(id) {
         const db = this.ensureDb();
-        const [season] = await db.select().from(schema.seasons).where(eq(schema.seasons.id, id));
+        const [season] = await db.select().from(schema.seasons).where((0, drizzle_orm_1.eq)(schema.seasons.id, id));
         return season;
     }
     // Teams
@@ -421,7 +456,7 @@ export class DbStorage {
     }
     async getTeamsBySeason(seasonId) {
         const db = this.ensureDb();
-        return db.select().from(schema.teams).where(eq(schema.teams.seasonId, seasonId));
+        return db.select().from(schema.teams).where((0, drizzle_orm_1.eq)(schema.teams.seasonId, seasonId));
     }
     // Fixtures
     async createFixtures(fixtures) {
@@ -431,7 +466,7 @@ export class DbStorage {
     async getFixturesBySeason(seasonId) {
         const db = this.ensureDb();
         return db.query.fixtures.findMany({
-            where: eq(schema.fixtures.seasonId, seasonId),
+            where: (0, drizzle_orm_1.eq)(schema.fixtures.seasonId, seasonId),
             with: {
                 homeTeam: true,
                 awayTeam: true,
@@ -442,13 +477,29 @@ export class DbStorage {
     }
     async updateFixtureScore(id, homeScore, awayScore, status) {
         const db = this.ensureDb();
-        await db.update(schema.fixtures).set({ homeScore, awayScore, status }).where(eq(schema.fixtures.id, id));
+        await db.update(schema.fixtures).set({ homeScore, awayScore, status }).where((0, drizzle_orm_1.eq)(schema.fixtures.id, id));
     }
     // Standings
     async getStandings(seasonId) {
         const teams = await this.getTeamsBySeason(seasonId);
-        return teams.map(team => (Object.assign(Object.assign({}, team), { goalDifference: 0 // Calculate based on fixtures if needed
-         })));
+        return teams.map((team) => {
+            var _a;
+            return ({
+                id: (0, crypto_1.randomUUID)(),
+                teamId: team.id,
+                seasonId: team.seasonId,
+                createdAt: (_a = team.createdAt) !== null && _a !== void 0 ? _a : new Date(),
+                goalsFor: 0,
+                goalsAgainst: 0,
+                goalDifference: 0,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                points: 0,
+                team,
+            });
+        });
     }
     // Refunds
     async createRefund(refund) {
@@ -471,6 +522,9 @@ export class DbStorage {
         }
         if (payment.provider !== "stripe") {
             throw new Error("Cannot create Stripe refund for non-Stripe payment.");
+        }
+        if (!payment.providerRef) {
+            throw new Error("Missing providerRef for Stripe refund.");
         }
         try {
             const stripeRefund = await stripe.refunds.create({
@@ -498,13 +552,16 @@ export class DbStorage {
         const db = this.ensureDb();
         const now = new Date();
         return db.query.games.findMany({
-            where: and(gte(schema.games.startTime, now), lte(schema.games.startTime, beforeTime), 
+            where: (0, drizzle_orm_1.and)((0, drizzle_orm_1.gte)(schema.games.startTime, now), (0, drizzle_orm_1.lte)(schema.games.startTime, beforeTime), 
             // Only process games that are still open or confirmed (not already cancelled/filled)
-            sql `${schema.games.status} IN ('open', 'confirmed')`),
+            (0, drizzle_orm_1.sql) `${schema.games.status} IN ('open', 'confirmed')`),
             with: {
                 field: { with: { venue: true } },
                 host: true,
-                players: { with: { user: true } },
+                sport: true,
+                players: {
+                    with: { user: true }
+                },
             },
         });
     }
@@ -512,19 +569,19 @@ export class DbStorage {
         const db = this.ensureDb();
         const [payment] = await db.select()
             .from(schema.gamePayments)
-            .where(and(eq(schema.gamePayments.userId, userId), eq(schema.gamePayments.gameId, gameId)));
+            .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema.gamePayments.userId, userId), (0, drizzle_orm_1.eq)(schema.gamePayments.gameId, gameId)));
         return payment;
     }
     // Dashboard
     async getVenuesByPartner(partnerId) {
         const db = this.ensureDb();
-        return db.select().from(schema.venues).where(eq(schema.venues.partnerId, partnerId));
+        return db.select().from(schema.venues).where((0, drizzle_orm_1.eq)(schema.venues.partnerId, partnerId));
     }
     async getBookingsByVenue(venueId) {
         const db = this.ensureDb();
         return db.query.bookings.findMany({
             where: (bookings) => {
-                return sql `EXISTS (
+                return (0, drizzle_orm_1.sql) `EXISTS (
           SELECT 1 FROM ${schema.slots} s
           JOIN ${schema.fields} f ON s.field_id = f.id
           WHERE s.id = ${bookings.slotId}
@@ -535,14 +592,15 @@ export class DbStorage {
                 user: true,
                 slot: { with: { field: true } },
             },
-            orderBy: [desc(schema.bookings.createdAt)],
+            orderBy: [(0, drizzle_orm_1.desc)(schema.bookings.createdAt)],
         });
     }
     async getPayoutsByVenue(venueId) {
         const db = this.ensureDb();
-        return db.select().from(schema.payouts).where(eq(schema.payouts.venueId, venueId));
+        return db.select().from(schema.payouts).where((0, drizzle_orm_1.eq)(schema.payouts.venueId, venueId));
     }
 }
+exports.DbStorage = DbStorage;
 class InMemoryStorage {
     constructor() {
         this.users = [];
@@ -725,7 +783,7 @@ class InMemoryStorage {
     async createSport(sport) {
         var _a, _b;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             name: sport.name,
             description: (_a = sport.description) !== null && _a !== void 0 ? _a : null,
@@ -750,15 +808,17 @@ class InMemoryStorage {
         return user ? this.clone(user) : undefined;
     }
     async createUser(user) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             expoPushToken: (_a = user.expoPushToken) !== null && _a !== void 0 ? _a : null,
             firebaseUid: user.firebaseUid,
             email: (_b = user.email) !== null && _b !== void 0 ? _b : null,
             displayName: (_c = user.displayName) !== null && _c !== void 0 ? _c : null,
             phoneNumber: (_d = user.phoneNumber) !== null && _d !== void 0 ? _d : null,
+            skillLevel: (_e = user.skillLevel) !== null && _e !== void 0 ? _e : null,
+            balancePkr: (_f = user.balancePkr) !== null && _f !== void 0 ? _f : 0,
         };
         this.users.push(created);
         return this.clone(created);
@@ -777,7 +837,7 @@ class InMemoryStorage {
     }
     async blockUser(userId, blockedUserId) {
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             userId,
             blockedUserId,
             createdAt: new Date(),
@@ -817,7 +877,7 @@ class InMemoryStorage {
     async createVenue(venue) {
         var _a, _b, _c, _d, _e;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             imageUrl: (_a = venue.imageUrl) !== null && _a !== void 0 ? _a : null,
             verified: (_b = venue.verified) !== null && _b !== void 0 ? _b : false,
@@ -841,7 +901,7 @@ class InMemoryStorage {
     async createField(field) {
         var _a;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             capacity: (_a = field.capacity) !== null && _a !== void 0 ? _a : null,
             venueId: field.venueId,
@@ -862,7 +922,7 @@ class InMemoryStorage {
     async createSlot(slot) {
         var _a;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             fieldId: slot.fieldId,
             startTime: this.ensureDate(slot.startTime),
@@ -879,7 +939,7 @@ class InMemoryStorage {
     async createBooking(booking) {
         var _a;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             userId: booking.userId,
             slotId: booking.slotId,
@@ -908,7 +968,7 @@ class InMemoryStorage {
     async createPayment(payment) {
         var _a, _b, _c, _d, _e, _f;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             updatedAt: new Date(),
             bookingId: (_a = payment.bookingId) !== null && _a !== void 0 ? _a : null,
@@ -948,7 +1008,7 @@ class InMemoryStorage {
     async createGame(game) {
         var _a;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             currentPlayers: 0,
             status: (_a = game.status) !== null && _a !== void 0 ? _a : "open",
@@ -1019,7 +1079,7 @@ class InMemoryStorage {
     async addGamePlayer(gamePlayer) {
         var _a, _b;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             joinedAt: new Date(),
             gameId: gamePlayer.gameId,
             userId: gamePlayer.userId,
@@ -1052,7 +1112,7 @@ class InMemoryStorage {
     // Game Waitlist
     async addUserToGameWaitlist(gameId, userId) {
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             gameId,
             userId,
             joinedAt: new Date(),
@@ -1090,7 +1150,7 @@ class InMemoryStorage {
     async createGamePayment(payment) {
         var _a, _b, _c, _d, _e;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             updatedAt: new Date(),
             gameId: payment.gameId,
@@ -1131,7 +1191,7 @@ class InMemoryStorage {
     async createWalletPayment(payment) {
         var _a, _b, _c, _d, _e;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             updatedAt: new Date(),
             userId: payment.userId,
@@ -1165,7 +1225,7 @@ class InMemoryStorage {
     }
     async createSeason(season) {
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             name: season.name,
             sportId: season.sportId,
@@ -1189,7 +1249,7 @@ class InMemoryStorage {
     async createTeam(team) {
         var _a;
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             seasonId: team.seasonId,
             name: team.name,
@@ -1210,18 +1270,17 @@ class InMemoryStorage {
     }
     async createFixtures(fixtures) {
         const createdFixtures = fixtures.map((fixture) => {
-            var _a, _b, _c, _d;
+            var _a, _b, _c;
             const created = {
-                id: randomUUID(),
+                id: (0, crypto_1.randomUUID)(),
                 createdAt: new Date(),
                 seasonId: fixture.seasonId,
                 homeTeamId: fixture.homeTeamId,
                 awayTeamId: fixture.awayTeamId,
                 scheduledDate: this.ensureDate(fixture.scheduledDate),
-                venueId: (_a = fixture.venueId) !== null && _a !== void 0 ? _a : null,
-                homeScore: (_b = fixture.homeScore) !== null && _b !== void 0 ? _b : null,
-                awayScore: (_c = fixture.awayScore) !== null && _c !== void 0 ? _c : null,
-                status: (_d = fixture.status) !== null && _d !== void 0 ? _d : "scheduled",
+                homeScore: (_a = fixture.homeScore) !== null && _a !== void 0 ? _a : null,
+                awayScore: (_b = fixture.awayScore) !== null && _b !== void 0 ? _b : null,
+                status: (_c = fixture.status) !== null && _c !== void 0 ? _c : "scheduled",
             };
             this.fixtures.push(created);
             return created;
@@ -1233,8 +1292,8 @@ class InMemoryStorage {
             .filter((fixture) => fixture.seasonId === seasonId)
             .sort((a, b) => this.ensureDate(a.scheduledDate).getTime() - this.ensureDate(b.scheduledDate).getTime())
             .map((fixture) => {
-            var _a, _b, _c;
-            return (Object.assign(Object.assign({}, fixture), { homeTeam: (_a = this.teams.find((team) => team.id === fixture.homeTeamId)) !== null && _a !== void 0 ? _a : null, awayTeam: (_b = this.teams.find((team) => team.id === fixture.awayTeamId)) !== null && _b !== void 0 ? _b : null, venue: fixture.venueId ? (_c = this.findVenue(fixture.venueId)) !== null && _c !== void 0 ? _c : null : null }));
+            var _a, _b;
+            return (Object.assign(Object.assign({}, fixture), { homeTeam: (_a = this.teams.find((team) => team.id === fixture.homeTeamId)) !== null && _a !== void 0 ? _a : null, awayTeam: (_b = this.teams.find((team) => team.id === fixture.awayTeamId)) !== null && _b !== void 0 ? _b : null }));
         });
         return this.clone(fixtures);
     }
@@ -1249,7 +1308,24 @@ class InMemoryStorage {
     async getStandings(seasonId) {
         var _a, _b, _c, _d, _e, _f;
         const teams = this.teams.filter((team) => team.seasonId === seasonId);
-        const standings = teams.map((team) => (Object.assign(Object.assign({}, team), { goalsFor: 0, goalsAgainst: 0, goalDifference: 0, played: 0, won: 0, drawn: 0, lost: 0, points: 0 })));
+        const standings = teams.map((team) => {
+            var _a;
+            return ({
+                id: (0, crypto_1.randomUUID)(),
+                teamId: team.id,
+                seasonId: team.seasonId,
+                createdAt: (_a = team.createdAt) !== null && _a !== void 0 ? _a : new Date(),
+                goalsFor: 0,
+                goalsAgainst: 0,
+                goalDifference: 0,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                points: 0,
+                team,
+            });
+        });
         const map = new Map();
         standings.forEach((team) => map.set(team.id, team));
         for (const fixture of this.fixtures.filter((item) => item.seasonId === seasonId && item.homeScore !== null && item.awayScore !== null)) {
@@ -1295,7 +1371,7 @@ class InMemoryStorage {
             }
         }
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             paymentId: (_a = refund.paymentId) !== null && _a !== void 0 ? _a : null,
             gamePaymentId: (_b = refund.gamePaymentId) !== null && _b !== void 0 ? _b : null,
@@ -1316,14 +1392,14 @@ class InMemoryStorage {
             throw new Error("Cannot create Stripe refund for non-Stripe payment.");
         }
         const created = {
-            id: randomUUID(),
+            id: (0, crypto_1.randomUUID)(),
             createdAt: new Date(),
             paymentId: payment.id,
             gamePaymentId: null,
             amountPkr: amount,
             reason: "Stripe refund",
             status: "succeeded",
-            providerRef: `stripe_refund_${randomUUID()}`,
+            providerRef: `stripe_refund_${(0, crypto_1.randomUUID)()}`,
         };
         this.refunds.push(created);
         return this.clone(created);
@@ -1352,6 +1428,6 @@ class InMemoryStorage {
         return this.clone(payouts);
     }
 }
-const storageInstance = db ? new DbStorage() : new InMemoryStorage();
-export const storage = storageInstance;
+const storageInstance = db_js_1.db ? new DbStorage() : new InMemoryStorage();
+exports.storage = storageInstance;
 //# sourceMappingURL=storage.js.map

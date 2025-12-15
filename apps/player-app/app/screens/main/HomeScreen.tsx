@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import ScreenBackground from '../../../../shared/ui/ScreenBackground';
+import ScreenBackground from '@shared/ui/ScreenBackground';
 import HomeHeader from '../../components/home/HomeHeader';
 import HeroActionCard from '../../components/home/HeroActionCard';
 import SectionHeader from '../../components/home/SectionHeader';

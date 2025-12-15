@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import GlassCard from '../../../../shared/ui/GlassCard';
-import Chip from '../../../../shared/ui/Chip';
+import GlassCard from '@shared/ui/GlassCard';
+import Chip from '@shared/ui/Chip';
 
 const popularAreas = ['DHA', 'Gulberg', 'Johar Town', 'Model Town', 'Cantt'];
 

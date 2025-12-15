@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import PrimaryButton from '../../../../shared/ui/PrimaryButton';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 const BookingFooterBar = ({ slot, onContinue }) => {
   const time = new Date(slot.startTime.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

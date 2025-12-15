@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import GlassCard from '../../../../shared/ui/GlassCard';
+import GlassCard from '@shared/ui/GlassCard';
 
 const VenueCard = ({ venue }) => {
   const { name, address, city, imageUrls } = venue || {};

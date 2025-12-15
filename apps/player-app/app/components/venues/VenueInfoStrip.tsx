@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import GlassCard from '../../../../shared/ui/GlassCard';
+import GlassCard from '@shared/ui/GlassCard';
 
 const VenueInfoStrip = ({ rating, price, discount }) => {
   return (

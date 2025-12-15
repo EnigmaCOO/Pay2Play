@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import GlassCard from '../../../../shared/ui/GlassCard';
+import GlassCard from '@shared/ui/GlassCard';
 
 const paymentMethods = ['JazzCash', 'Easypaisa', 'Card (Visa/Mastercard)'];
 

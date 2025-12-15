@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../../shared/ui/ScreenBackground';
-import AppHeader from '../../../shared/ui/AppHeader';
-import PrimaryButton from '../../../shared/ui/PrimaryButton';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 import OtpInputRow from '../components/onboarding/OtpInputRow';
 import CountdownText from '../components/onboarding/CountdownText';
 

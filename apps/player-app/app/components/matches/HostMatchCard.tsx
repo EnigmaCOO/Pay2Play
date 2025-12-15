@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import GlassCard from '../../../../shared/ui/GlassCard';
-import PrimaryButton from '../../../../shared/ui/PrimaryButton';
+import GlassCard from '@shared/ui/GlassCard';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 const HostMatchCard = () => {
   return (

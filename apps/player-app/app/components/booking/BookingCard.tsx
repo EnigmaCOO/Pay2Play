@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import GlassCard from '../../../shared/ui/GlassCard';
+import GlassCard from '@shared/ui/GlassCard';
 import { Booking } from '@pay2play/types';
 
 const BookingCard = ({ booking }: { booking: Booking }) => {

@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../../shared/ui/ScreenBackground';
-import AppHeader from '../../../shared/ui/AppHeader';
-import PrimaryButton from '../../../shared/ui/PrimaryButton';
-import GlassCard from '../../../shared/ui/GlassCard';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import PrimaryButton from '@shared/ui/PrimaryButton';
+import GlassCard from '@shared/ui/GlassCard';
 
 const PhoneEntryScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');

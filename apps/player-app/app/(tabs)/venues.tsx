@@ -5,7 +5,7 @@ import { db } from '../../lib/firebase';
 import { Venue } from '@pay2play/types';
 import { useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker'; // Import Picker
-import ScreenBackground from '../../shared/ui/ScreenBackground';
+import ScreenBackground from '@shared/ui/ScreenBackground';
 import VenueCard from '../components/venues/VenueCard';
 
 export default function VenuesScreen() {

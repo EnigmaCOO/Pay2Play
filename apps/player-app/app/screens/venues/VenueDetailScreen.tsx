@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import ScreenBackground from '../../../../shared/ui/ScreenBackground';
 import VenueHeader from '../../components/venues/VenueHeader';
 import VenueImageCarousel from '../../components/venues/VenueImageCarousel';
 import VenueInfoStrip from '../../components/venues/VenueInfoStrip';
-import SegmentedTabs from '../../../../shared/ui/SegmentedTabs';
-import DateChipStrip from '../../../../shared/ui/DateChipStrip';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import SegmentedTabs from '@shared/ui/SegmentedTabs';
+import DateChipStrip from '@shared/ui/DateChipStrip';
 import SlotGrid from '../../components/venues/SlotGrid';
 import BookingFooterBar from '../../components/venues/BookingFooterBar';
 

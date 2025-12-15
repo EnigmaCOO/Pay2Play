@@ -2,12 +2,12 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
 import BookingSummaryCard from '../components/booking/BookingSummaryCard';
 import PriceBreakdownCard from '../components/booking/PriceBreakdownCard';
 import PaymentMethodSelector from '../components/booking/PaymentMethodSelector';
-import PrimaryButton from '../../shared/ui/PrimaryButton';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 const BookingReviewScreen = () => {
   const router = useRouter();

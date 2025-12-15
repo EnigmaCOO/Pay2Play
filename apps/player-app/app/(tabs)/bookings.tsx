@@ -4,9 +4,9 @@ import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestor
 import { db, auth } from '../../lib/firebase';
 import { Booking } from '@pay2play/types';
 import { onAuthStateChanged } from 'firebase/auth';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
+import ScreenBackground from '@shared/ui/ScreenBackground';
 import BookingCard from '../components/booking/BookingCard';
-import SegmentedTabs from '../../shared/ui/SegmentedTabs';
+import SegmentedTabs from '@shared/ui/SegmentedTabs';
 
 export default function MyBookingsScreen() {
   const [user, setUser] = useState<any>(null);

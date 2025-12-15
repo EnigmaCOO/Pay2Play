@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import GlassCard from '../../../shared/ui/GlassCard';
+import GlassCard from '@shared/ui/GlassCard';
 
 const ProfileMenuItem = ({ label, href }) => {
   const router = useRouter();

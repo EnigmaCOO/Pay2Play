@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, StyleSheet, View, ScrollView } from 'react-native';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
+import ScreenBackground from '@shared/ui/ScreenBackground';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import StatsRow from '../components/profile/StatsRow';
 import RewardsSummaryCard from '../components/profile/RewardsSummaryCard';

@@ -2,10 +2,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../../shared/ui/ScreenBackground';
-import AppLogoHeader from '../../../shared/ui/AppLogoHeader';
-import PrimaryButton from '../../../shared/ui/PrimaryButton';
-import SecondaryButton from '../../../shared/ui/SecondaryButton';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppLogoHeader from '@shared/ui/AppLogoHeader';
+import PrimaryButton from '@shared/ui/PrimaryButton';
+import SecondaryButton from '@shared/ui/SecondaryButton';
 import HeroOrb from '../components/onboarding/HeroOrb';
 import FeaturePill from '../components/onboarding/FeaturePill';
 

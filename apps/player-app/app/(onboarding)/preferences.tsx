@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../../shared/ui/ScreenBackground';
-import AppHeader from '../../../shared/ui/AppHeader';
-import PrimaryButton from '../../../shared/ui/PrimaryButton';
-import GlassCard from '../../../shared/ui/GlassCard';
-import Chip from '../../../shared/ui/Chip';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import PrimaryButton from '@shared/ui/PrimaryButton';
+import GlassCard from '@shared/ui/GlassCard';
+import Chip from '@shared/ui/Chip';
 import NeighborhoodField from '../components/onboarding/NeighborhoodField';
 import StepIndicator from '../components/onboarding/StepIndicator';
 

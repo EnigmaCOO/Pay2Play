@@ -1,12 +1,15 @@
-import { storage } from "./storage";
-export async function seed() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.seed = seed;
+const storage_js_1 = require("./storage.js");
+async function seed() {
     console.log("🌱 Seeding database...");
     try {
         // Fetch all sports to map names to IDs
-        const allSports = await storage.getSports();
+        const allSports = await storage_js_1.storage.getSports();
         const getSportId = (name) => { var _a; return ((_a = allSports.find(s => s.name === name)) === null || _a === void 0 ? void 0 : _a.id) || ""; };
         // Create test user
-        const user = await storage.createUser({
+        const user = await storage_js_1.storage.createUser({
             firebaseUid: "test-user-123",
             email: "test@example.com",
             displayName: "Test User",
@@ -40,7 +43,7 @@ export async function seed() {
                 partnerId: user.id,
             },
         ];
-        const createdVenues = await Promise.all(venues.map(v => storage.createVenue(v)));
+        const createdVenues = await Promise.all(venues.map(v => storage_js_1.storage.createVenue(v)));
         console.log(`✅ Created ${createdVenues.length} venues`);
         // Create fields
         const fields = [
@@ -50,7 +53,7 @@ export async function seed() {
             { venueId: createdVenues[1].id, name: "Padel Court A", sportId: getSportId("padel"), pricePerHourPkr: 1800, capacity: 4 },
             { venueId: createdVenues[2].id, name: "Main Cricket Pitch", sportId: getSportId("cricket"), pricePerHourPkr: 3500, capacity: 22 },
         ];
-        const createdFields = await Promise.all(fields.map(f => storage.createField(f)));
+        const createdFields = await Promise.all(fields.map(f => storage_js_1.storage.createField(f)));
         console.log(`✅ Created ${createdFields.length} fields`);
         // Create slots for today and tomorrow
         const now = new Date();
@@ -74,7 +77,7 @@ export async function seed() {
                 }
             }
         }
-        await Promise.all(slots.map(s => storage.createSlot(s)));
+        await Promise.all(slots.map(s => storage_js_1.storage.createSlot(s)));
         console.log(`✅ Created ${slots.length} time slots`);
         // Create sample games
         const games = [
@@ -112,10 +115,10 @@ export async function seed() {
                 status: "open",
             },
         ];
-        const createdGames = await Promise.all(games.map(g => storage.createGame(g)));
+        const createdGames = await Promise.all(games.map(g => storage_js_1.storage.createGame(g)));
         console.log(`✅ Created ${createdGames.length} pickup games`);
         // Create a sample season
-        const season = await storage.createSeason({
+        const season = await storage_js_1.storage.createSeason({
             name: "Lahore Premier League - Spring 2025",
             sportId: getSportId("cricket"),
             startDate: new Date(2025, 2, 1), // March 1, 2025
@@ -130,7 +133,7 @@ export async function seed() {
             name,
             captainId: user.id,
         }));
-        const createdTeams = await Promise.all(teams.map(t => storage.createTeam(t)));
+        const createdTeams = await Promise.all(teams.map(t => storage_js_1.storage.createTeam(t)));
         console.log(`✅ Created ${createdTeams.length} teams`);
         console.log("🎉 Seeding complete!");
     }

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import Chip from '../../../../shared/ui/Chip';
+import Chip from '@shared/ui/Chip';
 
 const FilterChipsRow = () => {
     // State for selected chip would be managed here
