@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -33,7 +32,7 @@ const OnboardingWelcomeScreen = () => {
           />
           <View style={styles.bottomMeta}>
             <Text style={styles.loginText}>Already playing with Pay2Play? </Text>
-            <TouchableOpacity onPress={() => { /* Navigate to login */ }}>
+            <TouchableOpacity onPress={() => router.push('/(auth)/sign-in')}>
               <Text style={styles.loginLink}>Log in</Text>
             </TouchableOpacity>
           </View>
