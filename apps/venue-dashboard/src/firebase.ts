@@ -5,9 +5,11 @@ import { getFirestore } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 // Your web app's Firebase configuration
+// Allow overriding authDomain in dev via Vite env (VITE_AUTH_DOMAIN).
 const firebaseConfig = {
   apiKey: "AIzaSyArQjL38x2egEme3PNNtjhICzt3hekcouA",
-  authDomain: "pay-2-play-f1da3.firebaseapp.com",
+  authDomain:
+    import.meta.env.VITE_AUTH_DOMAIN || "pay-2-play-f1da3.firebaseapp.com",
   projectId: "pay-2-play-f1da3",
   storageBucket: "pay-2-play-f1da3.appspot.com",
   messagingSenderId: "270335223167",

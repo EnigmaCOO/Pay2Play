@@ -47,6 +47,7 @@
   "scripts": {
     "start": "node start.js",
     "emulators": "node start.js emulators",
+    "emulators:restart": "sudo pkill -f \".*fire.*\" && sudo yarn emulators",
     "w": "yarn workspaces --parallel run",
     "dev": "firebase emulators:start --import=./firebase-emulator-data --export-on-exit=./firebase-emulator-data --only=functions,firestore,hosting & vite --debug",
     "check": "tsc --noEmit",

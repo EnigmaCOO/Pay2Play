@@ -1,12 +1,16 @@
-pay2play.local {
-    reverse_proxy localhost:5001
+{
+    auto_https off
 }
 
-app.pay2play.local {
-    reverse_proxy localhost:5002
+http://pay2play.local {
+    reverse_proxy 127.0.0.1:5001
 }
 
-venues.pay2play.local {
-    reverse_proxy localhost:5007
+http://app.pay2play.local {
+    reverse_proxy 127.0.0.1:5002
+}
+
+http://venues.pay2play.local {
+    reverse_proxy 127.0.0.1:5007
 }
 

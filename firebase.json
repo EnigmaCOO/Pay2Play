@@ -52,10 +52,10 @@
   ],
   "emulators": {
     "functions": {
-      "port": 5001
+      "port": 5555
     },
     "firestore": {
-      "port": 8082
+      "port": 8882
     },
     "hosting": {
       "targets": {
