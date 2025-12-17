@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import GlassCard from '../../../shared/ui/GlassCard';
-import PrimaryButton from '../../../shared/ui/PrimaryButton';
+import GlassCard from '@shared/ui/GlassCard';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 interface MatchCardProps {
   type: 'host-led' | 'lfp';

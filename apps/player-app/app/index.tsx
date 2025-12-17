@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { startTransition, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 
@@ -9,8 +9,13 @@ export default function Index() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // During SSR hydration on web, auth can resolve very quickly.
+      // Wrapping state updates in startTransition avoids updating
+      // this Suspense boundary before hydration has completed.
+      startTransition(() => {
       setUser(user);
       setLoading(false);
+      });
     });
 
     return () => unsubscribe();

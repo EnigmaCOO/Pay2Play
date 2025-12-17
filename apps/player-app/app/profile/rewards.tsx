@@ -2,9 +2,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
-import GlassCard from '../../shared/ui/GlassCard';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import GlassCard from '@shared/ui/GlassCard';
 
 const RewardsScreen = () => {
   const router = useRouter();

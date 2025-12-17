@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
-import GlassCard from '../../shared/ui/GlassCard';
-import PrimaryButton from '../../shared/ui/PrimaryButton';
-import Chip from '../../shared/ui/Chip';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import GlassCard from '@shared/ui/GlassCard';
+import PrimaryButton from '@shared/ui/PrimaryButton';
+import Chip from '@shared/ui/Chip';
 
 const HostMatchSetupScreen = () => {
   const router = useRouter();

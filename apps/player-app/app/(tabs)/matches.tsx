@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
+import ScreenBackground from '@shared/ui/ScreenBackground';
 import FilterChipsRow from '../components/home/FilterChipsRow'; // Reusing for now
 import MatchCard from '../components/matches/MatchCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';

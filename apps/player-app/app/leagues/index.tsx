@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
 import EventCard from '../components/events/EventCard';
 import FilterChipsRow from '../components/home/FilterChipsRow';
 

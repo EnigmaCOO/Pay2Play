@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
 
 const ChatScreen = () => {
   const { id } = useLocalSearchParams();

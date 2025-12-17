@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import ScreenBackground from '@shared/ui/ScreenBackground';
 import AppHeader from '@shared/ui/AppHeader';
 import PrimaryButton from '@shared/ui/PrimaryButton';
@@ -13,7 +13,7 @@ const PhoneEntryScreen = () => {
 
   return (
     <ScreenBackground>
-      <AppHeader title="Let’s get your number" onBack={() => router.back()} />
+      <AppHeader title="Let’s get your number" onBack={() => router.back()} stepIndicator="Step 2 of 3" />
       <View style={styles.container}>
         <Text style={styles.subtitle}>We’ll use it to secure your bookings.</Text>
         <GlassCard>
@@ -32,7 +32,7 @@ const PhoneEntryScreen = () => {
         </GlassCard>
         <PrimaryButton 
           title="Continue" 
-          onPress={() => router.push('/(onboarding)/otp-verification')} 
+          onPress={() => router.push('/(onboarding)/otp-verification' as Href<'/onboarding/otp-verification'>)} 
         />
         <Text style={styles.hint}>We’ll send you a one-time code.</Text>
       </View>

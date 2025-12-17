@@ -30,9 +30,8 @@
   ],
   "hosting": [
     {
-      "target": "player-app",
       "site": "pay2play",
-      "public": "dist/public",
+      "public": "apps/player-app/dist",
       "rewrites": [
         {
           "source": "**",
@@ -41,20 +40,8 @@
       ]
     },
     {
-      "target": "venue-dashboard",
       "site": "pay2play-venues",
       "public": "apps/venue-dashboard/dist",
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "target": "landing",
-      "site": "pay2play-fun",
-      "public": "dist/landing",
       "rewrites": [
         {
           "source": "**",
@@ -76,7 +63,7 @@
           "port": 5002
         },
         "pay2play-venues": {
-          "port": 5003
+          "port": 5007
         },
         "pay2play-fun": {
           "port": 5004

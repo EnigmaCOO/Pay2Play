@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import SegmentedTabs from '../../shared/ui/SegmentedTabs';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import SegmentedTabs from '@shared/ui/SegmentedTabs';
 import ConversationRow from '../components/messages/ConversationRow';
 
 export default function MessagesScreen() {

@@ -2,10 +2,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
-import GlassCard from '../../shared/ui/GlassCard';
-import PrimaryButton from '../../shared/ui/PrimaryButton';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import GlassCard from '@shared/ui/GlassCard';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 const MatchDetailScreen = () => {
   const { id } = useLocalSearchParams();

@@ -2,8 +2,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import PrimaryButton from '../../shared/ui/PrimaryButton';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 const MatchPublishedScreen = () => {
   const router = useRouter();

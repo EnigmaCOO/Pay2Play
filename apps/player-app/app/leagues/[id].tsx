@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import ScreenBackground from '../../shared/ui/ScreenBackground';
-import AppHeader from '../../shared/ui/AppHeader';
-import GlassCard from '../../shared/ui/GlassCard';
-import PrimaryButton from '../../shared/ui/PrimaryButton';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppHeader from '@shared/ui/AppHeader';
+import GlassCard from '@shared/ui/GlassCard';
+import PrimaryButton from '@shared/ui/PrimaryButton';
 
 const EventDetailScreen = () => {
   const { id } = useLocalSearchParams();

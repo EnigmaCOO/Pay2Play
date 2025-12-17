@@ -11,8 +11,8 @@
     "test:selenium": "node ./scripts/selenium-smoke.mjs"
   },
   "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "firebase": "^12.6.0",
     "@pay2play/types": "file:../../packages/types"
   },
