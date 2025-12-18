@@ -39,7 +39,7 @@ todos:
 - Line 17: `booking.venueName` - no null check
 - Line 18: `booking.fieldName` - no null check
 
-2. **[apps/player-app/app/(tabs)/bookings.tsx](apps/player-app/app/\\(tabs)/bookings.tsx)**
+2. **[apps/player-app/app/(tabs)/bookings.tsx](apps/player-app/app/\\\\\(tabs)/bookings.tsx)**
 
 - Line 63: `b.slotStartTime.seconds` - no null check in filter function
 - Line 39: `orderBy('slotStartTime', 'desc')` - ordering by optional field (may need handling)

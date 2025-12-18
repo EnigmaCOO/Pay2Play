@@ -5,17 +5,23 @@ import GlassCard from '@shared/ui/GlassCard';
 import { Booking } from '@pay2play/types';
 
 const BookingCard = ({ booking }: { booking: Booking }) => {
-  const isUpcoming = new Date(booking.slotStartTime.seconds * 1000) > new Date();
+  const slotStart = booking.slotStartTime;
+  const slotDate = slotStart ? new Date(slotStart.seconds * 1000) : null;
+  const isUpcoming = slotDate ? slotDate > new Date() : false;
   const status = isUpcoming ? 'Confirmed' : 'Completed';
+
+  const dateLabel = slotDate ? slotDate.toLocaleDateString() : 'Date TBD';
+  const venueName = booking.venueName ?? 'Unknown venue';
+  const fieldName = booking.fieldName ?? 'Field TBD';
 
   return (
     <GlassCard>
       <View style={styles.cardHeader}>
-        <Text style={styles.date}>{new Date(booking.slotStartTime.seconds * 1000).toLocaleDateString()}</Text>
+        <Text style={styles.date}>{dateLabel}</Text>
         <Text style={[styles.status, isUpcoming ? styles.confirmed : styles.completed]}>{status}</Text>
       </View>
-      <Text style={styles.venueName}>{booking.venueName}</Text>
-      <Text style={styles.details}>{booking.fieldName}</Text>
+      <Text style={styles.venueName}>{venueName}</Text>
+      <Text style={styles.details}>{fieldName}</Text>
       <View style={styles.footer}>
         <Text style={styles.price}>Paid: PKR {booking.amountPkr}</Text>
         {/* Add View details button here */}

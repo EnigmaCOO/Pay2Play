@@ -59,9 +59,16 @@ export default function MyBookingsScreen() {
     return () => unsubscribeBookings();
   }, [user]);
 
-  const filteredBookings = bookings.filter(b => {
-      const isUpcoming = new Date(b.slotStartTime.seconds * 1000) > new Date();
-      return activeTab === 'Upcoming' ? isUpcoming : !isUpcoming;
+  const filteredBookings = bookings.filter((b) => {
+    const slot = b.slotStartTime;
+    if (!slot) {
+      // If there's no slot start time, we can't classify it as upcoming or past.
+      // Safest default is to drop it from the list to avoid runtime errors.
+      return false;
+    }
+
+    const isUpcoming = new Date(slot.seconds * 1000) > new Date();
+    return activeTab === 'Upcoming' ? isUpcoming : !isUpcoming;
   });
 
   if (loading) {
