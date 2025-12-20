@@ -1,0 +1,1533 @@
+﻿Screen 1 – Onboarding Welcome (Visual Spec)
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR – light icons over dark gradient ]      |
++------------------------------------------------------+
+|                                                      |
+|                [ Pay2Play LOGO ]                     |
+|          Pay less. Play more.                        |
+|          Book a pitch in under 60 seconds.           |
+|                                                      |
+|                                                      |
+|                  (   GLOWING ORB   )                 |
+|            ◐ cricket   ⚽ football   🎾 padel        |
+|             (icons orbiting around orb)              |
+|   faint pitch lines / stadium aura in background     |
+|                                                      |
+|  [ Vetted venues ]  [ Real-time slots ]  [Discounts] |
+|   (glass pills with icons and short text)            |
+|                                                      |
+|   [   GET STARTED (primary gradient button)     ]    |
+|        Continue with your phone number               |
+|                                                      |
+|   [ Explore first (outline / text button) ]          |
+|                                                      |
+|   Already playing with Pay2Play?  [Log in]           |
+|   By continuing, you agree to our Terms & Privacy    |
+|   Policy.                                            |
+|                                                      |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+________________
+Screen 2A – Phone Entry
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [ Back chevron ]       Pay2Play logo (small)         |
+|                                                      |
+|  Title:   "Let’s get your number"                    |
+|  Subtitle:"We’ll use it to secure your bookings."    |
+|                                                      |
+|  [ Glass card ]                                      |
+|   +----------------------------------------------+   |
+|   |  Label: Phone number                         |   |
+|   |  [  +92  |  __ __ __ __ __ __ __ __ __  ]    |   |
+|   |  Hint: "WhatsApp number works best."         |   |
+|   |  [ Small info icon: 'We never spam.' ]       |   |
+|   +----------------------------------------------+   |
+|                                                      |
+|   [ CONTINUE (Primary button) ]                      |
+|   Text: "We’ll send you a one-time code."            |
+|                                                      |
+|   [ Having trouble? Chat with us (text link) ]       |
+|                                                      |
++------------------------------------------------------+
+|   "By continuing, you agree to our Terms & Privacy"  |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+________________
+Screen 2B – OTP Verification
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [ Back chevron ]    +92 XXX-XXXXXXX (small text)     |
+|                                                      |
+|  Title:   "Enter the 6-digit code"                   |
+|  Subtitle:"We’ve sent it to +92 XXX-XXXXXXX"         |
+|                                                      |
+|  [   _   _   _   _   _   _   ]  (OTP boxes)          |
+|                                                      |
+|      [  Resend code in 00:34  ]                      |
+|      [  Change number  ]                             |
+|                                                      |
+|  [ VERIFY & CONTINUE (Primary button) ]              |
+|                                                      |
++------------------------------------------------------+
+|  "Secure, OTP-based login. No passwords to forget."  |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+Screen 2C – Basic Info Setup (Name, Avatar, Sports)
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [ Back chevron ]      Step 2 of 3                    |
+|                                                      |
+|  Title:   "Set up your player profile"               |
+|  Subtitle:"We’ll use this to match you with games."  |
+|                                                      |
+|  [ Avatar carousel / selector ]                      |
+|   ◄   (  avatar 1  )  ( avatar 2 )  ( avatar 3 )  ►  |
+|   Label: "Choose an avatar (you can change later)"   |
+|                                                      |
+|  [ Glass card – Name ]                               |
+|   Label: "Your name"                                 |
+|   Input: "Muhammad Abdullah"                         |
+|                                                      |
+|  [ Glass card – Preferred sports ]                   |
+|   Label: "What do you play?"                         |
+|   Chips:  [ Cricket ] [ Football ] [ Padel ]         |
+|           (multi-select; selected chips glowing)     |
+|                                                      |
+|  [ CONTINUE (Primary button) ]                       |
+|   Text: "Next: your city & time preferences"         |
+|                                                      |
++------------------------------------------------------+
+Screen 3 – City & Time Preferences + “What kind of games do you want?”
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [ Back chevron ]            Step 3 of 3              |
+|                                                      |
+|  Title:   "Where and when do you usually play?"      |
+|  Subtitle:"We’ll use this to surface the right games."|
+|                                                      |
+|  [ Glass card – City ]                               |
+|   Label:  "City"                                     |
+|   Dropdown: [ Lahore v ]                             |
+|                                                      |
+|  [ Glass card – Area / Neighborhood ]                |
+|   Label:  "Neighborhood"                             |
+|   Input:  [ Type to search... ]                      |
+|   Pills:  [ DHA ] [ Gulberg ] [ Johar Town ] [ ... ] |
+|                                                      |
+|  [ Glass card – Typical play times ]                 |
+|   Label: "When do you usually play?"                 |
+|   Chips: [ Weekday evenings ]                        |
+|          [ Weekend mornings ]                        |
+|          [ Weekend nights ]                          |
+|          [ Flexible / whenever ]                     |
+|                                                      |
+|  [ Glass card – Game style ]                         |
+|   Label: "What kind of games do you want?"           |
+|   Chips: [ Casual pickup games ]                     |
+|          [ Competitive matches ]                     |
+|          [ Leagues & tournaments ]                   |
+|          [ I’m open to anything ]                    |
+|                                                      |
+|  [ CONTINUE (Primary button) ]                       |
+|   Text: "Finish setup and see games"                 |
+|                                                      |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++------------------------------------------------------+
+|  <   Pay2Play (small logo)          [Step 3 of 3]    |
++------------------------------------------------------+
+|  Where and when do you usually play?                 |
+|  We’ll use this to surface the right games.          |
+|                                                      |
+|  [ CITY (glass card) ]                               |
+|   City                                               |
+|   [ Lahore            v ]                            |
+|   (hint: "We’re starting with Lahore...")            |
+|                                                      |
+|  [ NEIGHBORHOOD (glass card) ]                       |
+|   Neighborhood                                       |
+|   [ Type to search your area... ]                    |
+|   Suggested: [ DHA ] [ Gulberg ] [ Johar Town ]      |
+|              [ Model Town ] [ Cantt ]                |
+|                                                      |
+|  [ PLAY TIMES (glass card) ]                         |
+|   When do you usually play?                          |
+|   [ Weekday evenings ]  [ Weekend mornings ]         |
+|   [ Weekend nights   ]  [ Flexible / whenever ]      |
+|                                                      |
+|  [ GAME STYLE (glass card) ]                         |
+|   What kind of games do you want?                    |
+|   [ Casual pickup games   ]                          |
+|   [ Competitive matches   ]                          |
+|   [ Leagues & tournaments ]                          |
+|   [ I’m open to anything ]                           |
+|                                                      |
+|  [ FINISH SETUP AND SEE GAMES ] (primary button)     |
+|                                                      |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 4 – Home (First-Time Personalized View)
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| Top Row:  "Hey, Abdullah 👋"          [Lahore ▾]     |
+|           "Ready to play this week?"                 |
+|                                                      |
+| [ Horizontal chips – filters / preferences ]         |
+|   [ Tonight ] [ This weekend ] [ My sports ]         |
+|                                                      |
+| [ Hero Action Card – Book a pitch fast ]             |
+|   "Book a pitch in 60 seconds"                       |
+|   CTA: [ Book now ]                                  |
+|   Secondary: tiny "See all venues" link              |
+|                                                      |
+| [ Section: Matches looking for players ]             |
+|   Title:  "Games needing players near you"           |
+|   Horizontal cards:                                  |
+|    - 5-a-side · Today 9 PM · DHA                     |
+|      "Needs 2 players"   [ Join ]                    |
+|                                                      |
+| [ Section: Recommended venues ]                      |
+|   Title:  "Top venues for you in Lahore"             |
+|   Vertical/horizontal card list (2–3)                |
+|     Card: venue image, price, discount, time chip    |
+|                                                      |
+| [ Section: Leagues & Events (preview)]               |
+|   Title:  "Leagues & events this month"              |
+|   Mini horizontally scrollable cards                 |
+|                                                      |
++------------------------------------------------------+
+| [ HOME ] [ VENUES ] [ MATCHES ] [ MESSAGES ] [ ME ]  |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++------------------------------------------------------+
+|  [STATUS BAR]                                        |
++------------------------------------------------------+
+|  Hey, Abdullah 👋                    [📍 Lahore ▾]    |
+|  Ready to play this week?                           |
+|                                                     |
+|  [ Tonight ] [ This weekend ] [ My sports ]         |
+|                                                     |
+|  [ HERO CARD: BOOK A PITCH ]                        |
+|   "Book a pitch in 60 seconds"                      |
+|   "See real-time slots at vetted venues."           |
+|      [ Book now ]             "See all venues →"    |
+|                                                     |
+|  "Games needing players near you"        "View all" |
+|   ┌───────────────────────────────────────────────┐  |
+|   |  Football · 5-a-side                         |  |
+|   |  Tonight · 9:00 PM                           |  |
+|   |  DHA Phase 5 · Turf Arena                    |  |
+|   |  Needs 2 players                 [ Join ]    |  |
+|   |  avatars row                                  |
+|   └───────────────────────────────────────────────┘  |
+|   (horizontal scroll for more cards)                |
+|                                                     |
+|  "Top venues for you in Lahore"         "See all"   |
+|   [Card: Star Futsal Arena                        ] |
+|   [Image][Name][Area][Price][Discount][Time chip]  |
+|   (list of 2–3 venues)                              |
+|                                                     |
+|  "Leagues & events this month"           "All →"    |
+|   [ Mini card: Ramzan Night League Feb–Mar ]       |
+|   [ Mini card: Weekend Padel Cup            ]       |
+|                                                     |
++------------------------------------------------------+
+|  [Home] [Venues] [Matches] [Messages] [Me]          |
++------------------------------------------------------+
+________________
+
+
+
+
+
+
+
+
+Screen 5 – Venue Detail + Real-time Availability
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [<]  Star Futsal Arena              [♥] [⋮]          |
+|  DHA Phase 5 · Football · Indoor                      |
+|                                                      |
+| [ Hero image carousel ]                              |
+|   (turf photos, with discount badge overlay)         |
+|                                                      |
+| [ Info strip – rating, price, discount, sport ]      |
+|   ★ 4.7  | From PKR 5,000/hr | Save up to 20%        |
+|                                                      |
+| [ Segmented tabs:  About | Availability | Location ] |
+|                                                      |
+| (Availability tab active by default)                 |
+|                                                      |
+| [ Date selector strip ]                              |
+|   [ Today ] [ Wed 26 ] [ Thu 27 ] [ Fri 28 ] ...     |
+|                                                      |
+| [ Pitch selector (if multiple courts) ]              |
+|   Pitch: [ Court A ▾ ] [ Court B ▾ ]                 |
+|                                                      |
+| [ Time slot grid ]                                   |
+|   6:00–7:00  [Booked]                                |
+|   7:00–8:00  [Available]                             |
+|   8:00–9:00  [Available]                             |
+|   9:00–10:00 [Unavailable]                           |
+|                                                      |
+|  (Tap a slot → highlights; shows price & discount)   |
+|                                                      |
+|  [ Footer booking bar ]                              |
+|   "Today · 8–9 PM"                                   |
+|   "PKR 4,000  (You save PKR 1,000)"                  |
+|   [ Continue → ]                                     |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++------------------------------------------------------+
+| [<]  Star Futsal Arena                    [♥] [⋮]    |
+|     DHA Phase 5 · Football · Indoor                 |
++------------------------------------------------------+
+| [ IMAGE CAROUSEL (swipeable photos) ]               |
+|   badge: "Vetted venue"     "Save up to 20%"        |
++------------------------------------------------------+
+| [ ★ 4.7  | From PKR 5,000/hr | Save up to 20% ]     |
++------------------------------------------------------+
+| [ About ] [*Availability*] [ Location ]             |
++------------------------------------------------------+
+| "Choose your date & time"                           |
+| [ Today 25 ] [ Wed 26 ] [ Thu 27 ] [ Fri 28 ] ...   |
++------------------------------------------------------+
+| Pitch: [ Court A ] [ Court B ] [ Court C ]          |
++------------------------------------------------------+
+| [ 6:00–7:00 PM ] [ 7:00–8:00 PM ]                   |
+| [  Booked      ] [  Available   ]                   |
+|                                                     |
+| [ 8:00–9:00 PM ] [ 9:00–10:00 PM ]                  |
+| [ *Selected*   ] [  Unavailable ]                   |
+|                                                     |
+| "Slots are 60 minutes. Prices include discount."    |
++------------------------------------------------------+
+| [ Today · 8–9 PM ]                                  |
+|  PKR 4,000   (PKR 5,000)                            |
+|  You save PKR 1,000                                 |
+|                                 [ CONTINUE  → ]     |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 6 – Booking Review & Payment
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [<]  Booking review                                  |
+|      Star Futsal Arena                               |
+|      Today · 8:00–9:00 PM · Football                 |
+|                                                      |
+| [ Summary card – booking details ]                   |
+|  Venue, sport, date, time, pitch, players            |
+|                                                      |
+| [ Price breakdown card – glass ]                     |
+|  Base price:          PKR 5,000                      |
+|  Pay2Play discount:  -PKR 1,000                      |
+|  Loyalty credits:    -PKR 200  [Toggle ON]           |
+|  ---------------------------------------             |
+|  Total to pay:        PKR 3,800                      |
+|  "You save PKR 1,200 today"                          |
+|                                                      |
+| [ Payment method section ]                           |
+|  "Choose how you want to pay"                        |
+|   (•) JazzCash                                       |
+|   ( ) Easypaisa                                      |
+|   ( ) Card (Visa/Mastercard)                         |
+|                                                      |
+|  [ Save payment preference checkbox ]                |
+|   ☑ Remember this method next time                   |
+|                                                      |
+| [ CTA button ]                                       |
+|   [ Confirm & Pay PKR 3,800 ]                        |
+|   Microcopy: "Secure payment via [gateway logo]"     |
++------------------------------------------------------+
+| Small text: "By paying, your slot will be confirmed."|
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++------------------------------------------------------+
+| < Booking review                                     |
+|   Star Futsal Arena                                  |
+|   Today · 8:00–9:00 PM · Football · Court A          |
++------------------------------------------------------+
+| [ BOOKING SUMMARY (glass card) ]                     |
+|   ⚽ Football · 5-a-side                              |
+|   📅 Today, 25 Nov · 8:00–9:00 PM                     |
+|   📍 DHA Phase 5 · Star Futsal Arena                 |
+|   👥 Approx. players: 10          [Change slot]      |
++------------------------------------------------------+
+| [ PRICE BREAKDOWN (glass card) ]                     |
+|   Base pitch price              PKR 5,000            |
+|   Pay2Play discount            -PKR 1,000            |
+|   Use credits (200 avail.)     -PKR 200   [toggle]   |
+|   -----------------------------------------          |
+|   Total to pay                 PKR 3,800             |
+|   "You save PKR 1,200 today."                        |
++------------------------------------------------------+
+| "Choose how you want to pay"                         |
+|   (•) [ JazzCash logo ]  JazzCash                    |
+|   ( ) [ Easypaisa logo ] Easypaisa                   |
+|   ( ) [ Card logo ]       Card (Visa/Mastercard)     |
+|   [☑] Remember this method next time                |
++------------------------------------------------------+
+| [ CONFIRM & PAY PKR 3,800 ]                          |
+|   "Secure payment via [Gateway]"                     |
+|   "Your slot will be confirmed after payment."       |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 7 – Booking Success
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+|                    ✅ Booking confirmed              |
+|                    "Your game is locked in."         |
+|                                                      |
+|  [ Circular badge with orb + checkmark ]             |
+|                                                      |
+|  [ Booking summary card ]                            |
+|   Star Futsal Arena                                  |
+|   Today · 8:00–9:00 PM · Football                    |
+|   DHA Phase 5 · Court A                              |
+|   "Paid: PKR 3,800 (You saved PKR 1,200)"            |
+|                                                      |
+|  [ Primary CTA button ]                              |
+|   [ Host a match from this slot ]                    |
+|                                                      |
+|  [ Secondary CTA buttons (stacked) ]                 |
+|   [ Share with your team ]                           |
+|   [ View my bookings ]                               |
+|                                                      |
+|  Tip text: "You can manage this booking anytime in   |
+|            My Bookings under your profile."          |
++------------------------------------------------------+
+| [ HOME ] [ VENUES ] [ MATCHES ] [ MESSAGES ] [ ME ]  |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++------------------------------------------------------+
+|                       ✅                             |
+|                  Booking confirmed                   |
+|                  Your game is locked in.             |
+|                                                      |
+|        [ GLOWING CIRCLE WITH CHECKMARK ]             |
+|                                                      |
+|  [ BOOKING SUMMARY CARD ]                            |
+|   Star Futsal Arena                                  |
+|   Today · 8:00–9:00 PM · Football · Court A          |
+|   DHA Phase 5                                        |
+|   ------------------------------------               |
+|   Paid: PKR 3,800                                    |
+|   You saved PKR 1,200 with Pay2Play                  |
+|                                                      |
+|  [ HOST A MATCH FROM THIS SLOT ] (primary)           |
+|                                                      |
+|  [ SHARE WITH YOUR TEAM ] (outline)                  |
+|  [ VIEW MY BOOKINGS ] (ghost/text)                   |
+|                                                      |
+|  Tip: "You can manage this booking anytime in        |
+|       My Bookings under your profile."               |
++------------------------------------------------------+
+|  [Home] [Venues] [Matches] [Messages] [Me]           |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 8 – Matches Tab (Games Needing Players)
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+|  Matches                            [Filters ▾]      |
+|  "Find games you can join today"                     |
+|                                                      |
+|  [ Filter chips row ]                                |
+|   [ Near me ] [ Tonight ] [ This weekend ]           |
+|   [ My sports ] [ Casual ] [ Competitive ]           |
+|                                                      |
+|  [ Host a match ]  (inline pill button)              |
+|                                                      |
+|  [ Match card 1 ]  (host-led game)                   |
+|  [ Match card 2 ]  (LFP post)                        |
+|  [ Match card 3 ]  ...                               |
+|                                                      |
++------------------------------------------------------+
+|  [HOME] [VENUES] [*MATCHES*] [MESSAGES] [ME]         |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ASCII Wireframe (for Figma/Dev)
+
+
+
+
++------------------------------------------------------+
+| Matches                             [Filters ▾]      |
+| Find games you can join today                        |
++------------------------------------------------------+
+| [ Near me ] [ Tonight ] [ This weekend ] [My sports] |
+| [ Casual ] [ Competitive ]                           |
++------------------------------------------------------+
+| [ 🧢 Host a match ]                                  |
++------------------------------------------------------+
+| [ MATCH CARD – HOST-LED GAME ]                       |
+|  [ Host-led · Slot confirmed ]   [ ⚽ Football ]      |
+|  5-a-side · High tempo                              |
+|  Tonight · 9:00–10:00 PM                            |
+|  Star Futsal Arena · DHA Phase 5                    |
+|                                                     |
+|  (avatars)   Host + 5 joined        Needs 2 players |
+|  PKR 400 each                       [ Join now ]    |
++------------------------------------------------------+
+| [ MATCH CARD – LFP/LFG ]                             |
+|  [ Looking for players ]         [ 🏏 Cricket ]      |
+|  Casual tape-ball in DHA                             |
+|  Friday · 11:00 PM – 1:00 AM                        |
+|  DHA · Looking for ground                           |
+|                                                     |
+|  (avatars)   Host + 2 joined       Needs 4 players  |
+|  Payment: Pay at venue          [ Request to join ] |
++------------------------------------------------------+
+| ... (more match cards)                               |
++------------------------------------------------------+
+| [HOME] [VENUES] [*MATCHES*] [MESSAGES] [ME]          |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 9 – Host Match Setup
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| <  Host a match                                      |
+|    "Turn this booking into a game others can join."  |
+|                                                      |
+| [ Linked booking card ]                              |
+|   Star Futsal Arena                                  |
+|   Today · 8:00–9:00 PM · Football · Court A          |
+|   [ Change booking ▾ ]                               |
+|                                                      |
+| [ Glass field – Game details ]                       |
+|   Title: "Match title"                               |
+|   Input: "5-a-side high tempo"                       |
+|                                                      |
+|   Players needed:    [-]  2  [+]                     |
+|   Total players:         10 (auto / editable?)       |
+|                                                      |
+|   Skill level:   [ Casual ] [ Intermediate ] [ Comp ]|
+|                                                      |
+|   Game type:     [ Friendly ] [ Competitive ]        |
+|                                                      |
+|   Notes to players (optional):                       |
+|   [ e.g. 'Bring turf shoes, no studs please.' ]      |
+|                                                      |
+| [ Glass field – Visibility & cost (optional) ]       |
+|   Cost per player (optional):  [ PKR 400 ]           |
+|   Payment note: "Pay at venue"                       |
+|                                                      |
+| [ Primary CTA button ]                               |
+|   [ Publish match ]                                  |
+|   Microcopy: "We’ll list it under Matches instantly."|
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+ ASCII Wireframe
+
+
++------------------------------------------------------+
+| < Host a match                                       |
+|   Turn this booking into a game others can join.     |
++------------------------------------------------------+
+| [ LINKED BOOKING CARD ]                              |
+|   Star Futsal Arena                                  |
+|   Today · 8:00–9:00 PM · Football · Court A          |
+|   DHA Phase 5                         [Change ▾]     |
++------------------------------------------------------+
+| [ GAME DETAILS (glass) ]                             |
+|   Match title                                        |
+|   [ 5-a-side high tempo               ]              |
+|                                                      |
+|   Players needed                                    |
+|   [-]  2  [+]                                       |
+|   Total players: 10                                  |
+|                                                      |
+|   Skill level                                        |
+|   [ Casual ] [ Intermediate ] [ Competitive ]        |
+|                                                      |
+|   Game type                                          |
+|   [ Friendly ] [ Competitive ]                       |
+|                                                      |
+|   Notes to players (optional)                        |
+|   [ Bring turf shoes, no studs please... ]           |
++------------------------------------------------------+
+| [ VISIBILITY & COST (glass) ]                        |
+|   Cost per player (optional)                         |
+|   [ PKR 400 ]                                        |
+|   "Players will pay you directly at the venue."      |
++------------------------------------------------------+
+| [ PUBLISH MATCH ]                                    |
+|   "We’ll list it under Matches instantly."           |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 10 – Match Detail
+
+
+
+
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| <  Match details                                     |
+|                                                      |
+| [ Game type chip ]    [ Sport chip ]                 |
+| "5-a-side high tempo"                                |
+| "Host: Abdullah · Verified host"                     |
+|                                                      |
+| [ Venue & time card ]                                |
+|  Today · 8:00–9:00 PM                                |
+|  Star Futsal Arena · DHA Phase 5                     |
+|  "Slot confirmed via Pay2Play" (for host-led)        |
+|                                                      |
+| [ Players row card ]                                 |
+|  Avatars: Host + joined players + "+3"               |
+|  "8 of 10 spots filled"                              |
+|  Skill level: Intermediate                           |
+|                                                      |
+| [ Details card ]                                     |
+|  Game type: Friendly / Competitive                   |
+|  Payment: PKR 400 each · Pay at venue                |
+|  Notes from host:                                    |
+|   "Bring turf shoes, no studs please..."             |
+|                                                      |
+| [ Optional: Linked booking summary mini-row ]        |
+|   "Booking: Court A · Full pitch" (tap → view)       |
+|                                                      |
+| [ CTA FOOTER BAR ]                                   |
+|   Left:  "Needs 2 more players"                      |
+|          "Tonight · 8:00–9:00 PM"                    |
+|   Right: [ Request to join ]                         |
++------------------------------------------------------+
+________________
+
+
+
+
+
+
+ASCII Wireframe
++------------------------------------------------------+
+| < Match details                                      |
++------------------------------------------------------+
+ | [Host-led · Slot confirmed]      [⚽ Football]      |
+|  5-a-side high tempo                                |
+|  Host: Abdullah Faisal · Verified host              |
++------------------------------------------------------+
+| [ VENUE & TIME CARD ]                                |
+|  🗓  Today · 8:00–9:00 PM                            |
+|  📍  Star Futsal Arena · DHA Phase 5                |
+|  "Slot confirmed via Pay2Play"                      |
++------------------------------------------------------+
+| [ PLAYERS CARD ]                                     |
+|  (avatars row: host + players + "+3")               |
+|  "8 of 10 spots filled"    [progress bar ####--]    |
+|  Chips: [Skill: Intermediate] [Game: Friendly]      |
++------------------------------------------------------+
+| [ GAME DETAILS CARD ]                                |
+|  Game type: Friendly                                 |
+|  Payment: PKR 400 each · Pay at venue               |
+|  Notes from host:                                    |
+|   "Bring turf shoes, no studs please..."             |
++------------------------------------------------------+
+| [ BOOKING SUMMARY MINI-ROW ] (for host-led)         |
+|  📄 Booking: Court A · Full pitch  [>]               |
++------------------------------------------------------+
+| [ FOOTER JOIN BAR ]                                  |
+|  Needs 2 more players                                |
+|  Tonight · 8:00–9:00 PM                              |
+|                                  [ Request to join ] |
++------------------------------------------------------+
+Join bottom sheet (overlay):
++------------------ Bottom Sheet ----------------------+
+|  Request to join this match?                        |
+|  5-a-side · Football                                |
+|  Today · 8:00–9:00 PM                               |
+|  Star Futsal Arena                                  |
+|                                                     |
+|  Position (optional):                               |
+|   [ Any ] [ Defender ] [ Midfield ] [ Forward ]     |
+|   [ Keeper ]                                        |
+|                                                     |
+|  "Your request will be sent to the host.            |
+|   They can accept or decline."                      |
+|                                                     |
+|  [ SEND REQUEST ]    [ Cancel ]                     |
+Screen 11 – My Bookings (Upcoming & Past)
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| <  My bookings                                       |
+|    "All your games in one place."                    |
+|                                                      |
+| [ Segmented tabs:  Upcoming | Past ]                 |
+|                                                      |
+|  (Upcoming tab active)                               |
+|                                                      |
+|  [ Booking card 1 – upcoming ]                       |
+|  [ Booking card 2 – upcoming ]                       |
+|  ...                                                 |
+|                                                      |
++------------------------------------------------------+
+|  (Switch to Past tab → past bookings list)           |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ASCII Wireframe
+
+
++------------------------------------------------------+
+| < My bookings                                        |
+|   All your games in one place.                       |
++------------------------------------------------------+
+| [ *Upcoming* ] [ Past ]                              |
++------------------------------------------------------+
+| [ UPCOMING BOOKING CARD ]                            |
+|  🗓 Today · 8:00–9:00 PM          [ Confirmed ]       |
+|  Star Futsal Arena                                  |
+|  Football · 5-a-side · Court A                      |
+|  DHA Phase 5                                        |
+|  👥 10 players   💸 Paid: PKR 3,800   [ View details ]|
++------------------------------------------------------+
+| [ UPCOMING BOOKING CARD ]                            |
+|  🗓 Thu · 28 Nov · 10:00–11:00 PM    [ Confirmed ]    |
+|  Power Cricket Arena                                |
+|  Cricket · Tape-ball · Lane 3                       |
+|  Gulberg                                            |
+|  💸 Pay at venue                   [ View details ]  |
++------------------------------------------------------+
+| ... (more upcoming bookings)                         |
++------------------------------------------------------+
+| Switch to "Past" tab                                 |
++------------------------------------------------------+
+| [ PAST BOOKING CARD ]                                |
+|  🗓 Sun · 17 Nov · 9:00–10:00 PM     [ Completed ]    |
+|  Star Futsal Arena                                  |
+|  Football · 5-a-side · Court A                      |
+|  DHA Phase 5                                        |
+|  💸 Paid: PKR 3,800                 [ Rebook ]       |
++------------------------------------------------------+
+________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 12 – Messages Tab / Conversation List
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| Messages                               [⋮]           |
+| "Chat with teammates and venues."                    |
+|                                                      |
+| [ Tabs: All | Players | Venues ]                     |
+|                                                      |
+| [ Conversation row 1 ]                               |
+| [ Conversation row 2 ]                               |
+| [ Conversation row 3 ]                               |
+| ...                                                  |
++------------------------------------------------------+
+| [HOME] [VENUES] [MATCHES] [*MESSAGES*] [ME]          |
++------------------------------------------------------+
+
+
+ASCII Wireframe
+
+
++------------------------------------------------------+
+| Messages                             [⋮]             |
+| Chat with teammates and venues.                      |
++------------------------------------------------------+
+| [ *All* ] [ Players ] [ Venues ]                     |
++------------------------------------------------------+
+| (Unread)                                             |
+| [● avatar]  5-a-side tonight at Turf Arena     9:24PM|
+|            Ali: We’ll bring the ball.          [ 3 ] |
++------------------------------------------------------+
+| (Venue chat)                                         |
+| [🏟 avatar] Star Futsal Arena                 Yesterday|
+|            Venue: Gate opens 15 mins early.          |
++------------------------------------------------------+
+| (Group chat)                                        |
+| [👥 avatar] Sunday Padel Squad                Sun 11:30|
+|            You: Got it, see you there.               |
++------------------------------------------------------+
+| ...                                                  |
++------------------------------------------------------+
+| [HOME] [VENUES] [MATCHES] [*MESSAGES*] [ME]          |
++------------------------------------------------------+
+
+
+________________
+Screen 13 – Chat Thread (1:1 or Group)
+
+
++------------------------------------------------------+
+| [<]  5-a-side tonight at Turf Arena      [⋮]         |
+|      "Match chat · 8:00–9:00 PM · Today"             |
+|                                                      |
+| [ Context pill ]                                     |
+|   "Star Futsal Arena · DHA Phase 5"  [View booking]  |
+|                                                      |
+|  --- date separators, messages list ---              |
+|                                                      |
+|  You:  "On my way, 10 mins."                         |
+|  Ali:  "Cool, we’ll warm up."                        |
+|  Venue: "Ground ready from 7:45."                    |
+|                                                      |
+|  [ Typing indicator, if any ]                        |
+|                                                      |
+| [ Message input bar ]                                |
+|   [ + ]  [ Type a message...            ]  [ ➤ ]     |
++------------------------------------------------------+
+
+
+________________
+ASCII Wireframe
+
+
++------------------------------------------------------+
+| <  5-a-side tonight at Turf Arena        [⋮]         |
+|    Match chat · Today · 8:00–9:00 PM                 |
++------------------------------------------------------+
+| [ Star Futsal Arena · DHA Phase 5    (View booking) ]|
++------------------------------------------------------+
+|                Today                                 |
++------------------------------------------------------+
+| Ali:                                                 |
+|  [ Hey, are we still on for 8 sharp?          ]      |
+|  [                                                 ] |
+|      7:05 PM                                        |
++------------------------------------------------------+
+| You:                                                 |
+|                            [ Yes, I’ll be there at   |
+|                              7:50.                 ] |
+|                                              7:06 PM |
++------------------------------------------------------+
+| Venue:                                              |
+|  [ Ground ready from 7:45. Use Gate 2.         ]     |
+|      7:10 PM                                        |
++------------------------------------------------------+
+| (Optional typing indicator: "Ali is typing…")        |
++------------------------------------------------------+
+| [ + ] [ Type a message…                  ] [ ➤ ]     |
++------------------------------------------------------+
+________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 14A – Profile (“Me” Tab) Overview
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| [ Avatar ]   "Abdullah Faisal"        [⚙︎]           |
+|             Lahore · Football, Cricket               |
+|             "Intermediate"                           |
+|                                                      |
+| [ Horizontal stat chips ]                            |
+|   [ Games played ]  [ Venues tried ]  [ Credits ]    |
+|                                                      |
+| [ Rewards card – current credits & referral CTA ]    |
+|                                                      |
+| [ Menu list ]                                        |
+|   ▸ My bookings                                      |
+|   ▸ Rewards & referrals                              |
+|   ▸ Payment methods                                  |
+|   ▸ Account & settings                               |
+|   ▸ Help & support                                   |
++------------------------------------------------------+
+| [HOME] [VENUES] [MATCHES] [MESSAGES] [*ME*]          |
++------------------------------------------------------+
+________________
+ASCII Wireframe – Profile Overview
+
+
++------------------------------------------------------+
+|              [ BIG AVATAR (glowing ring) ]          |
+|               Abdullah Faisal                        |
+|               Lahore · Football, Cricket             |
+|               Skill: Intermediate                    |
+|                                    [⚙︎]              |
++------------------------------------------------------+
+| [ Games played ]  [ Venues tried ]  [ Credits ]      |
+|     12                  4              450           |
++------------------------------------------------------+
+| [ REWARDS & SAVINGS CARD ]                           |
+|   450 credits                                        |
+|   Worth PKR 450 on future bookings.                  |
+|   Total saved: PKR 3,200                             |
+|   Biggest discount: PKR 900                          |
+|   [ View rewards & invite friends ]                  |
++------------------------------------------------------+
+| ▸ My bookings                                        |
+| ▸ Rewards & referrals                                |
+| ▸ Payment methods                                    |
+| ▸ Account & settings                                 |
+| ▸ Help & support                                     |
++------------------------------------------------------+
+| [HOME] [VENUES] [MATCHES] [MESSAGES] [*ME*]          
+________________
+
+
+
+
+Screen 14B – Rewards & Referrals
+
+
++------------------------------------------------------+
+| < Rewards & referrals                                |
+|   "Earn credits by playing and inviting friends."    |
++------------------------------------------------------+
+| [ Balance card ]                                     |
+|   450 credits  =  PKR 450                            |
+|   "You can use up to 30% of a booking with credits." |
+|                                                      |
+| [ Earn credits section ]                             |
+|   [ Play more ]  [ Invite friends ]                  |
+|                                                      |
+| [ Referral card ]                                    |
+|   "Invite friends, get 250 credits each"             |
+|   Code: ABD123                                       |
+|   [ Copy code ]  [ Share link ]                      |
+|                                                      |
+| [ Activity history list ]                            |
+|   +200  From booking at Star Futsal Arena            |
+|   +250  Friend Ali joined & booked                   |
+|   -150  Used on Turf Arena booking                   |
++------------------------------------------------------+
+
+
+________________
+ASCII Wireframe – Rewards & Referrals
+
+
++------------------------------------------------------+
+| < Rewards & referrals                                |
+|   Earn credits by playing and inviting friends.      |
++------------------------------------------------------+
+| [ BALANCE CARD ]                                     |
+|   450 credits                                        |
+|   Worth PKR 450                                      |
+|   You can use up to 30% of a booking with credits.   |
++------------------------------------------------------+
+| [ EARN CREDITS ]                                     |
+|  [ Play more ]    [ Invite friends ]                 |
+|   "100 credits     "250 credits per friend’s first   |
+|    per completed    booking."                        |
+|    booking."                                         |
++------------------------------------------------------+
+| [ REFERRAL CARD ]                                    |
+|   Invite friends, get 250 credits each               |
+|   Code:  ABD123                                      |
+|   [ Copy code ]   [ Share link ]                     |
++------------------------------------------------------+
+| Rewards activity                                     |
+|  +200  From booking at Star Futsal Arena     25 Nov  |
+|  +250  Friend Ali joined & booked            21 Nov  |
+|  -150  Used on Turf Arena booking            18 Nov  |
+|  ...                                                 |
++------------------------------------------------------+
+________________
+Screen 15 – Leagues & Events Listing
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| < Leagues & events                      [Filters ▾]  |
+|   "Discover tournaments and special events."         |
+|                                                      |
+| [ Filter chips row ]                                 |
+|   [ This month ] [ This weekend ] [ My sports ]      |
+|   [ Lahore ] [ Free/low cost ]                       |
+|                                                      |
+| [ Highlighted event card (hero) ]                    |
+|                                                      |
+| [ Section header: Upcoming leagues ]                 |
+|   [ League card 1 ]                                  |
+|   [ League card 2 ]                                  |
+|                                                      |
+| [ Section header: One-day events ]                   |
+|   [ Event card 1 ]                                   |
+|   [ Event card 2 ]                                   |
++------------------------------------------------------+
+
+
+
+
+
+
+________________
+ASCII Wireframe – Listing
+
+
+
+
+| < Leagues & events                       [Filters ▾] |
+|   Discover tournaments and special events.           |
++------------------------------------------------------+
+| [ This month ] [ This weekend ] [ My sports ]        |
+| [ Lahore ] [ Free/low cost ]                         |
++------------------------------------------------------+
+| [ HERO EVENT CARD ]                                  |
+|   Ramzan Night League 2025                           |
+|   Football · 7-a-side                                |
+|   10 Mar – 5 Apr                                     |
+|   Model Town Sports Complex                          |
+|                        [ Spots filling fast ]        |
+|                        [ View details ]              |
++------------------------------------------------------+
+| Upcoming leagues                                     |
+| [ LEAGUE CARD ]                                      |
+|   Weekend 7-a-side Premier League                    |
+|   Football · 7-a-side · 8 teams                      |
+|   15 Jan – 10 Feb                                    |
+|   Star Futsal Arena · DHA                            |
+|   [ Evenings ]                      [ Register ]     |
++------------------------------------------------------+
+| One-day events                                       |
+| [ EVENT CARD ]                                       |
+|   Sunday Padel Shootout                              |
+|   Padel · Doubles · 16 teams                         |
+|   Sun, 22 Dec · 4–11 PM                              |
+|   Padel Club Lahore · Gulberg                        |
+|   [ PKR 1,500 / team ]           [ Register ]        |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen 16 – Event Detail + Registration
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| < Ramzan Night League 2025                [⋮]        |
+|   Football · 7-a-side                          [♥]   |
+|                                                      |
+| [ Hero banner / poster ]                             |
+|                                                      |
+| [ Key info chips ]                                   |
+|   [ Date range ] [ Location ] [ Format ]             |
+|                                                      |
+| [ Info card – Summary ]                              |
+|   Dates, times, venue, fee, prize info               |
+|                                                      |
+| [ Info card – Rules & format ]                       |
+|                                                      |
+| [ Info card – Registration ]                         |
+|   "Register team" or "Register as individual"        |
+|   Fee breakdown / link or button                     |
+|                                                      |
+| [ CTA footer bar ]                                   |
+|   Left: "From PKR X / team" & "Reg. closes in N days"|
+|   Right: [ Register interest ] / [ Register → ]      |
++------------------------------------------------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ASCII Wireframe – Event Detail
+
+
++------------------------------------------------------+
+| < Ramzan Night League 2025              [⋮] [♥]      |
+|   Football · 7-a-side                                |
++------------------------------------------------------+
+| [ HERO BANNER / POSTER ]                             |
+|  10 Mar – 5 Apr       Model Town Sports Complex      |
+|                       [ Slots open ]                 |
++------------------------------------------------------+
+| [ 10 Mar – 5 Apr ] [ Fri/Sat nights ] [ Lahore ]     |
+| [ 7-a-side · 8 teams ]                               |
++------------------------------------------------------+
+| [ SUMMARY CARD ]                                     |
+|  Dates: 10 Mar – 5 Apr 2025                          |
+|  Match days: Fri & Sat nights                        |
+|  Venue: Model Town Sports Complex                    |
+|  Format: 7-a-side · Group stage + knockouts          |
+|  Fee: PKR 25,000 per team                            |
+|  Prizes: Trophy + medals + PKR 100,000               |
++------------------------------------------------------+
+| [ RULES & FORMAT CARD ]                              |
+|  – Max 10 registered players per team                |
+|  – Rolling subs allowed                              |
+|  – Standard 7-a-side rules                           |
+|  – ... [Read more]                                   |
++------------------------------------------------------+
+| [ REGISTRATION CARD ]                                |
+|  Register via Pay2Play                               |
+|  "Tap below to send your details to the organizer."  |
+|  [ Register interest ]   [ Message on WhatsApp ]     |
++------------------------------------------------------+
+| [ FOOTER BAR ]                                       |
+|  From PKR 25,000 / team                               |
+|  Registration closes in 5 days         [ Register ]  |
++------------------------------------------------------+
+________________
+
+
+
+
+
+
+
+
+
+
+Screen 17 – Wallet (Loyalty & Savings Center)
+
+
++------------------------------------------------------+
+| [ STATUS BAR ]                                       |
++------------------------------------------------------+
+| < Wallet                              [Info ⓘ]       |
+|   "Your credits, savings, and history."              |
+|                                                      |
+| [ Balance card – credits & value ]                   |
+|                                                      |
+| [ Quick chips – Available | Locked | Expiring soon ] |
+|                                                      |
+| [ How your wallet works (info card) ]                |
+|                                                      |
+| [ Activity list – All transactions ]                 |
+|   +200  Booking completed at Star Futsal Arena       |
+|   +250  Friend Ali joined & booked                   |
+|   -150  Used on Turf Arena booking                   |
+|   ...                                                |
++------------------------------------------------------+
+________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ASCII Wireframe – Wallet View
+
+
++------------------------------------------------------+
+| < Wallet                               [ⓘ]           |
+|   Your credits, savings, and history.                |
++------------------------------------------------------+
+| [ BALANCE CARD ]                                     |
+|   Available balance                                  |
+|   450 credits                                        |
+|   ≈ PKR 450                                          |
+|                        [ Up to 30% per booking ]     |
+|   Total saved: PKR 3,200    Expiring soon: 0         |
++------------------------------------------------------+
+| [ Available · 450 ] [ Locked · 0 ] [ Expiring · 0 ]  |
++------------------------------------------------------+
+| [ HOW YOUR WALLET WORKS ]                            |
+|   • 100 credits per completed booking.               |
+|   • 250 credits per friend’s first game.             |
+|   • Use up to 30% of a booking with credits.         |
+|   • 1 credit ≈ PKR 1.                                |
+|   View referral options →                            |
++------------------------------------------------------+
+| Activity                             [ All EarnedUsed]|
+|  +200  Booking completed at Star Futsal Arena  25 Nov |
+|       Football · 5-a-side                      [Earned]|
++------------------------------------------------------+
+|  +250  Friend Ali joined & booked             21 Nov  |
+|       Referral                                [Referral]|
++------------------------------------------------------+
+|  -150  Used on Turf Arena booking             18 Nov  |
+|       Discount on 8–9 PM slot                 [Used]   |
++------------------------------------------------------+
+________________

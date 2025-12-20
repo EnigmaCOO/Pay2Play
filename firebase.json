@@ -1,0 +1,74 @@
+{
+  "firestore": {
+    "database": "(default)",
+    "location": "us-east4",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "source": "backend/functions"
+    }
+  ],
+  "apphosting": [
+    {
+      "backendId": "fun-pay2play",
+      "rootDir": "/",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "backend/functions"
+      ]
+    }
+  ],
+  "hosting": [
+    {
+      "site": "pay2play",
+      "public": "apps/player-app/dist",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "site": "pay2play-venues",
+      "public": "apps/venue-dashboard/dist",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
+  "emulators": {
+    "functions": {
+      "port": 5555
+    },
+    "firestore": {
+      "port": 8882
+    },
+    "hosting": {
+      "targets": {
+        "pay2play": {
+          "port": 5002
+        },
+        "pay2play-venues": {
+          "port": 5007
+        },
+        "pay2play-fun": {
+          "port": 5004
+        }
+      }
+    }
+  }
+}

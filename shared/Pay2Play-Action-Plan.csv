@@ -1,0 +1,46 @@
+Category,Objective,Subtask,Est Hours,Start Date,End Date
+Product & Strategy,Finalize MVP scope,Review business plan and confirm MVP features list,4,2025-11-24,2025-11-24
+Product & Strategy,Finalize MVP scope,Prioritize MVP vs Growth vs Scale features,4,2025-11-25,2025-11-25
+Product & Strategy,Finalize MVP scope,"Document user stories for MVP booking, discounts, basic venue view",4,2025-11-26,2025-11-26
+Product & Strategy,Product requirements,Write PRD for Player app MVP,4,2025-11-27,2025-11-27
+Product & Strategy,Product requirements,Write PRD for Venue dashboard MVP,4,2025-11-28,2025-11-28
+Product & Strategy,Product requirements,"Define non-functional requirements (performance, security, uptime targets)",4,2025-11-29,2025-11-29
+Architecture & Infra,Architecture design,Design high-level system architecture (Expo app + Firebase + GCP services),4,2025-11-30,2025-11-30
+Architecture & Infra,Architecture design,"Define data model for users, venues, bookings, promotions, discount pool",4,2025-12-01,2025-12-01
+Architecture & Infra,Architecture design,"Choose exact Firebase products (Auth, Firestore, Storage, Functions, Hosting)",4,2025-12-02,2025-12-02
+Architecture & Infra,Environment setup,Set up Firebase project(s) for dev and prod,4,2025-12-03,2025-12-03
+Architecture & Infra,Environment setup,"Configure GCP project, IAM roles, and billing for Cloud Run / Vertex AI",4,2025-12-04,2025-12-04
+Architecture & Infra,Environment setup,"Set up Expo project with EAS build profiles (dev, staging, prod)",4,2025-12-05,2025-12-05
+MVP – Booking Engine,Search & browse venues,"Implement venue listing screen with basic filters (sport, location)",4,2025-12-06,2025-12-06
+MVP – Booking Engine,Search & browse venues,Connect venue list to Firestore with mock/static data,4,2025-12-07,2025-12-07
+MVP – Booking Engine,Venue details,"Implement venue detail screen (photos, amenities, price, ratings placeholders)",4,2025-12-08,2025-12-08
+MVP – Booking Engine,Availability,Design slot model and store in Firestore (static schedule),4,2025-12-09,2025-12-09
+MVP – Booking Engine,Availability,Implement availability UI (calendar / time-slot picker),4,2025-12-10,2025-12-10
+MVP – Booking Engine,Booking flow,"Implement booking creation flow (select slot, confirm participants, price)",4,2025-12-11,2025-12-11
+MVP – Booking Engine,Booking flow,Create Cloud Function to validate and write booking atomically,4,2025-12-12,2025-12-12
+MVP – Booking Engine,Booking flow,Implement booking confirmation screen and booking history view,4,2025-12-13,2025-12-13
+MVP – Payments & Discounts,Payment integration,Select payment gateway(s) (JazzCash/Easypaisa/cards) and read API docs,4,2025-12-14,2025-12-14
+MVP – Payments & Discounts,Payment integration,Implement payment UI and backend integration (test environment),4,2025-12-15,2025-12-15
+MVP – Payments & Discounts,Payment integration,Implement webhook/function to update booking status after payment,4,2025-12-16,2025-12-16
+MVP – Payments & Discounts,Discount pool logic,Model promotion packages and discount pools in Firestore,4,2025-12-17,2025-12-17
+MVP – Payments & Discounts,Discount pool logic,Implement discount calculation in booking price breakdown,4,2025-12-18,2025-12-18
+MVP – Payments & Discounts,Discount pool logic,Show “You saved PKR X thanks to Pay2Play offers” in UI,4,2025-12-19,2025-12-19
+MVP – Auth & Profiles,Authentication,Integrate Firebase Auth with email/password,4,2025-12-20,2025-12-20
+MVP – Auth & Profiles,Authentication,Add Google Sign-In using Firebase Auth,4,2025-12-21,2025-12-21
+MVP – Auth & Profiles,Profiles,"Create player profile screen (name, photo, preferred sports)",4,2025-12-22,2025-12-22
+MVP – Auth & Profiles,Profiles,Create basic venue admin profile with link to venue record,4,2025-12-23,2025-12-23
+MVP – Venue Dashboard,Basic venue admin,Implement web/React admin shell with Firebase auth for venue admins,4,2025-12-24,2025-12-24
+MVP – Venue Dashboard,Basic venue admin,"Build bookings list view for a venue (date, time, player, status)",4,2025-12-25,2025-12-25
+MVP – Venue Dashboard,Basic venue admin,Allow venue to block/unblock slots (manual availability management),4,2025-12-26,2025-12-26
+MVP – Notifications,Booking notifications,Configure Firebase Cloud Messaging or expo-notifications,4,2025-12-27,2025-12-27
+MVP – Notifications,Booking notifications,Send booking confirmation and reminder notifications,4,2025-12-28,2025-12-28
+MVP – Notifications,Admin notifications,Notify venue admins on new bookings / cancellations,4,2025-12-29,2025-12-29
+AI Foundations,Vertex AI setup,Enable Vertex AI & GenKit in GCP project,4,2025-12-30,2025-12-30
+AI Foundations,Vertex AI setup,Create basic Cloud Function calling Gemini model via Vertex AI,4,2025-12-31,2025-12-31
+AI Foundations,AI demo,Integrate simple in-app AI assistant for FAQs (optional MVP+),4,2026-01-01,2026-01-01
+QA & Release,Testing,Write manual test cases and Gherkin scenarios for main flows,4,2026-01-02,2026-01-02
+QA & Release,Testing,"Run end-to-end tests on staging (booking, payments, notifications)",4,2026-01-03,2026-01-03
+QA & Release,Store readiness,"Prepare app store listings (copy, screenshots, privacy policy)",4,2026-01-04,2026-01-04
+QA & Release,Store readiness,Configure EAS builds and upload to TestFlight / Play Console,4,2026-01-05,2026-01-05
+QA & Release,Launch,Soft-launch beta with limited users and iterate on feedback,4,2026-01-06,2026-01-06
+QA & Release,Launch,Public launch in Lahore and monitor metrics / bugs,4,2026-01-07,2026-01-07

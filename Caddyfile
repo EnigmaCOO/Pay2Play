@@ -1,0 +1,16 @@
+{
+    auto_https off
+}
+
+http://pay2play.local {
+    reverse_proxy 127.0.0.1:5001
+}
+
+http://app.pay2play.local {
+    reverse_proxy 127.0.0.1:5002
+}
+
+http://venues.pay2play.local {
+    reverse_proxy 127.0.0.1:5007
+}
+

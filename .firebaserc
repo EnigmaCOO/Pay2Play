@@ -1,0 +1,44 @@
+{
+  "projects": {
+    "default": "pay2play"
+  },
+  "targets": {
+    "pay2play": {
+      "hosting": {
+        "player-app": [
+          "pay2play"
+        ],
+        "venue-dashboard": [
+          "pay2play-venues"
+        ],
+        "landing": [
+          "pay2play-fun"
+        ]
+      }
+    }
+  },
+  "hosting": {
+    "player-app": [
+      {
+        "site": "pay2play",
+        "url": "https://app.pay2play.fun/",
+        "alias": "player-app"
+      }
+    ],
+    "venue-dashboard": [
+      {
+        "site": "pay2play-venues",
+        "url": "https://venues.pay2play.fun/",
+        "alias": "venue-dashboard"
+      }
+    ],
+    "landing": [
+      {
+        "site": "pay2play-fun",
+        "url": "https://pay2play.fun/",
+        "alias": "landing"
+      }
+    ]
+  }
+}
+

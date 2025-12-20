@@ -1,0 +1,4 @@
+backend/functions/lib/**
+dist/**
+node_modules/**
+

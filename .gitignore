@@ -4,3 +4,16 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+**/*.js
+**/*.js*
+**/node_modules/*
+**/dist/*
+**/lib
+**/lib/*
+**/lib/**/*.js
+**/lib/**/*.js*
+**/dist-ssr/*
+**/logs/*
+**/logs/*
+**/*.log
+.firebase/*
