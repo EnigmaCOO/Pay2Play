@@ -7,22 +7,22 @@ todos:
     status: completed
   - id: expo-dev-script-fix
     content: Update start.js and players:dev to use supported Expo CLI flags and handle Caddy already running on the admin port
-    status: in_progress
+    status: completed
   - id: firebase-auth-config
     content: Verify single Firebase initialization, wire authDomain overrides for local dev, and ensure Firebase/Google consoles include app.pay2play.local as authorized domain/redirect URI
-    status: pending
+    status: completed
   - id: booking-null-safety
     content: Confirm BookingCard.tsx and bookings.tsx safely handle optional Booking fields and pass lint/typecheck
-    status: pending
+    status: completed
   - id: caddy-routing-verify
     content: Double-check Caddyfile + /etc/hosts for HTTP-only IPv4 routing to 127.0.0.1:500{1,2,7} and confirm curl equality between app.pay2play.local and 127.0.0.1:5002
-    status: pending
+    status: completed
   - id: local-e2e-checks
     content: Run emulators and players:dev, then exercise auth, navigation, and bookings via http://app.pay2play.local in a normal browser
-    status: pending
+    status: completed
   - id: build-deploy-browser-verify
     content: Build the player app for web, deploy hosting:pay2play, and use @Browser to validate the deployed site matches local behavior
-    status: pending
+    status: completed
 ---
 
 ### Stabilize player app navigation, auth, and local routing
@@ -42,13 +42,11 @@ todos:
 
 1. **Confirm React Navigation 6.x alignment for Expo SDK 54 / expo-router 3.5.20.**
 
-   - Keep / revert root `resolutions` to the Expo-compatible set:
+   - Root `resolutions` should only pin the **6.x** surface packages used by the app:
      - `"@react-navigation/native": "6.1.18"`
      - `"@react-navigation/bottom-tabs": "6.6.1"`
      - `"@react-navigation/elements": "1.3.31"`
-     - `"@react-navigation/core": "7.13.6"`
-     - `"@react-navigation/routers": "7.5.2"`
-     - `"@react-navigation/native-stack": "7.8.6"`
+   - **Do not** force `@react-navigation/core`, `@react-navigation/routers`, or `@react-navigation/native-stack` to 7.x via `resolutions` — `expo-router@3.5.20` requests the 6.x native-stack range, and mixing 6/7 is a common cause of SSR/Metro failures.
 
 2. **Ensure player app dependencies match those versions:**
 
@@ -61,7 +59,7 @@ todos:
 3. **Reinstall and verify resolution:**
 
    - Run `yarn install --mode=skip-builds` at the repo root.
-   - Use `yarn why @react-navigation/native` to verify a single 6.1.x instance is used, satisfying expo-router.
+   - Use `yarn why @react-navigation/native` and `yarn why @react-navigation/native-stack` to verify the navigation graph is on 6.x (no accidental 7.x).
 
 4. **Re-run the failing build/export:**
 
@@ -275,12 +273,46 @@ Result: a fully working local experience rooted at `app.pay2play.local`.
 2. **Deploy to Firebase Hosting:**
 
    - From repo root: `firebase deploy --only hosting:pay2play` or `yarn deploy:hosting` (depending on preferred script).
+   - If `firebase` isn’t on PATH (or is blocked by shell permissions), deploy via:
+     - `npx -y firebase-tools deploy --only hosting:pay2play`
 
 3. **Verify via Browser tooling:**
 
    - Use the `@Browser` integration to:
      - Load the production hosting URL (e.g. the `pay-2-play-f1da3.web.app` / `firebaseapp.com` domain for `pay2play`).
      - Exercise the same flows: landing page, auth, bookings.
+   - If you see production console errors like **React invariant 418/422** (hydration), prefer SPA output for Expo Router web:
+     - Set `apps/player-app/app.json` → `expo.web.output = "spa"`
+     - Rebuild and redeploy hosting, then re-test with a cache-busting query param (e.g. `?cb=<timestamp>`) to ensure the new JS is loaded.
    - Optionally, confirm that Caddy-based local routing still mirrors the deployed behavior for dev/testing.
 
 Result: the same fixed app is running both locally via Caddy and remotely via Firebase Hosting, with navigation, auth, and bookings all behaving correctly.
+
+---
+
+### Appendix: @zsh (1-1015) analysis (why the plan exists)
+
+This section summarizes the key signals from the referenced terminal output and maps them to the steps above.
+
+**Observed symptoms:**
+
+- **Dependency resolution warnings** (React Navigation 6 vs 7 skew), e.g.:
+  - `Resolution field "@react-navigation/core@7.13.6" is incompatible with requested version "@react-navigation/core@^6.4.17"`
+  - `Resolution field "@react-navigation/native-stack@7.8.6" is incompatible with requested version "@react-navigation/native-stack@~6.9.12"`
+- **Static rendering enabled** (expo-router export), followed by repeated:
+  - `Warning: Invalid hook call...` (often indicates mismatched React renderer versions or multiple copies)
+- **Metro SSR/runtime failure** shown elsewhere in the transcript/log:
+  - `Metro error: (0 , m.default) is not a function` at `expo-router/build/fork/NavigationContainer.js:59`
+- **Build/export failure**:
+  - `Error: Failed to statically export route`
+
+**Most likely root causes:**
+
+- Mixed React Navigation major versions (forcing 7.x internals while expo-router expects the 6.x graph) leads to SSR/runtime failures (`m.default`) and hook-call errors.
+- Static rendering + a navigation/container mismatch (e.g., manually wrapping expo-router’s `Stack` in a separate `NavigationContainer`) can also trigger “invalid hook call” / hydration failures.
+
+**Plan mapping:**
+
+- **Section 1** removes the 6/7 navigation skew (primary fix for `m.default` and “invalid hook call” cascades).
+- **Section 2** stabilizes `players:dev` so dev startup doesn’t crash or hang on interactive prompts.
+- **Section 7** covers deploy mechanics and the “SPA output” escape hatch for hydration-related production errors.

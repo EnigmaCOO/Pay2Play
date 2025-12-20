@@ -45,7 +45,7 @@ const ForgotPasswordScreen = () => {
 
         <Text style={styles.title}>Forgot Password?</Text>
         <Text style={styles.subtitle}>
-          Enter your phone number and we'll send you instructions to reset your password.
+          Enter your phone number and we’ll send you instructions to reset your password.
         </Text>
 
         <View style={styles.inputWrapper}>

@@ -4,7 +4,7 @@ This document outlines how to set up and run the Pay2Play monorepo locally for d
 
 ## 1. Introduction
 
-The Pay2Play project is structured as a monorepo using pnpm workspaces. It consists of:
+The Pay2Play project is structured as a monorepo using Yarn workspaces. It consists of:
 -   `apps/player-app`: The Expo React Native application for players (iOS, Android, Web).
 -   `apps/venue-dashboard`: The Vite React web application for venue administrators.
 -   `packages/types`: Shared TypeScript type definitions (e.g., Firestore schemas).
@@ -17,19 +17,12 @@ The Pay2Play project is structured as a monorepo using pnpm workspaces. It consi
 Before you begin, ensure you have the following installed:
 
 -   **Node.js**: Version 18 or later (check `backend/functions/package.json` for exact engine version).
--   **pnpm**: Version 8 or later.
-    ```bash
-    npm install -g pnpm
-    ```
+-   **Yarn**: v1.x (classic).
 -   **Firebase CLI**: Version 13 or later.
     ```bash
     npm install -g firebase-tools
     firebase login
     firebase use --add  # Select your Firebase project
-    ```
--   **Expo CLI**: Required for running the player app.
-    ```bash
-    npm install -g expo-cli
     ```
 
 ## 3. Initial Setup
@@ -37,7 +30,7 @@ Before you begin, ensure you have the following installed:
 Navigate to the project root and install all dependencies for the monorepo:
 
 ```bash
-pnpm install
+yarn install
 ```
 
 ## 4. Running Firebase Emulators
@@ -47,10 +40,30 @@ The Firebase Emulators suite allows you to run a local version of Firebase servi
 To start the emulators:
 
 ```bash
-pnpm dev # This script is configured in the root package.json
-# This will typically start Functions, Firestore, and Hosting emulators.
+yarn emulators
+# Or (recommended) to kill any stale emulator processes first:
+yarn emulators:restart
 ```
 Leave this command running in a dedicated terminal. Access the Firebase Emulator UI at `http://localhost:4000`.
+
+## 4.1 Local domains (Caddy)
+
+This repo uses Caddy as a local reverse proxy so you can access the Firebase Hosting emulator on custom domains:
+
+- `http://pay2play.local` → Hosting emulator `127.0.0.1:5001`
+- `http://app.pay2play.local` → Hosting emulator `127.0.0.1:5002`
+- `http://venues.pay2play.local` → Hosting emulator `127.0.0.1:5007`
+
+The proxy is configured in `Caddyfile` and the hostnames are mapped in `/etc/hosts`.
+
+## 4.2 Local Auth (Google/Firebase) on `app.pay2play.local`
+
+To complete Google sign-in on the custom local domain, you must allow it in both:
+
+- Firebase Console → Authentication → Settings → **Authorized domains**: add `app.pay2play.local`
+- Google Cloud Console → OAuth client → **Authorized redirect URIs**: add `http://app.pay2play.local/__/auth/handler`
+
+The player app reads the auth domain from `EXPO_PUBLIC_AUTH_DOMAIN` (and `start.js` defaults it to `app.pay2play.local` when starting `yarn players:dev`).
 
 ## 5. Integration Testing with Firebase Emulators
 
@@ -144,15 +157,13 @@ Follow these steps to perform basic end-to-end integration tests using the local
 
 The player app is an Expo project. Ensure the Firebase Emulators are running first.
 
-Navigate to the `apps/player-app` directory and start the Expo development server:
+From the repo root, start the player app (this also starts Caddy for local routing):
 
 ```bash
-cd apps/player-app
-pnpm start # Or npx expo start
+yarn players:dev
 ```
-This will open the Expo Dev Tools in your browser. From there, you can:
--   Scan the QR code with your phone (Expo Go app) to run on **iOS/Android**.
--   Press `w` to run the app in your **web browser**.
+
+Then open `http://app.pay2play.local/` in your browser.
 
 ## 7. Running the Venue Dashboard (Vite)
 
@@ -162,7 +173,7 @@ Navigate to the `apps/venue-dashboard` directory and start the development serve
 
 ```bash
 cd apps/venue-dashboard
-pnpm dev # Or pnpm run dev
+yarn dev
 ```
 This will typically start the app on `http://localhost:5173` (or another available port).
 
@@ -172,19 +183,19 @@ These commands can be run from the project root.
 
 -   **Install dependencies**:
     ```bash
-    pnpm install
+    yarn install
     ```
 -   **Run linting across specified packages**:
     ```bash
-    pnpm lint
+    yarn lint
     ```
 -   **Run type-checking across specified packages**:
     ```bash
-    pnpm typecheck
+    yarn typecheck
     ```
 -   **Build all production assets**:
     ```bash
-    pnpm build
+    yarn build
     ```
 
 ## 9. Firebase Deployment
