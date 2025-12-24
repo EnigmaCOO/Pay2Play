@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, View, ScrollView } from 'react-native';
+import { useRouter, Href } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import ScreenBackground from '@shared/ui/ScreenBackground';
@@ -10,6 +11,7 @@ import ProfileMenuList from '../components/profile/ProfileMenuList';
 
 export default function ProfileScreen() {
   const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -22,6 +24,8 @@ export default function ProfileScreen() {
     try {
       await signOut(auth);
       console.log('Signed out');
+      // Navigate back to the sign-in screen
+      router.replace('/(auth)/sign-in' as Href);
     } catch (error) {
       console.error('Error signing out:', error);
     }

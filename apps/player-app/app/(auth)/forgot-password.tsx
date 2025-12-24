@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { resetPassword } from '../../lib/auth';
 import ScreenBackground from '@shared/ui/ScreenBackground';
+import PrimaryButton from '@shared/ui/PrimaryButton';
+import GlassCard from '@shared/ui/GlassCard';
 import { Ionicons } from '@expo/vector-icons';
 
 const ForgotPasswordScreen = () => {
@@ -16,9 +18,18 @@ const ForgotPasswordScreen = () => {
       return;
     }
 
+    // Validate phone number format
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      Alert.alert('Error', 'Please enter a valid 10-digit phone number');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      await resetPassword(phoneNumber);
+      // Format phone number with country code
+      const fullPhoneNumber = `+92${cleanPhone}`;
+      await resetPassword(fullPhoneNumber);
       Alert.alert(
         'Password Reset Email Sent',
         'Check your email for password reset instructions.',
@@ -39,38 +50,43 @@ const ForgotPasswordScreen = () => {
   return (
     <ScreenBackground>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <Pressable 
+          onPress={() => router.back()} 
+          style={({pressed}) => [styles.backButton, pressed && styles.pressed]}
+        >
           <Text style={styles.backButtonText}>‹ Back</Text>
-        </TouchableOpacity>
+        </Pressable>
 
         <Text style={styles.title}>Forgot Password?</Text>
         <Text style={styles.subtitle}>
           Enter your phone number and we’ll send you instructions to reset your password.
         </Text>
 
-        <View style={styles.inputWrapper}>
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="call-outline" size={28} color="#828282" />
+        <GlassCard>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Phone Number</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="call-outline" size={20} color="#94a3b8" style={styles.inputIcon} />
+              <Text style={styles.countryCode}>+92</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="3xx xxxxxxx"
+                placeholderTextColor="#64748b"
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+              />
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              placeholderTextColor="#828282"
-              keyboardType="phone-pad"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-            />
           </View>
-        </View>
+        </GlassCard>
 
-        <TouchableOpacity 
-          style={styles.resetButton}
-          onPress={handleResetPassword}
-          disabled={isLoading}
-        >
-          <Text style={styles.resetButtonText}>Send Reset Link</Text>
-        </TouchableOpacity>
+        <View style={styles.actions}>
+          <PrimaryButton 
+            title={isLoading ? "Sending..." : "Send Reset Link"}
+            onPress={handleResetPassword}
+            disabled={isLoading}
+          />
+        </View>
       </View>
     </ScreenBackground>
   );
@@ -79,67 +95,74 @@ const ForgotPasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 35,
+    paddingHorizontal: 20,
     paddingTop: 50,
   },
   backButton: {
     marginBottom: 40,
   },
   backButtonText: {
-    fontSize: 24,
-    color: '#C8C8C8',
+    fontSize: 16,
+    color: '#94a3b8',
+    fontFamily: 'Inter',
   },
   title: {
-    fontSize: 42,
-    color: '#C8C8C8',
-    fontWeight: '600',
+    fontSize: 32,
+    color: '#FFFFFF',
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
+    fontFamily: 'Outfit',
   },
   subtitle: {
-    fontSize: 26,
-    color: '#6E6E6E',
-    fontWeight: '400',
+    fontSize: 16,
+    color: '#94a3b8',
     textAlign: 'center',
-    marginBottom: 40,
-    lineHeight: 36,
-  },
-  inputWrapper: {
     marginBottom: 30,
+    lineHeight: 24,
+    fontFamily: 'Inter',
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#e2e8f0',
+    marginBottom: 8,
+    fontFamily: 'Inter',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 87,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#535353',
-    paddingHorizontal: 20,
+    backgroundColor: 'rgba(30, 41, 59, 0.5)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#475569',
+    paddingHorizontal: 12,
+    height: 48,
   },
-  iconContainer: {
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  inputIcon: {
+    marginRight: 10,
+  },
+  countryCode: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginRight: 8,
+    fontFamily: 'Inter',
   },
   input: {
     flex: 1,
-    fontSize: 31,
+    fontSize: 16,
     color: '#FFFFFF',
-    marginLeft: 20,
+    fontFamily: 'Inter',
   },
-  resetButton: {
-    height: 91,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#1F5E40',
-    justifyContent: 'center',
-    alignItems: 'center',
+  actions: {
+    marginTop: 24,
   },
-  resetButtonText: {
-    fontSize: 33,
-    color: '#B4D7C5',
-    fontWeight: '700',
-  },
+  pressed: {
+    opacity: 0.7,
+  }
 });
 
 export default ForgotPasswordScreen;

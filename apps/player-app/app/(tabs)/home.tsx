@@ -1,231 +1,146 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import DashboardHeader from '../components/home/DashboardHeader';
-import BookNowBanner from '../components/home/BookNowBanner';
-import ActionGridCard from '../components/home/ActionGridCard';
-import VisitStoreBanner from '../components/home/VisitStoreBanner';
-import UpcomingMatchCard from '../components/home/UpcomingMatchCard';
+import ScreenBackground from '@shared/ui/ScreenBackground';
+import HomeHeader from '../components/home/HomeHeader';
+import FilterChipsRow from '../components/home/FilterChipsRow';
+import HeroActionCard from '../components/home/HeroActionCard';
+import SectionHeader from '../components/home/SectionHeader';
+import HostMatchCard from '../components/matches/HostMatchCard';
+import VenueCard from '../components/venues/VenueCard';
+import EventMiniCard from '../components/events/EventMiniCard';
 
 const HomeScreen = () => {
   const router = useRouter();
 
-  const renderAcademiesIcon = () => (
-    <View style={styles.iconWrapper}>
-      <View style={styles.academyIcon}>
-        <View style={styles.academyCircle} />
-        <View style={styles.academyBase} />
-      </View>
-    </View>
-  );
-
-  const renderTeamsIcon = () => (
-    <View style={styles.iconWrapper}>
-      <View style={styles.teamsIcon}>
-        <View style={styles.personCircle} />
-        <View style={styles.personCircle} />
-      </View>
-    </View>
-  );
-
-  const renderTournamentsIcon = () => (
-    <View style={styles.iconWrapper}>
-      <View style={styles.tournamentIcon}>
-        <View style={styles.nodeCircle} />
-        <View style={styles.nodeCircle} />
-        <View style={styles.nodeCircle} />
-        <View style={styles.connectorLine} />
-      </View>
-    </View>
-  );
-
-  const renderLeaguesIcon = () => (
-    <View style={styles.iconWrapper}>
-      <View style={styles.trophyIcon}>
-        <View style={styles.trophyCup} />
-        <View style={styles.trophyBase} />
-      </View>
-    </View>
-  );
-
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <DashboardHeader
-          onWalletPress={() => router.push('/profile/wallet')}
-          onNotificationPress={() => {}}
-          onProfilePress={() => router.push('/(tabs)/profile')}
+    <ScreenBackground>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer} 
+        showsVerticalScrollIndicator={false}
+      >
+        <HomeHeader 
+          userName="Abdullah" 
+          location="Lahore" 
+          onLocationPress={() => {}}
         />
         
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          <BookNowBanner onPress={() => router.push('/(tabs)/venues')} />
-          
-          <View style={styles.actionsGrid}>
-            <ActionGridCard
-              title="Academies"
-              icon={renderAcademiesIcon()}
-              onPress={() => {}}
-            />
-            <ActionGridCard
-              title="Teams"
-              icon={renderTeamsIcon()}
-              onPress={() => {}}
-            />
-            <ActionGridCard
-              title="Tournaments"
-              icon={renderTournamentsIcon()}
-              onPress={() => {}}
-            />
-            <ActionGridCard
-              title="Leagues"
-              icon={renderLeaguesIcon()}
-              onPress={() => router.push('/leagues')}
-            />
-          </View>
+        <FilterChipsRow 
+          filters={['Tonight', 'This weekend', 'My sports']} 
+          selectedFilter="Tonight"
+          onFilterChange={(filter) => console.log('Filter:', filter)}
+        />
 
-          <VisitStoreBanner onPress={() => {}} />
+        <View style={styles.heroContainer}>
+          <HeroActionCard 
+            onPress={() => router.push('/(tabs)/venues')} 
+            onSeeAllPress={() => router.push('/(tabs)/venues')}
+          />
+        </View>
 
-          <View style={styles.upcomingSection}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Upcoming Matches</Text>
-              <Text style={styles.viewAll}>View all</Text>
-            </View>
-            
-            <UpcomingMatchCard
-              title="2v2 Padel"
-              organizer="Hajra"
-              players={0}
-              maxPlayers={4}
-              onPress={() => router.push('/matches')}
+        {/* Section: Matches looking for players */}
+        <View style={styles.sectionContainer}>
+          <SectionHeader 
+            title="Games needing players near you" 
+            cta="View all" 
+            onCtaPress={() => router.push('/(tabs)/matches')}
+          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+            <HostMatchCard 
+              sport="Football" 
+              format="5-a-side" 
+              time="Tonight · 9:00 PM" 
+              location="DHA Phase 5" 
+              venue="Turf Arena" 
+              playersNeeded={2} 
             />
-          </View>
+            <HostMatchCard 
+              sport="Cricket" 
+              format="Tape Ball" 
+              time="Tonight · 10:00 PM" 
+              location="Model Town" 
+              venue="C Block Park" 
+              playersNeeded={4} 
+            />
+          </ScrollView>
+        </View>
 
-          <View style={styles.bottomSpacer} />
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+        {/* Section: Top venues */}
+        <View style={styles.sectionContainer}>
+          <SectionHeader 
+            title="Top venues for you in Lahore" 
+            cta="See all" 
+            onCtaPress={() => router.push('/(tabs)/venues')}
+          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+            <VenueCard 
+              name="Star Futsal Arena"
+              area="DHA Phase 5"
+              price="PKR 5,000 / hr"
+              discount="Save 20%"
+              nextSlot="Tonight: 8 PM"
+              imageUrl="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=600&auto=format&fit=crop"
+            />
+            <VenueCard 
+              name="Smash Padel Court"
+              area="Gulberg III"
+              price="PKR 6,000 / hr"
+              discount="Save 10%"
+              nextSlot="Tomorrow: 6 PM"
+              imageUrl="https://images.unsplash.com/photo-1626248982363-22b07e43d3b7?q=80&w=600&auto=format&fit=crop"
+            />
+          </ScrollView>
+        </View>
+
+        {/* Section: Leagues & Events */}
+        <View style={styles.sectionContainer}>
+          <SectionHeader 
+            title="Leagues & events this month" 
+            cta="All" 
+            onCtaPress={() => {}}
+          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+            <EventMiniCard 
+              title="Ramzan Night League"
+              dateRange="Feb 10 – Mar 05"
+              sport="Football"
+            />
+            <EventMiniCard 
+              title="Weekend Padel Cup"
+              dateRange="Mar 15 – Mar 16"
+              sport="Padel"
+            />
+             <EventMiniCard 
+              title="Corporate Cricket League"
+              dateRange="Apr 01 – Apr 20"
+              sport="Cricket"
+            />
+          </ScrollView>
+        </View>
+
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
+    </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#000000',
+  scrollContainer: {
+    paddingBottom: 20,
   },
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  heroContainer: {
     paddingHorizontal: 16,
-    paddingTop: 16,
-    gap: 16,
+    marginBottom: 8,
   },
-  upcomingSection: {
-    marginTop: 8,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  sectionContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    marginBottom: 8,
   },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  viewAll: {
-    fontSize: 14,
-    color: '#f59e0b',
-    fontWeight: '600',
+  horizontalScroll: {
+    paddingBottom: 8,
   },
   bottomSpacer: {
-    height: 100,
-  },
-  iconWrapper: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  academyIcon: {
-    alignItems: 'center',
-  },
-  academyCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    marginBottom: 2,
-  },
-  academyBase: {
-    width: 20,
-    height: 12,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    borderTopWidth: 0,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  teamsIcon: {
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-  },
-  personCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-  tournamentIcon: {
-    position: 'relative',
-    width: 36,
-    height: 32,
-  },
-  nodeCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    position: 'absolute',
-  },
-  connectorLine: {
-    position: 'absolute',
-    top: 16,
-    left: 6,
-    right: 6,
-    height: 2,
-    backgroundColor: '#FFFFFF',
-  },
-  trophyIcon: {
-    alignItems: 'center',
-  },
-  trophyCup: {
-    width: 28,
-    height: 20,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    borderBottomWidth: 0,
-    marginBottom: 2,
-  },
-  trophyBase: {
-    width: 20,
-    height: 8,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
+    height: 100, // Space for bottom tab bar
   },
 });
 

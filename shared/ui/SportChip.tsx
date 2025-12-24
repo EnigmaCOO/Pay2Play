@@ -1,14 +1,19 @@
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 const SportChip = ({ label, selected, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={[styles.chip, selected && styles.selectedChip]}>
-        <Text style={[styles.label, selected && styles.selectedLabel]}>{label}</Text>
-      </View>
-    </TouchableOpacity>
+    <Pressable 
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.chip,
+        selected && styles.selectedChip,
+        pressed && styles.pressed
+      ]}
+    >
+      <Text style={[styles.label, selected && styles.selectedLabel]}>{label}</Text>
+    </Pressable>
   );
 };
 
@@ -26,8 +31,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#14b8a6',
     borderColor: '#14b8a6',
   },
+  pressed: {
+    opacity: 0.8,
+  },
   label: {
     color: '#FFFFFF',
+    fontFamily: 'Inter',
   },
   selectedLabel: {
     color: '#FFFFFF',

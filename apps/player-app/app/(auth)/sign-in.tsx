@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, Alert, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import { signInWithPhone } from '../../lib/auth';
 import ScreenBackground from '@shared/ui/ScreenBackground';
+import AppLogoHeader from '@shared/ui/AppLogoHeader';
+import PrimaryButton from '@shared/ui/PrimaryButton';
+import SecondaryButton from '@shared/ui/SecondaryButton';
+import GlassCard from '@shared/ui/GlassCard';
 import { Ionicons } from '@expo/vector-icons';
 
 const SignInScreen = () => {
@@ -69,214 +73,179 @@ const SignInScreen = () => {
 
   return (
     <ScreenBackground>
-      <View style={styles.container}>
-        {/* Logo */}
-        <View style={styles.logoContainer}>
-          <View style={styles.logoPlaceholder}>
-            <Text style={styles.logoText}>P2P</Text>
-          </View>
-        </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          <AppLogoHeader />
 
-        {/* Title */}
-        <Text style={styles.title}>Sign in</Text>
-        <Text style={styles.subtitle}>Please sign in to continue.</Text>
+          <Text style={styles.title}>Sign in</Text>
+          <Text style={styles.subtitle}>Welcome back! Please sign in to continue.</Text>
 
-        {/* Phone Number Input */}
-        <View style={styles.inputWrapper}>
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="call-outline" size={28} color="#828282" />
+          <GlassCard>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Phone Number</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons name="call-outline" size={20} color="#94a3b8" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="+92 3xx xxxxxxx"
+                  placeholderTextColor="#64748b"
+                  inputMode="tel"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                />
+              </View>
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              placeholderTextColor="#828282"
-              keyboardType="phone-pad"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-            />
-          </View>
-        </View>
 
-        {/* Password Input */}
-        <View style={styles.inputWrapper}>
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="lock-closed-outline" size={28} color="#777" />
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons name="lock-closed-outline" size={20} color="#94a3b8" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor="#64748b"
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  <Ionicons
+                    name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                    size={20}
+                    color="#94a3b8"
+                  />
+                </Pressable>
+              </View>
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#777"
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
+
+            <Pressable onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>
+              <Text style={styles.forgotPassword}>Forgot Password?</Text>
+            </Pressable>
+          </GlassCard>
+
+          <View style={styles.actions}>
+            <PrimaryButton 
+              title={isLoading ? "Signing In..." : "Sign In"}
+              onPress={handleSignIn}
+              disabled={isLoading}
             />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-                size={28}
-                color="#777"
-              />
-            </TouchableOpacity>
+
+            <View style={styles.separator}>
+              <Text style={styles.separatorText}>OR</Text>
+            </View>
+
+            <SecondaryButton 
+              title="Sign in with Google"
+              onPress={handleGoogleSignIn}
+              disabled={isLoading}
+            />
+
+            <View style={styles.signUpContainer}>
+              <Text style={styles.signUpText}>Don’t have an account? </Text>
+              <Pressable onPress={handleSignUp}>
+                <Text style={styles.signUpLink}>Sign up</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
-
-        {/* Forgot Password */}
-        <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
-        </TouchableOpacity>
-
-        {/* Sign In Button */}
-        <TouchableOpacity 
-          style={styles.signInButton}
-          onPress={handleSignIn}
-          disabled={isLoading}
-        >
-          <Text style={styles.signInButtonText}>Sign In</Text>
-        </TouchableOpacity>
-
-        {/* Google Sign In Button */}
-        <TouchableOpacity 
-          style={styles.googleButton}
-          onPress={handleGoogleSignIn}
-          disabled={isLoading}
-        >
-          <Text style={styles.googleButtonText}>Sign in with Google</Text>
-        </TouchableOpacity>
-
-        {/* Sign Up Link */}
-        <View style={styles.signUpContainer}>
-          <Text style={styles.signUpText}>Don’t have an account? </Text>
-          <TouchableOpacity onPress={handleSignUp}>
-            <Text style={styles.signUpLink}>Sign up</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ScrollView>
     </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
-    paddingHorizontal: 35,
-    paddingTop: 50,
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 60,
-  },
-  logoPlaceholder: {
-    width: 120,
-    height: 120,
-    backgroundColor: '#1F5E40',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoText: {
-    color: '#B4D7C5',
-    fontSize: 40,
-    fontWeight: 'bold',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
   },
   title: {
-    fontSize: 48,
-    color: '#C8C8C8',
-    fontWeight: '400',
+    fontSize: 32,
+    color: '#FFFFFF',
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
+    fontFamily: 'Outfit',
   },
   subtitle: {
-    fontSize: 30,
-    color: '#6E6E6E',
-    fontWeight: '400',
+    fontSize: 16,
+    color: '#94a3b8',
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 30,
+    fontFamily: 'Inter',
   },
-  inputWrapper: {
-    marginBottom: 20,
+  inputGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#e2e8f0',
+    marginBottom: 8,
+    fontFamily: 'Inter',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 87,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#535353',
-    paddingHorizontal: 20,
+    backgroundColor: 'rgba(30, 41, 59, 0.5)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#475569',
+    paddingHorizontal: 12,
+    height: 48,
   },
-  iconContainer: {
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  inputIcon: {
+    marginRight: 10,
   },
   input: {
     flex: 1,
-    fontSize: 31,
+    fontSize: 16,
     color: '#FFFFFF',
-    marginLeft: 20,
-  },
-  eyeIcon: {
-    padding: 10,
+    fontFamily: 'Inter',
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',
-    marginBottom: 30,
-    marginTop: 10,
+    marginTop: 8,
   },
   forgotPassword: {
-    fontSize: 34,
-    color: '#9D9335',
-    fontWeight: '400',
+    fontSize: 14,
+    color: '#14b8a6',
+    fontWeight: '500',
+    fontFamily: 'Inter',
   },
-  signInButton: {
-    height: 91,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#1F5E40',
-    justifyContent: 'center',
+  actions: {
+    marginTop: 24,
+  },
+  separator: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginVertical: 16,
   },
-  signInButtonText: {
-    fontSize: 33,
-    color: '#B4D7C5',
-    fontWeight: '700',
-  },
-  googleButton: {
-    height: 91,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#535353',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  googleButtonText: {
-    fontSize: 28,
-    color: '#C8C8C8',
-    fontWeight: '600',
+  separatorText: {
+    color: '#64748b',
+    fontSize: 14,
+    fontWeight: '500',
+    fontFamily: 'Inter',
   },
   signUpContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 16,
   },
   signUpText: {
-    fontSize: 34,
-    color: '#6F6F6F',
-    fontWeight: '400',
+    fontSize: 14,
+    color: '#94a3b8',
+    fontFamily: 'Inter',
   },
   signUpLink: {
-    fontSize: 30,
-    color: '#CCC',
+    fontSize: 14,
+    color: '#14b8a6',
     fontWeight: '700',
+    fontFamily: 'Inter',
   },
 });
 

@@ -1,7 +1,8 @@
-
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, Platform } from 'react-native';
 import { Href, useRouter } from 'expo-router';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 import ScreenBackground from '@shared/ui/ScreenBackground';
 import AppHeader from '@shared/ui/AppHeader';
 import PrimaryButton from '@shared/ui/PrimaryButton';
@@ -9,13 +10,62 @@ import GlassCard from '@shared/ui/GlassCard';
 
 const PhoneEntryScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleContinue = async () => {
+    if (!phoneNumber || phoneNumber.length < 10) {
+      Alert.alert('Invalid Phone Number', 'Please enter a valid phone number');
+      return;
+    }
+
+    setLoading(true);
+    const fullPhoneNumber = `+92${phoneNumber.replace(/\D/g, '')}`;
+
+    try {
+      if (Platform.OS === 'web') {
+        if (!(window as any).recaptchaVerifier) {
+          (window as any).recaptchaVerifier = new RecaptchaVerifier(
+            auth,
+            'recaptcha-container',
+            {
+              size: 'invisible',
+              callback: () => {
+                console.log('reCAPTCHA solved');
+              },
+            }
+          );
+        }
+        
+        const appVerifier = (window as any).recaptchaVerifier;
+        const confirmationResult = await signInWithPhoneNumber(auth, fullPhoneNumber, appVerifier);
+        
+        router.push({
+          pathname: '/(onboarding)/otp-verification' as Href<'/onboarding/otp-verification'>,
+          params: {
+            confirmationResult: JSON.stringify(confirmationResult),
+            phoneNumber: fullPhoneNumber,
+          },
+        });
+      } else {
+        Alert.alert(
+          'Development Note',
+          'Phone authentication on native platforms requires additional setup with Firebase. For now, please test on web.'
+        );
+      }
+    } catch (error: any) {
+      console.error('Phone auth error:', error);
+      Alert.alert('Error', error.message || 'Failed to send verification code. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScreenBackground>
-      <AppHeader title="Let’s get your number" onBack={() => router.back()} stepIndicator="Step 2 of 3" />
+      <AppHeader title="Let's get your number" onBack={() => router.back()} stepIndicator="Step 2 of 3" />
       <View style={styles.container}>
-        <Text style={styles.subtitle}>We’ll use it to secure your bookings.</Text>
+        <Text style={styles.subtitle}>We'll use it to secure your bookings.</Text>
         <GlassCard>
           <Text style={styles.label}>Phone number</Text>
           <View style={styles.inputContainer}>
@@ -27,14 +77,18 @@ const PhoneEntryScreen = () => {
               keyboardType="phone-pad"
               value={phoneNumber}
               onChangeText={setPhoneNumber}
+              editable={!loading}
             />
           </View>
         </GlassCard>
         <PrimaryButton 
-          title="Continue" 
-          onPress={() => router.push('/(onboarding)/otp-verification' as Href<'/onboarding/otp-verification'>)} 
+          title={loading ? "Sending..." : "Continue"}
+          onPress={handleContinue}
+          disabled={loading}
         />
-        <Text style={styles.hint}>We’ll send you a one-time code.</Text>
+        <Text style={styles.hint}>We'll send you a one-time code.</Text>
+        
+        <div id="recaptcha-container"></div>
       </View>
     </ScreenBackground>
   );

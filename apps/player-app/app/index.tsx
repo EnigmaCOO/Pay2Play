@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { startTransition, useEffect, useState } from 'react';
+import React, { startTransition, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 
@@ -27,7 +27,7 @@ export default function Index() {
 
   // If user is authenticated, redirect to home
   if (user) {
-    return <Redirect href="/(tabs)/home" />;
+    return <Redirect href={'/tabs/home as any'} />;
   }
 
   // Otherwise, redirect to sign-in
