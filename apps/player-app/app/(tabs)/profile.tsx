@@ -24,8 +24,8 @@ export default function ProfileScreen() {
     try {
       await signOut(auth);
       console.log('Signed out');
-      // Navigate back to the sign-in screen
-      router.replace('/(auth)/sign-in' as Href);
+      // Navigate back to the unified auth screen
+      router.replace('/(auth)/auth' as Href);
     } catch (error) {
       console.error('Error signing out:', error);
     }

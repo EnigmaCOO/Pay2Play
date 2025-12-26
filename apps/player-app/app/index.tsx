@@ -30,6 +30,6 @@ export default function Index() {
     return <Redirect href={'/tabs/home as any'} />;
   }
 
-  // Otherwise, redirect to sign-in
-  return <Redirect href="/(auth)/sign-in" />;
+  // Otherwise, redirect to unified auth screen
+  return <Redirect href="/(auth)/auth" />;
 }

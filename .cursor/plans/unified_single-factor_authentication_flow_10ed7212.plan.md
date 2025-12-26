@@ -4,48 +4,48 @@ overview: Replace the 2-factor authentication flow with a unified single-screen 
 todos:
   - id: create-unified-auth-screen
     content: Create unified authentication screen (auth.tsx) with method selector and adaptive form
-    status: pending
+    status: completed
   - id: update-auth-library
     content: Update lib/auth.ts with new authentication functions and user existence checking
-    status: pending
+    status: completed
   - id: create-profile-completion
     content: Create complete-profile.tsx screen for phone/email users to provide additional info
-    status: pending
+    status: completed
   - id: integrate-inline-otp
     content: Integrate OTP verification inline in the unified auth screen (no separate navigation)
-    status: pending
+    status: completed
     dependencies:
       - create-unified-auth-screen
   - id: update-navigation
     content: Update app/index.tsx and auth layout to use new unified auth screen
-    status: pending
+    status: completed
     dependencies:
       - create-unified-auth-screen
   - id: handle-google-flow
     content: Implement Google OAuth flow with automatic profile creation for new users
-    status: pending
+    status: completed
     dependencies:
       - update-auth-library
   - id: handle-phone-flow
     content: Implement phone OTP flow with inline verification and profile completion routing
-    status: pending
+    status: completed
     dependencies:
       - create-unified-auth-screen
       - update-auth-library
   - id: handle-email-flow
     content: Implement email/password flow with automatic registration detection and profile completion routing
-    status: pending
+    status: completed
     dependencies:
       - create-unified-auth-screen
       - update-auth-library
   - id: update-forgot-password
     content: Update forgot-password.tsx to work with unified auth screen and support both phone/email
-    status: pending
+    status: completed
     dependencies:
       - create-unified-auth-screen
   - id: deprecate-old-screens
     content: Remove or redirect old sign-in/sign-up screens and update OTP verification screen
-    status: pending
+    status: completed
     dependencies:
       - create-unified-auth-screen
       - update-navigation
